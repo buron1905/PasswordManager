@@ -6,19 +6,16 @@ namespace PasswordManager
 {
 	public partial class MainPage : ContentPage
 	{
-		int count = 0;
-
 		public MainPage()
 		{
 			InitializeComponent();
 		}
 
-		private void OnCounterClicked(object sender, EventArgs e)
+		private void OnLoginClicked(object sender, EventArgs e)
 		{
-			count++;
-			CounterLabel.Text = $"Current count: {count}";
+			string name = entryName.Text;
+			string pass = entryPass.Text;
 
-			SemanticScreenReader.Announce(CounterLabel.Text);
 		}
 	}
 }

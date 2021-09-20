@@ -4,45 +4,59 @@
              BackgroundColor="{DynamicResource SecondaryColor}">
 
     <ScrollView Padding="{OnPlatform iOS='30,60,30,30', Default='30'}">
-        <Grid RowSpacing="25" RowDefinitions="Auto,Auto,Auto,Auto,*">
+        <Grid RowSpacing="25" RowDefinitions="Auto,Auto,Auto,Auto,Auto,*">
 
             <Label 
-                Text="Hello, World!"
+                Text="Password Manager"
                 Grid.Row="0"
                 SemanticProperties.HeadingLevel="Level1"
                 FontSize="32"
                 HorizontalOptions="Center" />
 
-            <Label 
-                Text="Welcome to .NET Multi-platform App UI"
+            <Entry 
+                HorizontalOptions="Center"
                 Grid.Row="1"
-                SemanticProperties.HeadingLevel="Level1"
-                SemanticProperties.Description="Welcome to dot net Multi platform App U I"
-                FontSize="18"
-                HorizontalOptions="Center" />
+                HorizontalTextAlignment="Center"
+                WidthRequest="200"
+                Keyboard="Email"
+                x:Name="entryEmail"
+                Placeholder="Email" />
 
-            <Label 
-                Text="Current count: 0"
+            <Entry 
+                x:Name="entryPass"
                 Grid.Row="2"
-                FontSize="18"
-                FontAttributes="Bold"
-                x:Name="CounterLabel"
-                HorizontalOptions="Center" />
+                Placeholder="Password" 
+                WidthRequest="150"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                IsPassword="True" />
+
+            <Label HorizontalOptions="Center"
+                Grid.Row="3"
+                TextColor="Blue"
+                FontSize="20"
+                Text="Forgot Password?">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ForgotPasswordCommand}" />
+                </Label.GestureRecognizers>
+            </Label>
 
             <Button 
-                Text="Click me"
+                Text="Login"
                 FontAttributes="Bold"
-                Grid.Row="3"
-                SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="OnCounterClicked"
+                Grid.Row="4"
+                Clicked="OnLoginClicked"
                 HorizontalOptions="Center" />
 
-            <Image Grid.Row="4"
-                Source="dotnet_bot.png"
-                SemanticProperties.Description="Cute dot net bot waving hi to you!"
-                WidthRequest="250"
-                HeightRequest="310"
-                HorizontalOptions="Center" />
+            <Label HorizontalOptions="Center"
+                Grid.Row="5"
+                TextColor="Blue"
+                FontSize="20"
+                Text="Registration">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding RegistrationCommand}" />
+                </Label.GestureRecognizers>
+            </Label>
 
         </Grid>
     </ScrollView>
