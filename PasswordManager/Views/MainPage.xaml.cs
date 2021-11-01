@@ -2,7 +2,7 @@
 using Microsoft.Maui.Essentials;
 using System;
 
-namespace PasswordManager
+namespace PasswordManager.Views
 {
 	public partial class MainPage : ContentPage
 	{
@@ -13,8 +13,8 @@ namespace PasswordManager
 
 		private void OnLoginClicked(object sender, EventArgs e)
 		{
-			string name = entryName.Text;
-			string pass = entryPass.Text;
+			//string name = entryName.Text;
+			//string pass = entryPass.Text;
 
 		}
 	}

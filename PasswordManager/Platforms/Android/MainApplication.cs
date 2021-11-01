@@ -1,7 +1,8 @@
-﻿using Android.App;
+﻿using System;
+using Android.App;
 using Android.Runtime;
 using Microsoft.Maui;
-using System;
+using Microsoft.Maui.Hosting;
 
 namespace PasswordManager
 {
