@@ -11,7 +11,7 @@ namespace PasswordManager
 		{
 			InitializeComponent();
 
-			MainPage = new Views.MainPage();
+			MainPage = new Views.LoginPage();
 		}
 	}
 }

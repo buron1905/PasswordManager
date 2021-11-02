@@ -3,9 +3,9 @@ using Microsoft.Maui.Controls;
 
 namespace PasswordManager.Views
 {
-    public partial class Registration : ContentPage
+    public partial class RegistrationPage : ContentPage
     {
-        public Registration()
+        public RegistrationPage()
         {
             InitializeComponent();
         }

@@ -1,60 +1,84 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="PasswordManager.Views.MainPage"
+             xmlns:viewmodels="clr-namespace:PasswordManager.ViewModels"
+             x:Class="PasswordManager.Views.LoginPage"
+             x:DataType="viewmodels:LoginViewModel"
              BackgroundColor="{DynamicResource SecondaryColor}">
+    <ContentPage.BindingContext>
+        <viewmodels:LoginViewModel/>
+    </ContentPage.BindingContext>
 
     <ScrollView Padding="{OnPlatform iOS='30,60,30,30', Default='30'}">
-        <Grid RowSpacing="25" RowDefinitions="Auto,Auto,Auto,Auto,Auto,*">
+        <Grid RowSpacing="25" RowDefinitions="Auto,Auto,Auto,Auto,Auto,*" ColumnDefinitions="*, 2*">
 
             <Label 
-                Text="Password Manager"
+                Text="Login"
                 Grid.Row="0"
+                GridLayout.ColumnSpan="2"
                 SemanticProperties.HeadingLevel="Level1"
                 FontSize="32"
                 HorizontalOptions="Center" />
 
-            <Entry 
-                HorizontalOptions="Center"
+            <Label 
+                Text="Email:"
                 Grid.Row="1"
+                Grid.Column="0"
+                HorizontalOptions="End" />
+            
+            <Entry 
+                Text="{Binding Email}"
+                Grid.Row="1"
+                Grid.Column="1"
+                HorizontalOptions="Start"
                 HorizontalTextAlignment="Center"
                 WidthRequest="200"
                 Keyboard="Email"
-                x:Name="entryEmail"
                 Placeholder="Email" />
 
+            <Label 
+                Text="Password:"
+                Grid.Row="2"
+                Grid.Column="0"
+                HorizontalOptions="End" />
+            
             <Entry 
+                Text="{Binding Password}"
                 x:Name="entryPass"
                 Grid.Row="2"
+                Grid.Column="1"
                 Placeholder="Password" 
-                WidthRequest="150"
-                HorizontalOptions="Center"
+                WidthRequest="200"
+                HorizontalOptions="Start"
                 HorizontalTextAlignment="Center"
                 IsPassword="True" />
 
             <Label HorizontalOptions="Center"
                 Grid.Row="3"
+                GridLayout.ColumnSpan="2"
                 TextColor="Blue"
                 FontSize="20"
                 Text="Forgot Password?">
                 <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding ForgotPasswordCommand}" />
+                    <TapGestureRecognizer Command="{Binding ForgotPassword}" />
                 </Label.GestureRecognizers>
             </Label>
 
             <Button 
                 Text="Login"
+                GridLayout.ColumnSpan="2"
                 FontAttributes="Bold"
                 Grid.Row="4"
-                Clicked="OnLoginClicked"
+                Command="{Binding Login}"
                 HorizontalOptions="Center" />
 
             <Label HorizontalOptions="Center"
                 Grid.Row="5"
+                GridLayout.ColumnSpan="2"
                 TextColor="Blue"
                 FontSize="20"
                 Text="Registration">
                 <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding RegistrationCommand}" />
+                    <TapGestureRecognizer Command="{Binding Registration}" />
                 </Label.GestureRecognizers>
             </Label>
 

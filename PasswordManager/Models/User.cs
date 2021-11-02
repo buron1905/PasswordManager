@@ -15,6 +15,7 @@ namespace PasswordManager.Models
         public string Email {  get; set; }
         public string Name {  get; set; }
         public string Surname {  get; set; }
+        [NotNull]
         public string Password {  get; set; }
     }
 }
