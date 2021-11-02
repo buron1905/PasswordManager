@@ -1,4 +1,5 @@
 ﻿using Microsoft.Maui.Controls;
+using PasswordManager.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,21 +20,7 @@ namespace PasswordManager.ViewModels
             Registration = new Command(OnLogin);
         }
 
-        string _appName = "Password Manager";
-        public string AppName
-        { 
-            get => _appName;
-            set
-            {
-                if (value == _appName)
-                    return;
-                _appName = value;
-                OnPropertyChanged();
-            }
-        }
-
-
-        string _email = "emas";
+        string _email = "";
         public string Email
         {
             get => _email;
@@ -46,7 +33,7 @@ namespace PasswordManager.ViewModels
             }
         }
 
-        string _password = "asdf";
+        string _password = "";
         public string Password
         {
             get => _password;
@@ -66,16 +53,9 @@ namespace PasswordManager.ViewModels
 
         private void OnLogin()
         {
-            AppName = $"{Email} - {Password}";
-
-            //if (_email != "admin" || _password != "admin")
-            //{
-            //    //DisplayInvalidLoginPrompt();
-            //}
-            //else
-            //{
-            //    AppName += "- success";
-            //}
+            string password;
+            password = HashingService.Hash(Password);
+            //Console.WriteLine(password);
         }
     }
 }

@@ -11,6 +11,7 @@ namespace PasswordManager.Views
 		{
 			InitializeComponent();
 
+
 			//labelApp.Text = "Hello >])";
 
             //BindingContext = new LoginViewModel();

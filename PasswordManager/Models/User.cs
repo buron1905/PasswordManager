@@ -7,7 +7,7 @@ using SQLite;
 
 namespace PasswordManager.Models
 {
-    internal class User
+    public class User
     {
         [PrimaryKey, AutoIncrement]
         public int Id {  get; set; }
@@ -16,6 +16,6 @@ namespace PasswordManager.Models
         public string Name {  get; set; }
         public string Surname {  get; set; }
         [NotNull]
-        public string Password {  get; set; }
+        public string Password {  get; set; } // tady by byl HASH hesla, normální heslo v ActiveUserService s vlastnosti heslo
     }
 }
