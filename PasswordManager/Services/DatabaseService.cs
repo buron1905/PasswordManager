@@ -1,5 +1,6 @@
-﻿using Microsoft.Maui.Essentials;
-using PasswordManager.Models;
+﻿using DatabaseLib;
+using Microsoft.Maui.Essentials;
+using ModelsLib;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -12,49 +13,21 @@ namespace PasswordManager.Services
 {
     public static class DatabaseService
     {
-        static SQLiteAsyncConnection _connection;
 
-        static async Task Init()
+        public static async Task AddUser(User user)
         {
-            if (_connection != null)
-                return;
-
-            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "PasswordManagerLocal.db");
-
-            _connection = new SQLiteAsyncConnection(dbPath);
-
-            await _connection.CreateTableAsync<User>();
+            await DatabaseSQLiteMobile.AddUser(user);
         }
 
         public static async Task RemoveUser(int id)
         {
-            await Init();
-
-            await _connection.DeleteAsync<User>(id);
+            await DatabaseSQLiteMobile.RemoveUser(id);
         }
 
-        public static async Task AddUser(User user)
+        public static async Task<User> GetUser(string email, string hashedPassword)
         {
-            if (user == null)
-                return;
-
-            await Init();
-
-            var id = await _connection.InsertAsync(user);
+            return await DatabaseSQLiteMobile.GetUser(email, hashedPassword);
         }
 
-        public static async Task GetUser(string email, string password)
-        {
-            await Init();
-
-            await _connection.QueryAsync<User>("SELECT * FROM User WHERE Email ='?' AND Password ='?'", email, password);
-        }
-
-        //public static async Task<IEnumerable<User>> GetPasswords(User user)
-        //{
-        //    await Init();
-        //    var users = await _connection.Table<User>().ToListAsync();
-        //    return users;
-        //}
     }
 }

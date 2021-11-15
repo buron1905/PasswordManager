@@ -4,101 +4,73 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Text;
 using System.Security.Cryptography;
+using CryptographyLib;
 
 namespace PasswordManager.Services
 {
+    public enum HashTypeEnum
+    {
+        SHA512ToString,
+        SHA512ToBytes,
+        SHA256ToString,
+        SHA256ToBytes,
+        MD5ToString,
+        MD5ToBytes
+    }
+
     public static class HashingService
     {
-        public static string Hash(string text)
+
+        public static T Hash<T>(string text, HashTypeEnum hashType) where T : class
         {
-            byte[] data = Encoding.UTF8.GetBytes(text);
-            byte[] hash;
-            using (SHA512 shaM = new SHA512Managed())
+            switch (hashType)
             {
-                hash = shaM.ComputeHash(data);
+                case HashTypeEnum.SHA512ToString:
+                    return (T)(object)HashSHA512ToString(text);
+                case HashTypeEnum.SHA256ToString:
+                    return (T)(object)HashSHA256ToString(text);
+                case HashTypeEnum.MD5ToString:
+                    return (T)(object)HashMD5ToString(text);
+                case HashTypeEnum.SHA512ToBytes:
+                    return (T)(object)HashSHA512ToBytes(text);
+                case HashTypeEnum.SHA256ToBytes:
+                    return (T)(object)HashSHA256ToBytes(text);
+                case HashTypeEnum.MD5ToBytes:
+                    return (T)(object)HashMD5ToBytes(text);
+                default:
+                    return default(T);
             }
-
-            return ByteArrayToString(hash);
         }
 
-        static string ByteArrayToString(byte[] arrInput)
+        public static string HashSHA512ToString(string text)
         {
-            return Encoding.UTF8.GetString(arrInput);
-
-            //int i;
-            //StringBuilder sOutput = new StringBuilder(arrInput.Length);
-            //for (i = 0; i < arrInput.Length - 1; i++)
-            //{
-            //    sOutput.Append(arrInput[i].ToString("X2"));
-            //}
-            //return sOutput.ToString();
+            return Hasher.HashSHA512ToString(text);
         }
+
+        public static string HashSHA256ToString(string text)
+        {
+            return Hasher.HashSHA256ToString(text);
+        }
+
+        public static string HashMD5ToString(string text)
+        {
+            return Hasher.HashMD5ToString(text);
+        }
+
+        public static byte[] HashSHA512ToBytes(string text)
+        {
+            return Hasher.HashSHA512ToBytes(text);
+        }
+
+        public static byte[] HashSHA256ToBytes(string text)
+        {
+            return Hasher.HashSHA256ToBytes(text);
+        }
+
+        public static byte[] HashMD5ToBytes(string text)
+        {
+            return Hasher.HashMD5ToBytes(text);
+        }
+
     }
 }
-
-
-
-//using System;
-//using System.Security.Cryptography;
-//using System.Text;
-
-//namespace ComputeAHash_csharp
-//{
-//    /// <summary>
-//    /// Summary description for Class1.
-//    /// </summary>
-//    class Class1
-//    {
-//        static void Main(string[] args)
-//        {
-//            string sSourceData;
-//            byte[] tmpSource;
-//            byte[] tmpHash;
-//            sSourceData = "MySourceData";
-//            //Create a byte array from source data
-//            tmpSource = ASCIIEncoding.ASCII.GetBytes(sSourceData);
-
-//            //Compute hash based on source data
-//            tmpHash = new MD5CryptoServiceProvider().ComputeHash(tmpSource);
-//            Console.WriteLine(ByteArrayToString(tmpHash));
-
-//            sSourceData = "NotMySourceData";
-//            tmpSource = ASCIIEncoding.ASCII.GetBytes(sSourceData);
-
-//            byte[] tmpNewHash;
-
-//            tmpNewHash = new MD5CryptoServiceProvider().ComputeHash(tmpSource);
-
-//            bool bEqual = false;
-//            if (tmpNewHash.Length == tmpHash.Length)
-//            {
-//                int i = 0;
-//                while ((i < tmpNewHash.Length) && (tmpNewHash[i] == tmpHash[i]))
-//                {
-//                    i += 1;
-//                }
-//                if (i == tmpNewHash.Length)
-//                {
-//                    bEqual = true;
-//                }
-//            }
-
-//            if (bEqual)
-//                Console.WriteLine("The two hash values are the same");
-//            else
-//                Console.WriteLine("The two hash values are not the same");
-//            Console.ReadLine();
-//        }
-
-//        static string ByteArrayToString(byte[] arrInput)
-//        {
-//            int i;
-//            StringBuilder sOutput = new StringBuilder(arrInput.Length);
-//            for (i = 0; i < arrInput.Length - 1; i++)
-//            {
-//                sOutput.Append(arrInput[i].ToString("X2"));
-//            }
-//            return sOutput.ToString();
-//        }
-//    }
-//}
