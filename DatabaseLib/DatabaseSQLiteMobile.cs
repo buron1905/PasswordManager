@@ -17,6 +17,8 @@ namespace DatabaseLib
             if (_connection != null)
                 return;
 
+            dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PasswordManagerLocal.db");
+
             _connection = new SQLiteAsyncConnection(dbPath);
 
             await _connection.CreateTableAsync<User>();

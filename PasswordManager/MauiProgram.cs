@@ -4,6 +4,8 @@ using Microsoft.Maui.Controls.Compatibility;
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Essentials;
 using Microsoft.Maui.Hosting;
+using PasswordManager.Services;
+using System;
 using System.IO;
 
 namespace PasswordManager
@@ -20,9 +22,11 @@ namespace PasswordManager
 					fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				});
 
-			DatabaseSQLiteMobile.Init(Path.GetFullPath(Path.Combine(FileSystem.AppDataDirectory, "PasswordManagerLocal.db")));
+            //DatabaseService.Init(Path.Combine(FileSystem.AppDataDirectory, "s.db"));
+            //DatabaseSQLiteMobile.Init(Path.GetFullPath(Path.Combine(FileSystem.AppDataDirectory, "PasswordManagerLocal.db")));
+            //DatabaseSQLiteMobile.Init(Path.GetFullPath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PasswordManagerLocal.db")));
 
-			return builder.Build();
+            return builder.Build();
 		}
 	}
 }
