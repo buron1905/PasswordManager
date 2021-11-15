@@ -66,7 +66,6 @@ namespace PasswordManager.ViewModels
         {
             ActiveUserService.Instance.Password = Password;
 
-
             byte[] arr = EncryptionService.EncryptStringToBytes_Aes(Email, ActiveUserService.Instance.Password);
             string emailEncrypted = ParserService.ByteArrayToString(arr);
             Console.WriteLine(emailEncrypted);

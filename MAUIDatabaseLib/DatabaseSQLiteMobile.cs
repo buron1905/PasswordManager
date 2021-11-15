@@ -1,4 +1,5 @@
 ﻿using MAUIModelsLib;
+using Microsoft.Maui.Essentials;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -13,12 +14,12 @@ namespace MAUIDatabaseLib
     {
         static SQLiteAsyncConnection _connection;
 
-        public static async void Init(string dbPath)
+        public static async void Init()
         {
             if (_connection != null)
                 return;
 
-            dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PasswordManagerLocal.db");
+            string dbPath = Path.Combine(FileSystem.AppDataDirectory, "PasswordManagerLocal.db");
 
             _connection = new SQLiteAsyncConnection(dbPath);
 

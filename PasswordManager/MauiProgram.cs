@@ -22,7 +22,8 @@ namespace PasswordManager
 					fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				});
 
-            DatabaseService.Init(Path.Combine(FileSystem.AppDataDirectory, "PasswordManagerLocal.db"));
+            DatabaseService.Init();
+            //DatabaseService.Init(Path.Combine(FileSystem.AppDataDirectory, "PasswordManagerLocal.db"));
             //DatabaseSQLiteMobile.Init(Path.GetFullPath(Path.Combine(FileSystem.AppDataDirectory, "PasswordManagerLocal.db")));
             //DatabaseSQLiteMobile.Init(Path.GetFullPath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PasswordManagerLocal.db")));
 
