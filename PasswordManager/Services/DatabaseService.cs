@@ -1,6 +1,6 @@
-﻿using DatabaseLib;
+﻿using MAUIDatabaseLib;
 using Microsoft.Maui.Essentials;
-using ModelsLib;
+using MAUIModelsLib;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -71,7 +71,7 @@ namespace PasswordManager.Services
         {
             var queryResult = await _connection.QueryAsync<User>("SELECT * FROM User WHERE Email ='?' AND Password ='?'", email, hashedPassword);
 
-            if (queryResult.Count() == 1)
+            if (queryResult.Count == 1)
             {
                 return queryResult[0];
             }

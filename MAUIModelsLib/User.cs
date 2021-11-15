@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ModelsLib
+namespace MAUIModelsLib
 {
     public class User
     {

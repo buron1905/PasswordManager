@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Text;
 using System.Security.Cryptography;
-using CryptographyLib;
+using MAUICryptographyLib;
 
 namespace PasswordManager.Services
 {
