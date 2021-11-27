@@ -9,13 +9,9 @@ namespace MAUIModelsLib
 {
     public class Settings
     {
-        [PrimaryKey, AutoIncrement]
-        public int Id { get; set; }
-        [Unique]
-        public string Email { get; set; }
-        public string Name { get; set; }
-        public string Surname { get; set; }
+        [PrimaryKey]
+        public int UserId { get; set; }
         [NotNull]
-        public string PasswordHASH { get; set; }
+        public bool SavePassword { get; set; } = true;
     }
 }

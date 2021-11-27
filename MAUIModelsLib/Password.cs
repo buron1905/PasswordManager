@@ -11,11 +11,11 @@ namespace MAUIModelsLib
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
-        [Unique]
-        public string Email { get; set; }
-        public string Name { get; set; }
-        public string Surname { get; set; }
         [NotNull]
-        public string PasswordHASH { get; set; }
+        public int UserId { get; set; }
+        public string PasswordName { get; set; }
+        public string UserName { get; set; }
+        public string PasswordEncrypted { get; set; }
+        public string Description { get; set; }
     }
 }

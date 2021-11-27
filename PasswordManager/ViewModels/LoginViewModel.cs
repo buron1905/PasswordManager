@@ -75,8 +75,9 @@ namespace PasswordManager.ViewModels
             string decrypted = EncryptionService.DecryptStringFromBytes_Aes(arr, Password);
             Console.WriteLine(decrypted);
 
+            //Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Error", "Invalid Login, try again", "OK");
 
-            Microsoft.Maui.Controls.Application.Current.MainPage = new Views.PasswordsPage();
+            //Microsoft.Maui.Controls.Application.Current.MainPage = new Views.PasswordsPage();
         }
     }
 }

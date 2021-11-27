@@ -24,7 +24,11 @@ namespace MAUIDatabaseLib
             _connection = new SQLiteAsyncConnection(dbPath);
 
             await _connection.CreateTableAsync<User>();
-            //await _connection.CreateTableAsync<Password>();
+            await _connection.CreateTableAsync<Password>();
+            await _connection.CreateTableAsync<Settings>();
+
+            //await _connection.ExecuteAsync("ALTER TABLE Password ADD CONSTRAINT fk_password_user FOREIGN KEY(UserId) REFERENCES User(Id);");
+
         }
 
         public static async Task<bool> RemoveUser(int id)

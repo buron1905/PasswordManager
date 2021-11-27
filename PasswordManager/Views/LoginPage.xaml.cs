@@ -12,13 +12,13 @@ namespace PasswordManager.Views
 			InitializeComponent();
 
 
-			//labelApp.Text = "Hello >])";
+            //labelApp.Text = "Hello >])";
 
             //BindingContext = new LoginViewModel();
-			
+
             //vm.DisplayInvalidLoginPrompt += () => DisplayAlert("Error", "Invalid Login, try again", "OK");
 
-			//DisplayAlert("Alert", "You have been alerted", "OK");
+            //DisplayAlert("Alert", "You have been alerted", "OK");
 
         }
 	}
