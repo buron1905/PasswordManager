@@ -1,5 +1,8 @@
 ﻿using Microsoft.Maui.Controls;
+using Microsoft.Maui.Controls.PlatformConfiguration.WindowsSpecific;
 using PasswordManager.Services;
+using Microsoft.Maui.Essentials;
+using PasswordManager.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +20,7 @@ namespace PasswordManager.ViewModels
         public LoginViewModel()
         {
             Login = new Command(OnLogin);
-            ForgotPassword = new Command(OnForgotPassword);
+            //ForgotPassword = new Command(OnForgotPassword);
             Registration = new Command(OnRegistration);
         }
 
@@ -49,17 +52,16 @@ namespace PasswordManager.ViewModels
 
 
         public ICommand Login { get; }
-        public ICommand ForgotPassword { get; }
+        //public ICommand ForgotPassword { get; }
         public ICommand Registration { get; }
 
-        private void OnForgotPassword()
-        {
-
-        }
+        //private void OnForgotPassword()
+        //{
+        //}
 
         private void OnRegistration()
         {
-
+            Microsoft.Maui.Controls.Application.Current.MainPage = new Views.RegistrationPage();
         }
 
         private void OnLogin()
@@ -72,6 +74,9 @@ namespace PasswordManager.ViewModels
 
             string decrypted = EncryptionService.DecryptStringFromBytes_Aes(arr, Password);
             Console.WriteLine(decrypted);
+
+
+            Microsoft.Maui.Controls.Application.Current.MainPage = new Views.PasswordsPage();
         }
     }
 }

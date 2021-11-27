@@ -31,5 +31,19 @@ namespace PasswordManager.Services
             }
         }
 
+        public bool IsActive
+        { 
+            get
+            {
+                return User != null;
+            }
+        }
+
+        public void Logout()
+        {
+            User = null;
+            Password = null;
+        }
+
     }
 }

@@ -34,19 +34,19 @@
             HorizontalTextAlignment="Center"
             IsPassword="True" />
 
-            <Label HorizontalOptions="Center"
+            <!--<Label HorizontalOptions="Center"
             TextColor="Blue"
             FontSize="20"
             Text="Forgot Password?">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding ForgotPassword}" />
                 </Label.GestureRecognizers>
-            </Label>
+            </Label>-->
 
             <Button 
             Text="Login"
             FontAttributes="Bold"
-            Command="{Binding Registration}"
+            Command="{Binding Login}"
             HorizontalOptions="Center" />
 
             <Label HorizontalOptions="Center"

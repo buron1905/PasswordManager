@@ -15,6 +15,7 @@ namespace PasswordManager.ViewModels
         public RegistrationViewModel()
         {
             Register = new Command(OnRegister);
+            Login = new Command(OnLogin);
         }
 
         string _email = "";
@@ -45,6 +46,12 @@ namespace PasswordManager.ViewModels
 
 
         public ICommand Register { get; }
+        public ICommand Login { get; }
+
+        private void OnLogin()
+        {
+            Microsoft.Maui.Controls.Application.Current.MainPage = new Views.LoginPage();
+        }
 
         private void OnRegister()
         {

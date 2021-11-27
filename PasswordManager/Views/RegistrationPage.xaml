@@ -41,6 +41,15 @@
             Command="{Binding Register}"
             HorizontalOptions="Center" />
 
+            <Label HorizontalOptions="Center"
+            TextColor="Blue"
+            FontSize="20"
+            Text="Login">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding Login}" />
+                </Label.GestureRecognizers>
+            </Label>
+
         </StackLayout>
 
     </ContentPage.Content>
