@@ -1,5 +1,6 @@
 ﻿using Microsoft.Maui;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Controls.PlatformConfiguration.WindowsSpecific;
 using Application = Microsoft.Maui.Controls.Application;
 
@@ -11,7 +12,13 @@ namespace PasswordManager
 		{
 			InitializeComponent();
 
-			MainPage = new Views.LoginPage();
-		}
-	}
+
+            MainPage = new NavigationPage(new Views.LoginPage());
+        }
+
+  //      protected override Window CreateWindow(IActivationState activationState)
+  //      {
+  //          return new Window(new NavigationPage(new Views.LoginPage()));
+		//}
+    }
 }

@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Microsoft.Maui.Controls.Hosting;
 
 namespace PasswordManager.ViewModels
 {
@@ -52,28 +53,30 @@ namespace PasswordManager.ViewModels
 
 
         public ICommand Login { get; }
-        //public ICommand ForgotPassword { get; }
         public ICommand Registration { get; }
 
-        //private void OnForgotPassword()
-        //{
-        //}
-
-        private void OnRegistration()
+        private async void OnRegistration()
         {
-            Microsoft.Maui.Controls.Application.Current.MainPage = new Views.RegistrationPage();
+
+            await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PushAsync(new Views.RegistrationPage());
         }
 
         private void OnLogin()
         {
-            ActiveUserService.Instance.Password = Password;
+            //Microsoft.Maui.Controls.Application.Current.MainPage = new Views.PasswordsPage();
 
-            byte[] arr = EncryptionService.EncryptStringToBytes_Aes(Email, ActiveUserService.Instance.Password);
-            string emailEncrypted = ParserService.ByteArrayToString(arr);
-            Console.WriteLine(emailEncrypted);
 
-            string decrypted = EncryptionService.DecryptStringFromBytes_Aes(arr, Password);
-            Console.WriteLine(decrypted);
+            //ActiveUserService.Instance.Password = Password;
+
+            //byte[] arr = EncryptionService.EncryptStringToBytes_Aes(Email, ActiveUserService.Instance.Password);
+            //string emailEncrypted = ParserService.ByteArrayToString(arr);
+            //Console.WriteLine(emailEncrypted);
+
+            //string decrypted = EncryptionService.DecryptStringFromBytes_Aes(arr, Password);
+            //Console.WriteLine(decrypted);
+
+
+
 
             //Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Error", "Invalid Login, try again", "OK");
 
