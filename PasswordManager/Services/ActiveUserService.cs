@@ -39,6 +39,12 @@ namespace PasswordManager.Services
             }
         }
 
+        public void Login(User user, string password)
+        {
+            User = user;
+            Password = password;
+        }
+
         public void Logout()
         {
             User = null;

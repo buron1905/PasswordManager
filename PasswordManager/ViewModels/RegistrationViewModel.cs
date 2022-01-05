@@ -52,7 +52,7 @@ namespace PasswordManager.ViewModels
 
         private void OnLogin()
         {
-            Microsoft.Maui.Controls.Application.Current.MainPage = new Views.LoginPage();
+            (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PopAsync();
         }
 
         private async void OnRegister()

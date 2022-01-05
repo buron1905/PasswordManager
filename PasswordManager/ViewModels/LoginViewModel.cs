@@ -51,36 +51,24 @@ namespace PasswordManager.ViewModels
             }
         }
 
-
         public ICommand Login { get; }
         public ICommand Registration { get; }
 
         private async void OnRegistration()
         {
-
             await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PushAsync(new Views.RegistrationPage());
         }
 
-        private void OnLogin()
+        private async void OnLogin()
         {
-            //Microsoft.Maui.Controls.Application.Current.MainPage = new Views.PasswordsPage();
-
-
-            //ActiveUserService.Instance.Password = Password;
-
-            //byte[] arr = EncryptionService.EncryptStringToBytes_Aes(Email, ActiveUserService.Instance.Password);
-            //string emailEncrypted = ParserService.ByteArrayToString(arr);
-            //Console.WriteLine(emailEncrypted);
-
-            //string decrypted = EncryptionService.DecryptStringFromBytes_Aes(arr, Password);
-            //Console.WriteLine(decrypted);
-
-
-
-
-            //Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Error", "Invalid Login, try again", "OK");
-
-            //Microsoft.Maui.Controls.Application.Current.MainPage = new Views.PasswordsPage();
+            if (await LoginService.Login(Email, Password))
+            {
+                await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PushAsync(new Views.PasswordsPage());
+            }
+            else
+            {
+                PopupService.ShowError("Error", "Invalid login. Please try again.");
+            }
         }
     }
 }

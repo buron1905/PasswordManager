@@ -34,16 +34,33 @@ namespace MAUIDatabaseLib
 
 
             await _connection.ExecuteAsync("PRAGMA foreign_keys = ON;");
-            await _connection.CreateTableAsync<User>();
-            await _connection.CreateTableAsync<Password>();
-            await _connection.CreateTableAsync<Settings>();
+            //await _connection.CreateTableAsync<User>();
+            //await _connection.CreateTableAsync<Password>();
+            //await _connection.CreateTableAsync<Settings>();
 
-            //await _connection.ExecuteAsync(@"CREATE TABLE t1(
-            //                                  songid        INTEGER,
-            //                                  UserId        INTEGER REFERENCES Users(Id)
-            //                                ); ");
+            await _connection.ExecuteAsync(@"CREATE TABLE Users(
+	                Id				INT PRIMARY KEY NOT NULL,
+	                Email			VARCHAR(320),
+	                PasswordHASH	TEXT
+                );"
+            );
 
-            //await _connection.ExecuteAsync("ALTER TABLE Passwords DROP COLUMN UserId;");
+            await _connection.ExecuteAsync(@"CREATE TABLE Passwords(
+	                Id					INT PRIMARY KEY NOT NULL,
+	                UserId				INT NOT NULL,
+	                PasswordName		TEXT,
+	                UserName			TEXT,
+	                PasswordEncrypted	TEXT,
+	                Description			TEXT
+                ); "
+            );
+
+            await _connection.ExecuteAsync(@"CREATE TABLE Settings(
+	                Id					INT PRIMARY KEY NOT NULL,
+	                UserId				INT NOT NULL,
+	                SavePassword		INTEGER DEFAULT 1
+                );"
+            );
 
             //await _connection.ExecuteAsync("ALTER TABLE Passwords ADD COLUMN UserId INTEGER REFERENCES Users(Id);");
         }
