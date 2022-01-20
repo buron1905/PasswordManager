@@ -12,13 +12,7 @@ namespace PasswordManager
 		{
 			InitializeComponent();
 
-
             MainPage = new NavigationPage(new Views.LoginPage());
         }
-
-  //      protected override Window CreateWindow(IActivationState activationState)
-  //      {
-  //          return new Window(new NavigationPage(new Views.LoginPage()));
-		//}
     }
 }

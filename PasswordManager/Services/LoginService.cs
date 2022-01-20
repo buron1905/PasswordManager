@@ -13,7 +13,6 @@ namespace PasswordManager.Services
         {
             string passwordHASH = HashingService.HashSHA512ToString(password);
 
-
             User user = await DatabaseService.GetUser(email);
             if(user != null)
             {

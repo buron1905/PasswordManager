@@ -23,9 +23,6 @@ namespace PasswordManager
 				});
 
             DatabaseService.Init();
-            //DatabaseService.Init(Path.Combine(FileSystem.AppDataDirectory, "PasswordManagerLocal.db"));
-            //DatabaseSQLiteMobile.Init(Path.GetFullPath(Path.Combine(FileSystem.AppDataDirectory, "PasswordManagerLocal.db")));
-            //DatabaseSQLiteMobile.Init(Path.GetFullPath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PasswordManagerLocal.db")));
 
             return builder.Build();
 		}

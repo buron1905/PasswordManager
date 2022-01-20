@@ -32,5 +32,13 @@ namespace MAUIModelsLib
         [Ignore]
         public string PasswordDecrypted { get; set; }
         public string Description { get; set; }
+
+        public void Encrypt()
+        {
+        }
+
+        public void Decrypt()
+        {
+        }
     }
 }

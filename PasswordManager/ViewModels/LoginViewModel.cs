@@ -21,7 +21,6 @@ namespace PasswordManager.ViewModels
         public LoginViewModel()
         {
             Login = new Command(OnLogin);
-            //ForgotPassword = new Command(OnForgotPassword);
             Registration = new Command(OnRegistration);
         }
 
@@ -62,11 +61,14 @@ namespace PasswordManager.ViewModels
         private async void OnLogin()
         {
             if (Email == "" || Password == "")
+            {
+                PopupService.ShowError("Error", "Fields cannot be empty");
                 return;
+            }
 
             if (await LoginService.Login(Email, Password))
             {
-                await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PushAsync(new Views.PasswordsPage());
+                Microsoft.Maui.Controls.Application.Current.MainPage = new NavigationPage(new Views.PasswordsPage());
             }
             else
             {

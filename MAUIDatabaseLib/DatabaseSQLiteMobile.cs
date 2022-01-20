@@ -34,15 +34,15 @@ namespace MAUIDatabaseLib
 
             await _connection.ExecuteAsync("PRAGMA foreign_keys = ON;");
 
-            await _connection.ExecuteAsync(@"CREATE TABLE Users(
-	                Id				INTEGER PRIMARY KEY,
+            await _connection.ExecuteAsync(@"CREATE TABLE IF NOT EXISTS Users(
+	                Id				INTEGER PRIMARY KEY AUTOINCREMENT,
 	                Email			VARCHAR(320) NOT NULL UNIQUE,
 	                PasswordHASH	TEXT NOT NULL
                 );"
             );
 
-            await _connection.ExecuteAsync(@"CREATE TABLE Passwords(
-	                Id					INTEGER PRIMARY KEY,
+            await _connection.ExecuteAsync(@"CREATE TABLE IF NOT EXISTS Passwords(
+	                Id					INTEGER PRIMARY KEY AUTOINCREMENT,
 	                PasswordName		TEXT NOT NULL,
 	                UserName			TEXT NOT NULL,
 	                PasswordText       	TEXT NOT NULL,
@@ -51,8 +51,8 @@ namespace MAUIDatabaseLib
                 );"
             );
 
-            await _connection.ExecuteAsync(@"CREATE TABLE Settings(
-	                Id					INTEGER PRIMARY KEY,
+            await _connection.ExecuteAsync(@"CREATE TABLE IF NOT EXISTS Settings(
+	                Id					INTEGER PRIMARY KEY AUTOINCREMENT,
 	                SavePassword		INT NOT NULL DEFAULT 1,
                     UserId              INTEGER REFERENCES Users(Id)
                 );"
@@ -74,7 +74,6 @@ namespace MAUIDatabaseLib
         {
             if (user == null)
                 return -1;
-
             await _connection.InsertAsync(user);
             return await _connection.ExecuteScalarAsync<int>("select seq from sqlite_sequence where name=\"Users\"");
             //return await _connection.ExecuteScalarAsync<int>("select last_inset_rowid()");

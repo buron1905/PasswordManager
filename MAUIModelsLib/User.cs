@@ -11,7 +11,7 @@ namespace MAUIModelsLib
     [Table("Users")]
     public class User
     {
-        [PrimaryKey]
+        [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         [Unique, NotNull]
         public string Email { get; set; }
