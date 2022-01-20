@@ -61,6 +61,9 @@ namespace PasswordManager.ViewModels
 
         private async void OnLogin()
         {
+            if (Email == "" || Password == "")
+                return;
+
             if (await LoginService.Login(Email, Password))
             {
                 await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PushAsync(new Views.PasswordsPage());

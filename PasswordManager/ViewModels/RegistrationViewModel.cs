@@ -57,48 +57,46 @@ namespace PasswordManager.ViewModels
 
         private async void OnRegister()
         {
-            //if (Email == "" || Password == "")
-            //    return;
-
+            if (Email == "" || Password == "")
+                return;
 
             User newUser = new User();
             newUser.Email = Email;
-            newUser.PasswordHASH = HashingService.HashSHA256ToString(Password);
+            newUser.PasswordHASH = HashingService.HashSHA512ToString(Password);
             newUser.Id = await DatabaseService.AddUser(newUser);
             //await DatabaseService.AddUser(newUser);
             //newUser.Id = (await DatabaseService.GetUser(newUser.Email)).Id;
 
-            User newUser2 = new User();
-            newUser2.Email = Email + "2";
-            newUser2.PasswordHASH = HashingService.HashSHA256ToString(Password);
-            newUser2.Id = await DatabaseService.AddUser(newUser2);
+            //User newUser2 = new User();
+            //newUser2.Email = Email + "2";
+            //newUser2.PasswordHASH = HashingService.HashSHA256ToString(Password);
+            //newUser2.Id = await DatabaseService.AddUser(newUser2);
 
-            Password password1 = new Password()
-            {
-                PasswordName = "test1",
-                PasswordEncrypted = ParserService.ByteArrayToString(EncryptionService.EncryptStringToBytes_Aes("admin1", Password)),
-                PasswordDecrypted = "test"
-            };
+            //Password password1 = new Password()
+            //{
+            //    PasswordName = "test1",
+            //    PasswordEncrypted = ParserService.ByteArrayToString(EncryptionService.EncryptStringToBytes_Aes("admin1", Password)),
+            //    PasswordDecrypted = "test"
+            //};
 
-            Password password2 = new Password()
-            {
-                PasswordName = "test2",
-                UserId = 10051,
-                PasswordEncrypted = ParserService.ByteArrayToString(EncryptionService.EncryptStringToBytes_Aes("admin1", Password))
-            };
+            //Password password2 = new Password()
+            //{
+            //    PasswordName = "test2",
+            //    UserId = 10051,
+            //    PasswordEncrypted = ParserService.ByteArrayToString(EncryptionService.EncryptStringToBytes_Aes("admin1", Password))
+            //};
 
 
-            await DatabaseService.Add(password1);
-            await DatabaseService.Add(password2);
-
-            List<Password> passwords = await DatabaseService.GetPasswords();
+            //await DatabaseService.Add(password1);
+            //await DatabaseService.Add(password2);
 
             List<User> People = await DatabaseService.GetPeopleAsync();
+            //List<Password> passwords = await DatabaseService.GetPasswords();
 
             //newUser.Passwords = new List<Password> { password1, password2 };
-            DatabaseService.UpdateWithChildren(newUser);
+            //DatabaseService.UpdateWithChildren(newUser);
             
-            List<User> People2 = await DatabaseService.GetPeopleAsync();
+            //List<User> People2 = await DatabaseService.GetPeopleAsync();
 
             //User newUserUpdated = DatabaseService.GetWithChildren(newUser.Id);
 

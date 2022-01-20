@@ -16,9 +16,6 @@ namespace MAUIModelsLib
         [ForeignKey(typeof(User))]
         public int UserId { get; set; }
 
-        //[ManyToOne]
-        //public User User { get; set; }
-
         /// <summary>
         /// URL/Application name for password
         /// </summary>

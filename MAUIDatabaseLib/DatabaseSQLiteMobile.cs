@@ -30,16 +30,12 @@ namespace MAUIDatabaseLib
             File.Delete(Path.Combine(FileSystem.AppDataDirectory, "PasswordManagerLocal.db"));
 
             _connection = new SQLiteAsyncConnection(dbPath);
-            connection = new SQLiteConnection(dbPath);
 
 
             await _connection.ExecuteAsync("PRAGMA foreign_keys = ON;");
-            //await _connection.CreateTableAsync<User>();
-            //await _connection.CreateTableAsync<Password>();
-            //await _connection.CreateTableAsync<Settings>();
 
             await _connection.ExecuteAsync(@"CREATE TABLE Users(
-	                Id				INT PRIMARY KEY NOT NULL,
+	                Id				INT PRIMARY KEY AUTOINCREMENT,
 	                Email			VARCHAR(320),
 	                PasswordHASH	TEXT
                 );"
@@ -47,7 +43,6 @@ namespace MAUIDatabaseLib
 
             await _connection.ExecuteAsync(@"CREATE TABLE Passwords(
 	                Id					INT PRIMARY KEY NOT NULL,
-	                UserId				INT NOT NULL,
 	                PasswordName		TEXT,
 	                UserName			TEXT,
 	                PasswordEncrypted	TEXT,
@@ -57,12 +52,12 @@ namespace MAUIDatabaseLib
 
             await _connection.ExecuteAsync(@"CREATE TABLE Settings(
 	                Id					INT PRIMARY KEY NOT NULL,
-	                UserId				INT NOT NULL,
 	                SavePassword		INTEGER DEFAULT 1
                 );"
             );
 
-            //await _connection.ExecuteAsync("ALTER TABLE Passwords ADD COLUMN UserId INTEGER REFERENCES Users(Id);");
+            await _connection.ExecuteAsync("ALTER TABLE Passwords ADD COLUMN UserId INT REFERENCES Users(Id);");
+            await _connection.ExecuteAsync("ALTER TABLE Settings ADD COLUMN UserId INT REFERENCES Users(Id);");
         }
 
         public static async Task<bool> RemoveUser(int id)
@@ -75,10 +70,9 @@ namespace MAUIDatabaseLib
 
         public static async Task<int> AddUser(User user)
         {
-            //if (user == null)
-            //    return false;
+            if (user == null)
+                return -1;
 
-            //var id = ;
             await _connection.InsertAsync(user);
             return await _connection.ExecuteScalarAsync<int>("select seq from sqlite_sequence where name=\"Users\"");
             //return await _connection.ExecuteScalarAsync<int>("select last_inset_rowid()");

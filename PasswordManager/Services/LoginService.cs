@@ -13,8 +13,6 @@ namespace PasswordManager.Services
         {
             string passwordHASH = HashingService.HashSHA512ToString(password);
 
-            byte[] arr = EncryptionService.EncryptStringToBytes_Aes(email, password);
-            string emailEncrypted = ParserService.ByteArrayToString(arr);
 
             User user = await DatabaseService.GetUser(email);
             if(user != null)
