@@ -25,9 +25,10 @@ namespace MAUIModelsLib
         /// <summary>
         /// User name/email/field for login
         /// </summary>
+        [NotNull]
         public string UserName { get; set; }
         [NotNull]
-        public string PasswordEncrypted { get; set; }
+        public string PasswordText { get; set; }
         [Ignore]
         public string PasswordDecrypted { get; set; }
         public string Description { get; set; }

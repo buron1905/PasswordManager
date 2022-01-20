@@ -58,7 +58,10 @@ namespace PasswordManager.ViewModels
         private async void OnRegister()
         {
             if (Email == "" || Password == "")
+            {
+                PopupService.ShowError("Error", "Fields must not be empty");
                 return;
+            }
 
             User newUser = new User();
             newUser.Email = Email;

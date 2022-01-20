@@ -27,7 +27,7 @@ namespace MAUIDatabaseLib
 
             string dbPath = Path.Combine(FileSystem.AppDataDirectory, "PasswordManagerLocal.db");
 
-            File.Delete(Path.Combine(FileSystem.AppDataDirectory, "PasswordManagerLocal.db"));
+            File.Delete(dbPath);
 
             _connection = new SQLiteAsyncConnection(dbPath);
 
@@ -35,29 +35,31 @@ namespace MAUIDatabaseLib
             await _connection.ExecuteAsync("PRAGMA foreign_keys = ON;");
 
             await _connection.ExecuteAsync(@"CREATE TABLE Users(
-	                Id				INT PRIMARY KEY AUTOINCREMENT,
-	                Email			VARCHAR(320),
-	                PasswordHASH	TEXT
+	                Id				INTEGER PRIMARY KEY,
+	                Email			VARCHAR(320) NOT NULL UNIQUE,
+	                PasswordHASH	TEXT NOT NULL
                 );"
             );
 
             await _connection.ExecuteAsync(@"CREATE TABLE Passwords(
-	                Id					INT PRIMARY KEY NOT NULL,
-	                PasswordName		TEXT,
-	                UserName			TEXT,
-	                PasswordEncrypted	TEXT,
-	                Description			TEXT
-                ); "
-            );
-
-            await _connection.ExecuteAsync(@"CREATE TABLE Settings(
-	                Id					INT PRIMARY KEY NOT NULL,
-	                SavePassword		INTEGER DEFAULT 1
+	                Id					INTEGER PRIMARY KEY,
+	                PasswordName		TEXT NOT NULL,
+	                UserName			TEXT NOT NULL,
+	                PasswordText       	TEXT NOT NULL,
+	                Description			TEXT,
+                    UserId              INTEGER REFERENCES Users(Id)
                 );"
             );
 
-            await _connection.ExecuteAsync("ALTER TABLE Passwords ADD COLUMN UserId INT REFERENCES Users(Id);");
-            await _connection.ExecuteAsync("ALTER TABLE Settings ADD COLUMN UserId INT REFERENCES Users(Id);");
+            await _connection.ExecuteAsync(@"CREATE TABLE Settings(
+	                Id					INTEGER PRIMARY KEY,
+	                SavePassword		INT NOT NULL DEFAULT 1,
+                    UserId              INTEGER REFERENCES Users(Id)
+                );"
+            );
+
+            //await _connection.ExecuteAsync("ALTER TABLE Passwords ADD COLUMN UserId INTEGER REFERENCES Users(Id);");
+            //await _connection.ExecuteAsync("ALTER TABLE Settings ADD COLUMN UserId INTEGER REFERENCES Users(Id);");
         }
 
         public static async Task<bool> RemoveUser(int id)
