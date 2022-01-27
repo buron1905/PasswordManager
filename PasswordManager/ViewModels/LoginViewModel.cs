@@ -1,5 +1,4 @@
 ﻿using Microsoft.Maui.Controls;
-using Microsoft.Maui.Controls.PlatformConfiguration.WindowsSpecific;
 using PasswordManager.Services;
 using Microsoft.Maui.Essentials;
 using PasswordManager.Views;
@@ -10,6 +9,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using PasswordManager.Services;
+using MAUIModelsLib;
 using Microsoft.Maui.Controls.Hosting;
 
 namespace PasswordManager.ViewModels
@@ -68,7 +69,8 @@ namespace PasswordManager.ViewModels
 
             if (await LoginService.Login(Email, Password))
             {
-                Microsoft.Maui.Controls.Application.Current.MainPage = new NavigationPage(new Views.PasswordsPage());
+                (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.InsertPageBefore(new Views.LoginPage(), Application.Current.MainPage.Navigation.NavigationStack[0]);
+                await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PopToRootAsync();
             }
             else
             {
