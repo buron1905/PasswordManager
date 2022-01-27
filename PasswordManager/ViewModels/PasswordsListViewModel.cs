@@ -8,13 +8,13 @@ using System.Windows.Input;
 
 namespace PasswordManager.ViewModels
 {
-    public class PasswordsViewModel : BindableObject
+    public class PasswordsListViewModel : BindableObject
     {
         public Action DisplayInvalidLoginPrompt;
 
-        public PasswordsViewModel()
+        public PasswordsListViewModel()
         {
-        }
 
+        }
     }
 }
