@@ -66,9 +66,18 @@ namespace PasswordManager.ViewModels
             User newUser = new User();
             newUser.Email = Email;
             newUser.PasswordHASH = HashingService.HashSHA512ToString(Password);
-            await DatabaseService.AddUser(newUser);
 
-            (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.InsertPageBefore(new Views.NewPasswordPage(), Application.Current.MainPage.Navigation.NavigationStack[0]);
+            try
+            {
+                await DatabaseService.AddUser(newUser);
+            }
+            catch (Exception ex)
+            {
+                PopupService.ShowError("Error", $"{ex.Message}");
+                return;
+            }
+
+            (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.InsertPageBefore(new Views.PasswordsListPage(), Application.Current.MainPage.Navigation.NavigationStack[0]);
             await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PopToRootAsync();
         }
     }
