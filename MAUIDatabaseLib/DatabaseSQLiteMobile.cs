@@ -25,7 +25,7 @@ namespace MAUIDatabaseLib
 
             string dbPath = Path.Combine(FileSystem.AppDataDirectory, "PasswordManagerLocal.db");
 
-            File.Delete(dbPath);
+            //File.Delete(dbPath);
 
             _connection = new SQLiteAsyncConnection(dbPath);
 

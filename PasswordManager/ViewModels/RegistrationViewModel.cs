@@ -55,7 +55,6 @@ namespace PasswordManager.ViewModels
             await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PopAsync();
         }
 
-        /*
         private async void OnRegister()
         {
             if (Email == "" || Password == "")
@@ -71,6 +70,7 @@ namespace PasswordManager.ViewModels
             try
             {
                 await DatabaseService.AddUser(newUser);
+                ActiveUserService.Instance.Login(newUser, Password);
             }
             catch (Exception ex)
             {
@@ -80,90 +80,6 @@ namespace PasswordManager.ViewModels
 
             (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.InsertPageBefore(new Views.PasswordsListPage(), Application.Current.MainPage.Navigation.NavigationStack[0]);
             await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PopToRootAsync();
-        }
-        */
-
-        private async void OnRegister()
-        {
-            if (Email == "" || Password == "")
-            {
-                PopupService.ShowError("Error", "Fields must not be empty");
-                return;
-            }
-
-            User newUser = new User();
-            newUser.Email = Email;
-            newUser.PasswordHASH = HashingService.HashSHA512ToString(Password);
-
-            try
-            {
-                await DatabaseService.AddUser(newUser);
-                //Use LoginService
-            }
-            catch (Exception ex)
-            {
-                PopupService.ShowError("Error", $"{ex.Message}");
-                return;
-            }
-
-
-
-
-
-
-            var usersTable = await DatabaseService.GetUsersTableAsync();
-            var passwordsTable = await DatabaseService.GetPasswordsTableAsync();
-            var settingsTable = await DatabaseService.GetSettingsTableAsync();
-
-            Password password = new Password()
-            {
-                PasswordName = "Name",
-                UserName = "Username",
-                PasswordText = "Text",
-                UserId = newUser.Id
-            };
-            Password password2 = new Password()
-            {
-                PasswordName = "Name2",
-                UserName = "Username2",
-                PasswordText = "Text2",
-                UserId = newUser.Id
-            };
-
-            await DatabaseService.AddPassword(password);
-            await DatabaseService.AddPassword(password2);
-
-
-            Settings settings = new Settings()
-            {
-                UserId = newUser.Id
-            };
-
-            await DatabaseService.AddSettings(settings);
-
-            newUser.Email += "asdf";
-            password.Description = "This is a new password...";
-            await DatabaseService.UpdatePassword(password);
-            await DatabaseService.UpdateUser(newUser);
-
-            var usersTable2 = await DatabaseService.GetUsersTableAsync();
-            var passwordsTable2 = await DatabaseService.GetPasswordsTableAsync();
-            var settingsTable2 = await DatabaseService.GetSettingsTableAsync();
-
-            var us = await DatabaseService.GetUser(newUser.Email);
-            var set = await DatabaseService.GetSettings(newUser.Id);
-            var pass = await DatabaseService.GetPassword(password.Id);
-            var passwords = await DatabaseService.GetUserPasswords(newUser.Id);
-
-
-
-            await DatabaseService.RemoveUser(newUser.Id);
-            //await DatabaseService.RemovePassword(passwordsTable2[0].Id);
-            //await DatabaseService.RemoveSettings(settingsTable2[0].UserId);
-
-            var usersTable3 = await DatabaseService.GetUsersTableAsync();
-            var passwordsTable3 = await DatabaseService.GetPasswordsTableAsync();
-            var settingsTable3 = await DatabaseService.GetSettingsTableAsync();
         }
     }
 }
