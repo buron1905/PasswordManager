@@ -11,14 +11,11 @@ using SQLiteNetExtensions.Attributes;
 using SQLiteNetExtensions.Extensions;
 
 
-// use SQL commands
-
 namespace MAUIDatabaseLib
 {
     public static class DatabaseSQLiteMobile
     {
         static SQLiteAsyncConnection _connection;
-        static SQLiteConnection connection;
 
         public static async void Init()
         {
@@ -27,7 +24,7 @@ namespace MAUIDatabaseLib
 
             string dbPath = Path.Combine(FileSystem.AppDataDirectory, "PasswordManagerLocal.db");
 
-            //File.Delete(dbPath);
+            File.Delete(dbPath);
 
             _connection = new SQLiteAsyncConnection(dbPath);
 
@@ -47,47 +44,38 @@ namespace MAUIDatabaseLib
 	                UserName			TEXT NOT NULL,
 	                PasswordText       	TEXT NOT NULL,
 	                Description			TEXT,
-                    UserId              INTEGER REFERENCES Users(Id)
+                    UserId              INTEGER REFERENCES Users(Id) ON DELETE CASCADE
                 );"
             );
 
             await _connection.ExecuteAsync(@"CREATE TABLE IF NOT EXISTS Settings(
 	                Id					INTEGER PRIMARY KEY AUTOINCREMENT,
 	                SavePassword		INT NOT NULL DEFAULT 1,
-                    UserId              INTEGER REFERENCES Users(Id)
+                    UserId              INTEGER REFERENCES Users(Id) ON DELETE CASCADE
                 );"
             );
-
-            //await _connection.ExecuteAsync("ALTER TABLE Passwords ADD COLUMN UserId INTEGER REFERENCES Users(Id);");
-            //await _connection.ExecuteAsync("ALTER TABLE Settings ADD COLUMN UserId INTEGER REFERENCES Users(Id);");
         }
 
-        public static async Task<bool> RemoveUser(int id)
-        {
-            if (await _connection.DeleteAsync<User>(id) == 1)
-                return true;
-            else
-                return false;
-        }
 
         public static async Task<int> AddUser(User user)
         {
             if (user == null)
                 return -1;
-            await _connection.InsertAsync(user);
-            return await _connection.ExecuteScalarAsync<int>("select seq from sqlite_sequence where name=\"Users\"");
-            //return await _connection.ExecuteScalarAsync<int>("select last_inset_rowid()");
+            return await _connection.InsertAsync(user);
         }
 
-        public static async Task<int> Add(Settings settings)
+        public static async Task<int> AddSettings(Settings settings)
         {
             return await _connection.InsertAsync(settings);
         }
 
-        public static async Task<int> Add(Password password)
+        public static async Task<int> AddPassword(Password password)
         {
             return await _connection.InsertAsync(password);
         }
+
+
+
 
         public static async Task<User?> GetUser(string email, string hashedPassword)
         {
@@ -143,38 +131,46 @@ namespace MAUIDatabaseLib
             //var queryResult = await _connection.QueryAsync<Settings>("SELECT * FROM Settings WHERE UserId ='?'", userId);
         }
 
-        public static async Task<List<User>> GetPeopleAsync()
+
+        public static async Task<bool> RemoveUser(int id)
+        {
+            if (await _connection.DeleteAsync<User>(id) == 1)
+                return true;
+            else
+                return false;
+        }
+
+        public static async Task<bool> RemoveSettings(int id)
+        {
+            if (await _connection.DeleteAsync<Settings>(id) == 1)
+                return true;
+            else
+                return false;
+        }
+
+        public static async Task<bool> RemovePassword(int id)
+        {
+            if (await _connection.DeleteAsync<Password>(id) == 1)
+                return true;
+            else
+                return false;
+        }
+
+
+        public static async Task<List<User>> GetUsersTableAsync()
         {
             return await _connection.Table<User>().ToListAsync();
         }
 
-        public static async Task<List<Settings>> GetSettingsTable()
+        public static async Task<List<Settings>> GetSettingsTableAsync()
         {
             return await _connection.Table<Settings>().ToListAsync();
         }
 
-        public static async Task<List<Password>> GetPasswords()
+        public static async Task<List<Password>> GetPasswordsTable()
         {
             return await _connection.Table<Password>().ToListAsync();
         }
-
-        public static void UpdateWithChildren(User user)
-        {
-            connection.UpdateWithChildren(user);
-        }
-
-        public static User GetWithChildren(int userId)
-        {
-            return connection.GetWithChildren<User>(userId);
-        }
-
-
-        //public static async Task<IEnumerable<User>> GetPasswords(User user)
-        //{
-        //    await Init();
-        //    var users = await _connection.Table<User>().ToListAsync();
-        //    return users;
-        //}
 
     }
 }

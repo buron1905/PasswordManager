@@ -79,5 +79,6 @@ namespace PasswordManager.ViewModels
                 PopupService.ShowError("Error", "Invalid login. Please try again.");
             }
         }
+
     }
 }

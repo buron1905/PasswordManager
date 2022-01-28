@@ -18,34 +18,22 @@ namespace PasswordManager.Services
             DatabaseSQLiteMobile.Init();
         }
 
-        public static async Task<int> AddUserAndInitSettings(User user)
-        {
-            int ret = await DatabaseSQLiteMobile.AddUser(user);
-
-            //await DatabaseSQLiteMobile.AddSettings();
-
-            return ret;
-        }
 
         public static async Task<int> AddUser(User user)
         {
             return await DatabaseSQLiteMobile.AddUser(user);
         }
 
-        public static async Task<int> Add(Settings settings)
+        public static async Task<int> AddSettings(Settings settings)
         {
-            return await DatabaseSQLiteMobile.Add(settings);
+            return await DatabaseSQLiteMobile.AddSettings(settings);
         }
 
-        public static async Task<int> Add(Password password)
+        public static async Task<int> AddPassword(Password password)
         {
-            return await DatabaseSQLiteMobile.Add(password);
+            return await DatabaseSQLiteMobile.AddPassword(password);
         }
 
-        public static async Task RemoveUser(int id)
-        {
-            await DatabaseSQLiteMobile.RemoveUser(id);
-        }
 
         public static async Task<User> GetUser(string email, string hashedPassword)
         {
@@ -62,32 +50,36 @@ namespace PasswordManager.Services
             return await DatabaseSQLiteMobile.GetSettings(userId);
         }
 
-        public static async Task<List<User>> GetPeopleAsync()
+
+        public static async Task RemoveUser(int id)
         {
-            return await DatabaseSQLiteMobile.GetPeopleAsync();
+            await DatabaseSQLiteMobile.RemoveUser(id);
         }
 
-        public static async Task<List<Password>> GetPasswords()
+        public static async Task RemoveSettings(int id)
         {
-            return await DatabaseSQLiteMobile.GetPasswords();
+            await DatabaseSQLiteMobile.RemoveSettings(id);
         }
 
-        public static async Task<List<Settings>> GetSettingsTable()
+        public static async Task RemovePassword(int id)
         {
-            return await DatabaseSQLiteMobile.GetSettingsTable();
+            await DatabaseSQLiteMobile.RemovePassword(id);
         }
 
-        public static void UpdateWithChildren(User user)
+
+        public static async Task<List<User>> GetUsersTableAsync()
         {
-            DatabaseSQLiteMobile.UpdateWithChildren(user);
+            return await DatabaseSQLiteMobile.GetUsersTableAsync();
         }
 
-        public static User GetWithChildren(int userId)
+        public static async Task<List<Settings>> GetSettingsTableAsync()
         {
-            return DatabaseSQLiteMobile.GetWithChildren(userId);
+            return await DatabaseSQLiteMobile.GetSettingsTableAsync();
         }
 
+        public static async Task<List<Password>> GetPasswordsTableAsync()
+        {
+            return await DatabaseSQLiteMobile.GetPasswordsTable();
+        }
     }
-
-
 }
