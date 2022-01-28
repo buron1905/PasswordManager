@@ -98,6 +98,7 @@ namespace PasswordManager.ViewModels
             try
             {
                 await DatabaseService.AddUser(newUser);
+                //Use LoginService
             }
             catch (Exception ex)
             {
@@ -121,8 +122,16 @@ namespace PasswordManager.ViewModels
                 PasswordText = "Text",
                 UserId = newUser.Id
             };
+            Password password2 = new Password()
+            {
+                PasswordName = "Name2",
+                UserName = "Username2",
+                PasswordText = "Text2",
+                UserId = newUser.Id
+            };
 
             await DatabaseService.AddPassword(password);
+            await DatabaseService.AddPassword(password2);
 
 
             Settings settings = new Settings()
@@ -140,6 +149,13 @@ namespace PasswordManager.ViewModels
             var usersTable2 = await DatabaseService.GetUsersTableAsync();
             var passwordsTable2 = await DatabaseService.GetPasswordsTableAsync();
             var settingsTable2 = await DatabaseService.GetSettingsTableAsync();
+
+            var us = await DatabaseService.GetUser(newUser.Email);
+            var set = await DatabaseService.GetSettings(newUser.Id);
+            var pass = await DatabaseService.GetPassword(password.Id);
+            var passwords = await DatabaseService.GetUserPasswords(newUser.Id);
+
+
 
             await DatabaseService.RemoveUser(newUser.Id);
             //await DatabaseService.RemovePassword(passwordsTable2[0].Id);

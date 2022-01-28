@@ -132,28 +132,23 @@ namespace MAUIDatabaseLib
         }
 
 
-        public static async Task<User?> GetUser(string email, string hashedPassword)
+        public static async Task<User?> GetUser(int id)
         {
-            var queryResult = await _connection.QueryAsync<User>("SELECT * FROM Users WHERE Email ='?' AND Password ='?'", email, hashedPassword);
+            return await _connection.FindAsync<User>(id);
+        }
 
-            if (queryResult.Count() == 1)
-            {
-                return queryResult[0];
-            }
-            else
-            {
-                return await Task.FromResult<User?>(null);
-            }
+        public static async Task<Settings?> GetSettings(int userId)
+        {
+            return await _connection.FindAsync<Settings>(userId);
+        }
+
+        public static async Task<Password?> GetPassword(int id)
+        {
+            return await _connection.FindAsync<Password>(id);
         }
 
         public static async Task<User?> GetUser(string email)
         {
-            //if(email != "")
-            //{
-            //    return await _connection.Table<User>().Where(i => i.Email == email).FirstOrDefaultAsync();
-            //}
-
-
             var queryResult = await _connection.QueryAsync<User>("SELECT * FROM Users WHERE Email LIKE ?", email);
 
             if (queryResult.Count() == 1)
@@ -166,24 +161,10 @@ namespace MAUIDatabaseLib
             }
         }
 
-        public static async Task<Settings?> GetSettings(int userId)
+        public static async Task<List<Password>> GetUserPasswords(int userId)
         {
-            var queryResult = await _connection.QueryAsync<Settings>("SELECT * FROM Settings WHERE UserId =?", userId);
-
-            if (queryResult.Count() == 1)
-            {
-                return queryResult[0];
-            }
-            else
-            {
-                return await Task.FromResult<Settings?>(null);
-            }
+            return await _connection.QueryAsync<Password>("SELECT * FROM Passwords WHERE UserId = ?", userId);
         }
 
-        public static async Task<List<Settings>> GetSettings2(int userId)
-        {
-            return await _connection.QueryAsync<Settings>("SELECT * FROM Settings WHERE UserId ='?'", userId);
-            //var queryResult = await _connection.QueryAsync<Settings>("SELECT * FROM Settings WHERE UserId ='?'", userId);
-        }
     }
 }
