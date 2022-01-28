@@ -11,9 +11,7 @@ namespace MAUIModelsLib
     [Table("Settings")]
     public class Settings
     {
-        [PrimaryKey, AutoIncrement]
-        public int Id { get; set; }
-        [ForeignKey(typeof(User))]
+        [PrimaryKey, ForeignKey(typeof(User))]
         public int UserId { get; set; }
         [NotNull]
         public bool SavePassword { get; set; } = true;

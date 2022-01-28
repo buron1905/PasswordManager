@@ -13,6 +13,7 @@ namespace PasswordManager.Services
 {
     public static class DatabaseService
     {
+
         public static void Init()
         {
             DatabaseSQLiteMobile.Init();
@@ -35,19 +36,19 @@ namespace PasswordManager.Services
         }
 
 
-        public static async Task<User> GetUser(string email, string hashedPassword)
+        public static async Task UpdateUser(User user)
         {
-            return await DatabaseSQLiteMobile.GetUser(email, hashedPassword);
+            await DatabaseSQLiteMobile.UpdateUser(user);
         }
 
-        public static async Task<User?> GetUser(string email)
+        public static async Task UpdateSettings(Settings settings)
         {
-            return await DatabaseSQLiteMobile.GetUser(email);
+            await DatabaseSQLiteMobile.UpdateSettings(settings);
         }
 
-        public static async Task<Settings> GetSettings(int userId)
+        public static async Task UpdatePassword(Password password)
         {
-            return await DatabaseSQLiteMobile.GetSettings(userId);
+            await DatabaseSQLiteMobile.UpdatePassword(password);
         }
 
 
@@ -80,6 +81,22 @@ namespace PasswordManager.Services
         public static async Task<List<Password>> GetPasswordsTableAsync()
         {
             return await DatabaseSQLiteMobile.GetPasswordsTable();
+        }
+
+
+        public static async Task<User> GetUser(string email, string hashedPassword)
+        {
+            return await DatabaseSQLiteMobile.GetUser(email, hashedPassword);
+        }
+
+        public static async Task<User?> GetUser(string email)
+        {
+            return await DatabaseSQLiteMobile.GetUser(email);
+        }
+
+        public static async Task<Settings> GetSettings(int userId)
+        {
+            return await DatabaseSQLiteMobile.GetSettings(userId);
         }
     }
 }

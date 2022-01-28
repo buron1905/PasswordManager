@@ -132,13 +132,18 @@ namespace PasswordManager.ViewModels
 
             await DatabaseService.AddSettings(settings);
 
+            newUser.Email += "asdf";
+            password.Description = "This is a new password...";
+            await DatabaseService.UpdatePassword(password);
+            await DatabaseService.UpdateUser(newUser);
+
             var usersTable2 = await DatabaseService.GetUsersTableAsync();
             var passwordsTable2 = await DatabaseService.GetPasswordsTableAsync();
             var settingsTable2 = await DatabaseService.GetSettingsTableAsync();
 
             await DatabaseService.RemoveUser(newUser.Id);
-            await DatabaseService.RemovePassword(passwordsTable2[0].Id);
-            await DatabaseService.RemoveSettings(settingsTable2[0].Id);
+            //await DatabaseService.RemovePassword(passwordsTable2[0].Id);
+            //await DatabaseService.RemoveSettings(settingsTable2[0].UserId);
 
             var usersTable3 = await DatabaseService.GetUsersTableAsync();
             var passwordsTable3 = await DatabaseService.GetPasswordsTableAsync();

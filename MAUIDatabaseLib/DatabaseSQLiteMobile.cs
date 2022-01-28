@@ -17,6 +17,7 @@ namespace MAUIDatabaseLib
     {
         static SQLiteAsyncConnection _connection;
 
+
         public static async void Init()
         {
             if (_connection != null)
@@ -49,9 +50,8 @@ namespace MAUIDatabaseLib
             );
 
             await _connection.ExecuteAsync(@"CREATE TABLE IF NOT EXISTS Settings(
-	                Id					INTEGER PRIMARY KEY AUTOINCREMENT,
-	                SavePassword		INT NOT NULL DEFAULT 1,
-                    UserId              INTEGER REFERENCES Users(Id) ON DELETE CASCADE
+	                UserId				INTEGER PRIMARY KEY REFERENCES Users(Id) ON DELETE CASCADE,
+	                SavePassword		INT NOT NULL DEFAULT 1
                 );"
             );
         }
@@ -75,6 +75,61 @@ namespace MAUIDatabaseLib
         }
 
 
+        public static async Task<int> UpdateUser(User user)
+        {
+            return await _connection.UpdateAsync(user);
+        }
+        
+        public static async Task<int> UpdateSettings(Settings settings)
+        {
+            return await _connection.UpdateAsync(settings);
+        }
+
+        public static async Task<int> UpdatePassword(Password password)
+        {
+            return await _connection.UpdateAsync(password);
+        }
+
+
+        public static async Task<bool> RemoveUser(int id)
+        {
+            if (await _connection.DeleteAsync<User>(id) == 1)
+                return true;
+            else
+                return false;
+        }
+
+        public static async Task<bool> RemoveSettings(int id)
+        {
+            if (await _connection.DeleteAsync<Settings>(id) == 1)
+                return true;
+            else
+                return false;
+        }
+
+        public static async Task<bool> RemovePassword(int id)
+        {
+            if (await _connection.DeleteAsync<Password>(id) == 1)
+                return true;
+            else
+                return false;
+        }
+
+
+        public static async Task<List<User>> GetUsersTableAsync()
+        {
+            return await _connection.Table<User>().ToListAsync();
+        }
+
+        public static async Task<List<Settings>> GetSettingsTableAsync()
+        {
+            return await _connection.Table<Settings>().ToListAsync();
+        }
+
+        public static async Task<List<Password>> GetPasswordsTable()
+        {
+            return await _connection.Table<Password>().ToListAsync();
+        }
 
 
         public static async Task<User?> GetUser(string email, string hashedPassword)
@@ -130,47 +185,5 @@ namespace MAUIDatabaseLib
             return await _connection.QueryAsync<Settings>("SELECT * FROM Settings WHERE UserId ='?'", userId);
             //var queryResult = await _connection.QueryAsync<Settings>("SELECT * FROM Settings WHERE UserId ='?'", userId);
         }
-
-
-        public static async Task<bool> RemoveUser(int id)
-        {
-            if (await _connection.DeleteAsync<User>(id) == 1)
-                return true;
-            else
-                return false;
-        }
-
-        public static async Task<bool> RemoveSettings(int id)
-        {
-            if (await _connection.DeleteAsync<Settings>(id) == 1)
-                return true;
-            else
-                return false;
-        }
-
-        public static async Task<bool> RemovePassword(int id)
-        {
-            if (await _connection.DeleteAsync<Password>(id) == 1)
-                return true;
-            else
-                return false;
-        }
-
-
-        public static async Task<List<User>> GetUsersTableAsync()
-        {
-            return await _connection.Table<User>().ToListAsync();
-        }
-
-        public static async Task<List<Settings>> GetSettingsTableAsync()
-        {
-            return await _connection.Table<Settings>().ToListAsync();
-        }
-
-        public static async Task<List<Password>> GetPasswordsTable()
-        {
-            return await _connection.Table<Password>().ToListAsync();
-        }
-
     }
 }
