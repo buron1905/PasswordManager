@@ -56,7 +56,7 @@ namespace PasswordManager.ViewModels
 
         private async void OnRegistration()
         {
-            await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PushAsync(new Views.RegistrationPage());
+            await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PushAsync(new Views.RegistrationPage(), true);
         }
 
         private async void OnLogin()
@@ -74,7 +74,7 @@ namespace PasswordManager.ViewModels
                 var t = (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.NavigationStack;
                 (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.InsertPageBefore(new Views.PasswordsListPage(), Application.Current.MainPage.Navigation.NavigationStack[0]);
                 await Task.Delay(100);
-                await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PopToRootAsync();
+                await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PopToRootAsync(true);
             }
             else
             {
