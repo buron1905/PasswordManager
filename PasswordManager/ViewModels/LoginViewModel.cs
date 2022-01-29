@@ -73,20 +73,8 @@ namespace PasswordManager.ViewModels
 
                 var t = (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.NavigationStack;
                 (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.InsertPageBefore(new Views.PasswordsListPage(), Application.Current.MainPage.Navigation.NavigationStack[0]);
-                await Task.Delay(1000);
-                try
-                {
-                    await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PopToRootAsync();
-                }
-                catch (Exception ex)
-                {
-
-                    throw;
-                }
-                //while((Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.NavigationStack.Count > 1)
-                //{
-                //    await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PopAsync();
-                //}
+                await Task.Delay(100);
+                await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PopToRootAsync();
             }
             else
             {
