@@ -41,6 +41,19 @@ namespace PasswordManager.ViewModels
             }
         }
 
+        bool _isRefreshing = false;
+        public bool IsRefreshing
+        {
+            get => _isRefreshing;
+            set
+            {
+                if (value == _isRefreshing)
+                    return;
+                _isRefreshing = value;
+                OnPropertyChanged();
+            }
+        }
+
         private async void OnLogout()
         {
             ActiveUserService.Instance.Logout();
@@ -54,6 +67,7 @@ namespace PasswordManager.ViewModels
         {
             GetPasswords();
             PopupService.ShowError("Refreshed", "Refreshed");
+            IsRefreshing = false;
         }
 
         private async void GetPasswords()
