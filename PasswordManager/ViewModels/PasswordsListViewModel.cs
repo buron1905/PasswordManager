@@ -94,9 +94,8 @@ namespace PasswordManager.ViewModels
 
         private async void OnUpdate()
         {
-            PopupService.ShowError("TEST", "Update");
-            //Views.UpdatePasswordPage updatePasswordPage = new Views.UpdatePasswordPage(SelectedPassword);
-            //await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PushAsync(updatePasswordPage);
+            Views.EditPasswordPage editPasswordPage = new Views.EditPasswordPage();
+            await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PushAsync(editPasswordPage);
         }
 
         private async void OnDelete()
