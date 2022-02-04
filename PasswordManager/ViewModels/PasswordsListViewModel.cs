@@ -20,6 +20,10 @@ namespace PasswordManager.ViewModels
         {
             Logout = new Command(OnLogout);
             RefreshCommand = new Command(OnRefreshCommand);
+            NewPassword = new Command(OnNewPassword);
+            Update = new Command(OnUpdate);
+            Delete = new Command(OnDelete);
+            Detail = new Command(OnDetail);
 
             Passwords = new ObservableCollection<Password>();
             GetPasswords();
@@ -27,9 +31,13 @@ namespace PasswordManager.ViewModels
         
         public ICommand Logout { get; }
         public ICommand RefreshCommand { get; }
+        public ICommand NewPassword { get; }
+        public ICommand Update { get; }
+        public ICommand Delete { get; }
+        public ICommand Detail { get; }
 
-        string _selectedPassword = "";
-        public string SelectedPassword
+        Password _selectedPassword;
+        public Password SelectedPassword
         {
             get => _selectedPassword;
             set
@@ -41,15 +49,15 @@ namespace PasswordManager.ViewModels
             }
         }
 
-        bool _isRefreshing = false;
-        public bool IsRefreshing
+        bool _isBusy = false;
+        public bool IsBusy
         {
-            get => _isRefreshing;
+            get => _isBusy;
             set
             {
-                if (value == _isRefreshing)
+                if (value == _isBusy)
                     return;
-                _isRefreshing = value;
+                _isBusy = value;
                 OnPropertyChanged();
             }
         }
@@ -63,17 +71,50 @@ namespace PasswordManager.ViewModels
             await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PopToRootAsync(true);
         }
 
-        private async void OnRefreshCommand()
+        private void OnRefreshCommand()
         {
             GetPasswords();
-            PopupService.ShowError("Refreshed", "Refreshed");
-            IsRefreshing = false;
+            IsBusy = false;
         }
 
         private async void GetPasswords()
         {
-            Passwords = new ObservableCollection<Password>(await DatabaseService.GetUserPasswords(ActiveUserService.Instance.User.Id));
-            Passwords.Add(new Password());
+            Passwords.Clear();
+
+            List<Password> passwordsList = await DatabaseService.GetUserPasswords(ActiveUserService.Instance.User.Id);
+            passwordsList.ForEach(Passwords.Add);
+        }
+
+        private async void OnNewPassword()
+        {
+            Views.NewPasswordPage newPasswordPage = new Views.NewPasswordPage();
+            (newPasswordPage.BindingContext as NewPasswordViewModel).PasswordsList = this.Passwords;
+            await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PushAsync(newPasswordPage);
+        }
+
+        private async void OnUpdate()
+        {
+            PopupService.ShowError("TEST", "Update");
+            //Views.UpdatePasswordPage updatePasswordPage = new Views.UpdatePasswordPage(SelectedPassword);
+            //await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PushAsync(updatePasswordPage);
+        }
+
+        private async void OnDelete()
+        {
+            //if(await PopupService.ShowYesNo($"{SelectedPassword.PasswordName}", $"Are you sure you want to delete this password?"))
+            //{
+            //    int id = SelectedPassword.Id;
+            //    await DatabaseService.RemovePassword(id);
+            //    Passwords.Remove(SelectedPassword);
+            //}
+        }
+
+        private async void OnDetail()
+        {
+            PopupService.ShowError("TEST", "Detail");
+            Console.WriteLine(Passwords.Count());
+            //Views.PasswordDetailPage passwordDetailPage = new Views.PasswordDetailPage(SelectedPassword);
+            //await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PushAsync(passwordDetailPage);
         }
     }
 }

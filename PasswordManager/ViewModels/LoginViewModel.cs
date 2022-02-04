@@ -69,8 +69,6 @@ namespace PasswordManager.ViewModels
 
             if (await LoginService.Login(Email, Password))
             {
-                //await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PushAsync(new Views.PasswordsListPage());
-
                 var t = (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.NavigationStack;
                 (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.InsertPageBefore(new Views.PasswordsListPage(), Application.Current.MainPage.Navigation.NavigationStack[0]);
                 await Task.Delay(100);
