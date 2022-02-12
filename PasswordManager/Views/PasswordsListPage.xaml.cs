@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using PasswordManager.ViewModels;
 
 namespace PasswordManager.Views
 {
@@ -13,7 +14,13 @@ namespace PasswordManager.Views
         public PasswordsListPage()
         {
             InitializeComponent();
+            BindingContext = new PasswordsListViewModel();
+        }
 
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            await (BindingContext as PasswordsListViewModel).GetPasswords();
         }
     }
 }

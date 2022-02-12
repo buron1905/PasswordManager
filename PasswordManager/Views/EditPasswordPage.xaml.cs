@@ -5,14 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using MAUIModelsLib;
 
 namespace PasswordManager.Views
 {
     public partial class EditPasswordPage : ContentPage
     {
-        public EditPasswordPage()
+        public EditPasswordPage(Password password)
         {
             InitializeComponent();
+            // binding, password bude ve viewModel
         }
     }
 }
