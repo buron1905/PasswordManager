@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using PasswordManager.ViewModels;
+using MAUIModelsLib;
 
 namespace PasswordManager.Views
 {
@@ -14,13 +15,26 @@ namespace PasswordManager.Views
         public PasswordsListPage()
         {
             InitializeComponent();
-            BindingContext = new PasswordsListViewModel();
+
         }
 
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            await (BindingContext as PasswordsListViewModel).GetPasswords();
+
+            //(BindingContext as PasswordsListViewModel).Passwords.Clear();
+            //await (BindingContext as PasswordsListViewModel).RefreshCommand.ExecuteAsync();
+
+            (BindingContext as PasswordsListViewModel).RefreshPasswords();
+
+            //(BindingContext as PasswordsListViewModel).AllPasswords.Clear();
+            //(BindingContext as PasswordsListViewModel).AllPasswords = new List<Password>() { new Password() { PasswordName = "Test1" }, new Password() { PasswordName = "Test2" } };
+            //(BindingContext as PasswordsListViewModel).FilteredPasswords.AddRange((BindingContext as PasswordsListViewModel).AllPasswords);
+        }
+
+        private void searchBar_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            (BindingContext as PasswordsListViewModel).PerformSearchCommand.Execute(e.NewTextValue);
         }
     }
 }

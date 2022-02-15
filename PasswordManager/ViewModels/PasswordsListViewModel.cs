@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.Maui.Controls;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,60 +7,55 @@ using System.Windows.Input;
 using PasswordManager.Services;
 using System.Collections.ObjectModel;
 using MAUIModelsLib;
+using MvvmHelpers;
+using MvvmHelpers.Commands;
+using Microsoft.Maui.Controls;
+using Command = MvvmHelpers.Commands.Command;
 
 namespace PasswordManager.ViewModels
 {
-    public class PasswordsListViewModel : BindableObject
+    public class PasswordsListViewModel : BaseViewModel
     {
-        public Action DisplayInvalidLoginPrompt;
-        public ObservableCollection<Password> Passwords { get; set; }
+        public List<Password> AllPasswords { get; set; }
+        public ObservableRangeCollection<Password> FilteredPasswords { get; set; }
 
         public PasswordsListViewModel()
         {
-            Logout = new Command(OnLogout);
-            RefreshCommand = new Command(OnRefreshCommand);
-            NewPassword = new Command(OnNewPassword);
-            Update = new Command(OnUpdate);
-            Delete = new Command(OnDelete);
-            Detail = new Command(OnDetail);
+            Title = "List of passwords";
 
-            Passwords = new ObservableCollection<Password>();
+            AllPasswords = new List<Password>();
+            FilteredPasswords = new ObservableRangeCollection<Password>();
+
+            LogoutCommand = new Command(Logout);
+            RefreshCommand = new AsyncCommand(Refresh);
+            NewPasswordCommand = new Command(NewPassword);
+            DetailCommand = new AsyncCommand<Password>(Detail);
+            DeleteCommand = new AsyncCommand<Password>(Delete);
+            PerformSearchCommand = new MvvmHelpers.Commands.Command<string>(PerformSearch);
         }
-        
-        public ICommand Logout { get; }
-        public ICommand RefreshCommand { get; }
-        public ICommand NewPassword { get; }
-        public ICommand Update { get; }
-        public ICommand Delete { get; }
-        public ICommand Detail { get; }
+
+        public Command LogoutCommand { get; }
+        public AsyncCommand RefreshCommand { get; }
+        public Command NewPasswordCommand { get; }
+        public AsyncCommand<Password> DeleteCommand { get; }
+        public AsyncCommand<Password> DetailCommand { get; }
+        public MvvmHelpers.Commands.Command<string> PerformSearchCommand { get; }
 
         Password _selectedPassword;
         public Password SelectedPassword
         {
             get => _selectedPassword;
-            set
-            {
-                if (value == _selectedPassword)
-                    return;
-                _selectedPassword = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _selectedPassword, value);
         }
 
-        bool _isBusy = false;
-        public bool IsBusy
+        string _searchText;
+        public string SearchText
         {
-            get => _isBusy;
-            set
-            {
-                if (value == _isBusy)
-                    return;
-                _isBusy = value;
-                OnPropertyChanged();
-            }
+            get => _searchText;
+            set => SetProperty(ref _searchText, value);
         }
 
-        private async void OnLogout()
+        private async void Logout()
         {
             ActiveUserService.Instance.Logout();
 
@@ -70,49 +64,90 @@ namespace PasswordManager.ViewModels
             await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PopToRootAsync(true);
         }
 
-        private async void OnRefreshCommand()
+        private async Task Refresh()
         {
-            await GetPasswords();
+            IsBusy = true;
+
+            RefreshPasswords();
+
             IsBusy = false;
         }
 
-        public async Task GetPasswords()
+        public async void RefreshPasswords()
         {
-            Passwords.Clear();
+            AllPasswords.Clear();
+            AllPasswords = new List<Password>() { new Password() { PasswordName = "Test1" }, new Password() { PasswordName = "Test2" } };
+            //AllPasswords = await DatabaseService.GetUserPasswords(ActiveUserService.Instance.User.Id);
 
-            List<Password> passwordsList = await DatabaseService.GetUserPasswords(ActiveUserService.Instance.User.Id);
-            passwordsList.ForEach(Passwords.Add);
+            //FilteredPasswords.Clear();
+            FilteredPasswords.AddRange(AllPasswords);
+
+            //Device.BeginInvokeOnMainThread(() =>
+            //{
+            //    Task.Delay(100).Wait();
+            //    FilteredPasswords.AddRange(AllPasswords);
+            //    Task.Delay(100).Wait();
+            //});
+
+
+            //PerformSearchCommand.Execute(SearchText); // refresh for FilteredPasswords
         }
 
-        private async void OnNewPassword()
+        private async void NewPassword()
         {
             Views.NewPasswordPage newPasswordPage = new Views.NewPasswordPage();
-            (newPasswordPage.BindingContext as NewPasswordViewModel).PasswordsList = this.Passwords;
-            await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PushAsync(newPasswordPage);
+            (newPasswordPage.BindingContext as NewPasswordViewModel).PasswordsList = FilteredPasswords;
+            await (Application.Current.MainPage as NavigationPage).Navigation.PushAsync(newPasswordPage);
         }
 
-        private async void OnUpdate()
+        private async Task Delete(Password password)
         {
-            Views.EditPasswordPage editPasswordPage = new Views.EditPasswordPage(SelectedPassword);
-            await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PushAsync(editPasswordPage);
-        }
-
-        private async void OnDelete()
-        {
-            if (await PopupService.ShowYesNo($"{SelectedPassword.PasswordName}", $"Are you sure you want to delete this password?"))
+            if (await PopupService.ShowYesNo($"{password.PasswordName}", $"Are you sure you want to delete this password?"))
             {
                 int id = SelectedPassword.Id;
                 await DatabaseService.RemovePassword(id);
-                Passwords.Remove(SelectedPassword);
+                AllPasswords.Remove(SelectedPassword);
             }
         }
 
-        private async void OnDetail()
+        private async Task Detail(Password password)
         {
-            PopupService.ShowError("TEST", "Detail");
-            Console.WriteLine(Passwords.Count());
+            await Application.Current.MainPage.DisplayAlert("Selected", password.PasswordName, "OK");
+
             //Views.PasswordDetailPage passwordDetailPage = new Views.PasswordDetailPage(SelectedPassword);
             //await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PushAsync(passwordDetailPage);
+        }
+
+        private void PerformSearch(string searchText)
+        {
+            if (string.IsNullOrWhiteSpace(searchText))
+                searchText = string.Empty;
+
+            searchText = searchText.ToLowerInvariant();
+
+            var filteredList = AllPasswords.Where(x => x.PasswordName.ToLowerInvariant().StartsWith(searchText)).ToList();
+            if(filteredList.Count() == 0)
+            {
+                filteredList = AllPasswords.Where(x => x.PasswordName.ToLowerInvariant().Contains(searchText)).ToList();
+            }
+
+            foreach (var item in AllPasswords)
+            {
+                if(!filteredList.Contains(item))
+                {
+                    //Device.BeginInvokeOnMainThread(() => {
+                    //    FilteredPasswords.Remove(item);
+                    //});
+                    FilteredPasswords.Remove(item);
+                }
+                else if(!FilteredPasswords.Contains(item))
+                {
+                    //Device.BeginInvokeOnMainThread(() => {
+                    //    FilteredPasswords.Add(item);
+                    //});
+                    FilteredPasswords.Add(item);
+                }
+            }
         }
     }
 }
