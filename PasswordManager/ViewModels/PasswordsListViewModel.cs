@@ -11,6 +11,7 @@ using MvvmHelpers;
 using MvvmHelpers.Commands;
 using Microsoft.Maui.Controls;
 using Command = MvvmHelpers.Commands.Command;
+using System.Threading;
 
 namespace PasswordManager.ViewModels
 {
@@ -76,10 +77,10 @@ namespace PasswordManager.ViewModels
         public async void RefreshPasswords()
         {
             AllPasswords.Clear();
-            AllPasswords = new List<Password>() { new Password() { PasswordName = "Test1" }, new Password() { PasswordName = "Test2" } };
-            //AllPasswords = await DatabaseService.GetUserPasswords(ActiveUserService.Instance.User.Id);
+            //AllPasswords = new List<Password>() { new Password() { PasswordName = "Test1" }, new Password() { PasswordName = "Test2" } };
+            AllPasswords = await DatabaseService.GetUserPasswords(ActiveUserService.Instance.User.Id);
 
-            //FilteredPasswords.Clear();
+            FilteredPasswords.Clear();
             FilteredPasswords.AddRange(AllPasswords);
 
             //Device.BeginInvokeOnMainThread(() =>
@@ -89,7 +90,7 @@ namespace PasswordManager.ViewModels
             //    Task.Delay(100).Wait();
             //});
 
-
+            //PerformSearch(SearchText);
             //PerformSearchCommand.Execute(SearchText); // refresh for FilteredPasswords
         }
 
@@ -102,11 +103,14 @@ namespace PasswordManager.ViewModels
 
         private async Task Delete(Password password)
         {
+            if (password == null)
+                return;
+
             if (await PopupService.ShowYesNo($"{password.PasswordName}", $"Are you sure you want to delete this password?"))
             {
-                int id = SelectedPassword.Id;
-                await DatabaseService.RemovePassword(id);
-                AllPasswords.Remove(SelectedPassword);
+                await DatabaseService.RemovePassword(password.Id);
+                AllPasswords.Remove(password);
+                FilteredPasswords.Remove(password);
             }
         }
 
@@ -131,23 +135,29 @@ namespace PasswordManager.ViewModels
                 filteredList = AllPasswords.Where(x => x.PasswordName.ToLowerInvariant().Contains(searchText)).ToList();
             }
 
-            foreach (var item in AllPasswords)
-            {
-                if(!filteredList.Contains(item))
-                {
-                    //Device.BeginInvokeOnMainThread(() => {
-                    //    FilteredPasswords.Remove(item);
-                    //});
-                    FilteredPasswords.Remove(item);
-                }
-                else if(!FilteredPasswords.Contains(item))
-                {
-                    //Device.BeginInvokeOnMainThread(() => {
-                    //    FilteredPasswords.Add(item);
-                    //});
-                    FilteredPasswords.Add(item);
-                }
-            }
+            //Device.BeginInvokeOnMainThread(() =>
+            //{
+            FilteredPasswords.Clear();
+            FilteredPasswords.AddRange(filteredList);
+            //});
+
+            //foreach (var item in AllPasswords)
+            //{
+            //    if(!filteredList.Contains(item))
+            //    {
+            //        //Device.BeginInvokeOnMainThread(() => {
+            //        //    FilteredPasswords.Remove(item);
+            //        //});
+            //        //FilteredPasswords.Remove(item);
+            //    }
+            //    else if(!FilteredPasswords.Contains(item))
+            //    {
+            //        //Device.BeginInvokeOnMainThread(() => {
+            //        //    FilteredPasswords.Add(item);
+            //        //});
+            //        //FilteredPasswords.Add(item);
+            //    }
+            //}
         }
     }
 }

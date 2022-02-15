@@ -22,14 +22,7 @@ namespace PasswordManager.Views
         {
             base.OnAppearing();
 
-            //(BindingContext as PasswordsListViewModel).Passwords.Clear();
-            //await (BindingContext as PasswordsListViewModel).RefreshCommand.ExecuteAsync();
-
             (BindingContext as PasswordsListViewModel).RefreshPasswords();
-
-            //(BindingContext as PasswordsListViewModel).AllPasswords.Clear();
-            //(BindingContext as PasswordsListViewModel).AllPasswords = new List<Password>() { new Password() { PasswordName = "Test1" }, new Password() { PasswordName = "Test2" } };
-            //(BindingContext as PasswordsListViewModel).FilteredPasswords.AddRange((BindingContext as PasswordsListViewModel).AllPasswords);
         }
 
         private void searchBar_TextChanged(object sender, TextChangedEventArgs e)
