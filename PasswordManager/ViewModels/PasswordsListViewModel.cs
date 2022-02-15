@@ -35,12 +35,12 @@ namespace PasswordManager.ViewModels
             PerformSearchCommand = new MvvmHelpers.Commands.Command<string>(PerformSearch);
         }
 
-        public Command LogoutCommand { get; }
-        public AsyncCommand RefreshCommand { get; }
-        public Command NewPasswordCommand { get; }
-        public AsyncCommand<Password> DeleteCommand { get; }
-        public AsyncCommand<Password> DetailCommand { get; }
-        public MvvmHelpers.Commands.Command<string> PerformSearchCommand { get; }
+        public ICommand LogoutCommand { get; }
+        public ICommand RefreshCommand { get; }
+        public ICommand NewPasswordCommand { get; }
+        public ICommand DeleteCommand { get; }
+        public ICommand DetailCommand { get; }
+        public ICommand PerformSearchCommand { get; }
 
         Password _selectedPassword;
         public Password SelectedPassword

@@ -10,16 +10,6 @@ namespace PasswordManager.Views
 		public LoginPage()
 		{
 			InitializeComponent();
-
-
-            //labelApp.Text = "Hello >])";
-
-            //BindingContext = new LoginViewModel();
-
-            //vm.DisplayInvalidLoginPrompt += () => DisplayAlert("Error", "Invalid Login, try again", "OK");
-
-            //DisplayAlert("Alert", "You have been alerted", "OK");
-
         }
 	}
 }

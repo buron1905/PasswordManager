@@ -8,13 +8,13 @@ using System.Windows.Input;
 using PasswordManager.Services;
 using MAUIModelsLib;
 using System.Collections.ObjectModel;
+using Command = MvvmHelpers.Commands.Command;
+using MvvmHelpers;
 
 namespace PasswordManager.ViewModels
 {
-    public class PasswordDetailViewModel : BindableObject
+    public class PasswordDetailViewModel : BaseViewModel
     {
-        public Action DisplayInvalidLoginPrompt;
-
         public PasswordDetailViewModel()
         {
 

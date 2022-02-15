@@ -12,54 +12,42 @@ using System.Windows.Input;
 using PasswordManager.Services;
 using MAUIModelsLib;
 using Microsoft.Maui.Controls.Hosting;
+using Command = MvvmHelpers.Commands.Command;
+using MvvmHelpers;
 
 namespace PasswordManager.ViewModels
 {
-    public class LoginViewModel : BindableObject
+    public class LoginViewModel : BaseViewModel
     {
-        public Action DisplayInvalidLoginPrompt;
-
         public LoginViewModel()
         {
-            Login = new Command(OnLogin);
-            Registration = new Command(OnRegistration);
+            LoginCommand = new Command(Login);
+            RegistrationCommand = new Command(Registration);
         }
 
         string _email = "";
         public string Email
         {
             get => _email;
-            set
-            {
-                if (value == _email)
-                    return;
-                _email = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _email, value);
         }
 
         string _password = "";
         public string Password
         {
             get => _password;
-            set
-            {
-                if (value == _password)
-                    return;
-                _password = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _password, value);
         }
 
-        public ICommand Login { get; }
-        public ICommand Registration { get; }
+        public ICommand LoginCommand { get; }
+        public ICommand RegistrationCommand { get; }
 
-        private async void OnRegistration()
+        private async void Registration()
         {
             await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PushAsync(new Views.RegistrationPage(), true);
         }
 
-        private async void OnLogin()
+        private async void Login()
         {
             if (Email == "" || Password == "")
             {

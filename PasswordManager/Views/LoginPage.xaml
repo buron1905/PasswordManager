@@ -46,7 +46,7 @@
             <Button 
             Text="Login"
             FontAttributes="Bold"
-            Command="{Binding Login}"
+            Command="{Binding LoginCommand}"
             HorizontalOptions="Center" />
 
             <Label HorizontalOptions="Center"
@@ -54,7 +54,7 @@
             FontSize="20"
             Text="Registration">
                 <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding Registration}" />
+                    <TapGestureRecognizer Command="{Binding RegistrationCommand}" />
                 </Label.GestureRecognizers>
             </Label>
 

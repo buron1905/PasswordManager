@@ -8,74 +8,51 @@ using System.Windows.Input;
 using PasswordManager.Services;
 using MAUIModelsLib;
 using System.Collections.ObjectModel;
+using Command = MvvmHelpers.Commands.Command;
+using MvvmHelpers;
 
 namespace PasswordManager.ViewModels
 {
-    public class NewPasswordViewModel : BindableObject
+    public class NewPasswordViewModel : BaseViewModel
     {
-        public Action DisplayInvalidLoginPrompt;
         public ObservableCollection<Password> PasswordsList { get; set; }
 
         public NewPasswordViewModel()
         {
-            Save = new Command(OnSave);
+            SaveCommand = new Command(Save);
         }
 
-        public ICommand Save { get; }
+        public ICommand SaveCommand { get; }
 
         string _passwordName = "";
         public string PasswordName
         {
             get => _passwordName;
-            set
-            {
-                if (value == _passwordName)
-                    return;
-                _passwordName = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _passwordName, value);
         }
 
         string _userName = "";
         public string UserName
         {
             get => _userName;
-            set
-            {
-                if (value == _userName)
-                    return;
-                _userName = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _userName, value);
         }
 
         string _password = "";
         public string Password
         {
             get => _password;
-            set
-            {
-                if (value == _password)
-                    return;
-                _password = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _password, value);
         }
 
         string _description = "";
         public string Description
         {
             get => _description;
-            set
-            {
-                if (value == _description)
-                    return;
-                _description = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _description, value);
         }
 
-        private async void OnSave()
+        private async void Save()
         {
             if (Password == "" || PasswordName == "" || UserName == "")
             {

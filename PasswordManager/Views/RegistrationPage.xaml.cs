@@ -13,7 +13,6 @@ namespace PasswordManager.Views
         public RegistrationPage()
         {
             InitializeComponent();
-
         }
     }
 }
