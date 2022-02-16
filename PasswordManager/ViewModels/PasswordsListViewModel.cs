@@ -42,13 +42,6 @@ namespace PasswordManager.ViewModels
         public ICommand DetailCommand { get; }
         public ICommand PerformSearchCommand { get; }
 
-        Password _selectedPassword;
-        public Password SelectedPassword
-        {
-            get => _selectedPassword;
-            set => SetProperty(ref _selectedPassword, value);
-        }
-
         string _searchText;
         public string SearchText
         {
@@ -116,10 +109,9 @@ namespace PasswordManager.ViewModels
 
         private async Task Detail(Password password)
         {
-            await Application.Current.MainPage.DisplayAlert("Selected", password.PasswordName, "OK");
-
-            //Views.PasswordDetailPage passwordDetailPage = new Views.PasswordDetailPage(SelectedPassword);
-            //await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PushAsync(passwordDetailPage);
+            Views.PasswordDetailPage passwordDetailPage = new Views.PasswordDetailPage(password);
+            (passwordDetailPage.BindingContext as PasswordDetailViewModel).PasswordsList = FilteredPasswords;
+            await (Application.Current.MainPage as NavigationPage).Navigation.PushAsync(passwordDetailPage);
         }
 
         private void PerformSearch(string searchText)

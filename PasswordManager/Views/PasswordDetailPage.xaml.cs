@@ -5,14 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using MAUIModelsLib;
+using PasswordManager.ViewModels;
 
 namespace PasswordManager.Views
 {
     public partial class PasswordDetailPage : ContentPage
     {
-        public PasswordDetailPage()
+        public PasswordDetailPage(Password password)
         {
             InitializeComponent();
+            (BindingContext as PasswordDetailViewModel).Password = password;
         }
     }
 }

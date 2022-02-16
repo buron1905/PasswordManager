@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using MAUIModelsLib;
+using PasswordManager.ViewModels;
 
 namespace PasswordManager.Views
 {
@@ -14,7 +15,7 @@ namespace PasswordManager.Views
         public EditPasswordPage(Password password)
         {
             InitializeComponent();
-            // binding, password bude ve viewModel
+            (BindingContext as PasswordDetailViewModel).Password = password;
         }
     }
 }
