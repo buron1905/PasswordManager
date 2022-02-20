@@ -22,7 +22,7 @@ namespace PasswordManager.Views
         {
             base.OnAppearing();
 
-            (BindingContext as PasswordsListViewModel).RefreshPasswords();
+            await (BindingContext as PasswordsListViewModel).RefreshPasswords();
         }
 
         private void searchBar_TextChanged(object sender, TextChangedEventArgs e)

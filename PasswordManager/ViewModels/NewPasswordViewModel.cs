@@ -15,8 +15,6 @@ namespace PasswordManager.ViewModels
 {
     public class NewPasswordViewModel : BaseViewModel
     {
-        public ObservableCollection<Password> PasswordsList { get; set; }
-
         public NewPasswordViewModel()
         {
             SaveCommand = new Command(Save);
@@ -70,8 +68,7 @@ namespace PasswordManager.ViewModels
             };
 
             await DatabaseService.AddPassword(newPassword);
-            PasswordsList.Add(newPassword);
-            await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PopAsync(true);
+            await (Application.Current.MainPage as NavigationPage).Navigation.PopAsync(true);
         }
 
     }

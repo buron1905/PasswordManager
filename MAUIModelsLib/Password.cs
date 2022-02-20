@@ -40,5 +40,17 @@ namespace MAUIModelsLib
         public void Decrypt()
         {
         }
+
+        public Password DeepCopy()
+        {
+            Password other = (Password)this.MemberwiseClone();
+
+            other.PasswordName = new string(PasswordName);
+            other.PasswordText = new string(PasswordText);
+            other.UserName = new string(UserName);
+            other.Description = new string(Description);
+
+            return other;
+        }
     }
 }

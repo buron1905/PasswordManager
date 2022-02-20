@@ -12,6 +12,7 @@ namespace PasswordManager.Views
 {
     public partial class PasswordDetailPage : ContentPage
     {
+        public PasswordDetailViewModel ViewModel { get; set; }
         public PasswordDetailPage(Password password)
         {
             InitializeComponent();

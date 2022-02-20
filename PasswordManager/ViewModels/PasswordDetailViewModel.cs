@@ -20,8 +20,6 @@ namespace PasswordManager.ViewModels
         public ICommand DeleteCommand { get; }
         public ICommand TogglePasswordVisibilityCommand { get; }
 
-        public ObservableCollection<Password> PasswordsList { get; set; }
-        
         Password _password;
         public Password Password
         {
@@ -54,7 +52,6 @@ namespace PasswordManager.ViewModels
         private async Task Edit()
         {
             Views.EditPasswordPage editPasswordPage = new Views.EditPasswordPage(Password);
-            (editPasswordPage.BindingContext as EditPasswordViewModel).PasswordsList = PasswordsList;
             await (Application.Current.MainPage as NavigationPage).Navigation.PushAsync(editPasswordPage);
         }
 
@@ -66,8 +63,7 @@ namespace PasswordManager.ViewModels
             if (await PopupService.ShowYesNo($"{Password.PasswordName}", $"Are you sure you want to delete this password?"))
             {
                 await DatabaseService.RemovePassword(Password.Id);
-                PasswordsList.Remove(Password);
-                await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PopAsync(true);
+                await (Application.Current.MainPage as NavigationPage).Navigation.PopAsync(true);
             }
         }
     }

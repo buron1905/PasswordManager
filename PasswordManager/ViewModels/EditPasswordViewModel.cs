@@ -19,8 +19,6 @@ namespace PasswordManager.ViewModels
         public ICommand SaveCommand { get; }
         public ICommand DeleteCommand { get; }
 
-        public ObservableCollection<Password> PasswordsList { get; set; }
-
         Password _password;
         public Password Password
         {
@@ -34,8 +32,6 @@ namespace PasswordManager.ViewModels
 
             DeleteCommand = new AsyncCommand(Delete);
             SaveCommand = new AsyncCommand(Save);
-
-            Password = new Password();
         }
 
         private async Task Save()
@@ -46,7 +42,7 @@ namespace PasswordManager.ViewModels
                 return;
             }
             await DatabaseService.UpdatePassword(Password);
-            await (Application.Current.MainPage as NavigationPage).Navigation.PopAsync(true);
+            await (Application.Current.MainPage as NavigationPage).Navigation.PopToRootAsync(true);
         }
 
         private async Task Delete()
@@ -57,8 +53,7 @@ namespace PasswordManager.ViewModels
             if (await PopupService.ShowYesNo($"{Password.PasswordName}", $"Are you sure you want to delete this password?"))
             {
                 await DatabaseService.RemovePassword(Password.Id);
-                PasswordsList.Remove(Password);
-                await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PopAsync(true);
+                await (Application.Current.MainPage as NavigationPage).Navigation.PopToRootAsync(true);
             }
         }
     }

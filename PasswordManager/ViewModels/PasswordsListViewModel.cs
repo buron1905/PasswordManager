@@ -12,6 +12,7 @@ using MvvmHelpers.Commands;
 using Microsoft.Maui.Controls;
 using Command = MvvmHelpers.Commands.Command;
 using System.Threading;
+using PasswordManager.Views;
 
 namespace PasswordManager.ViewModels
 {
@@ -53,44 +54,30 @@ namespace PasswordManager.ViewModels
         {
             ActiveUserService.Instance.Logout();
 
-            (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.InsertPageBefore(new Views.LoginPage(), Application.Current.MainPage.Navigation.NavigationStack[0]);
+            (Application.Current.MainPage as NavigationPage).Navigation.InsertPageBefore(new LoginPage(), 
+                Application.Current.MainPage.Navigation.NavigationStack[0]);
             await Task.Delay(100);
-            await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PopToRootAsync(true);
+            await (Application.Current.MainPage as NavigationPage).Navigation.PopToRootAsync(true);
         }
 
         private async Task Refresh()
         {
             IsBusy = true;
-
-            RefreshPasswords();
-
+            await RefreshPasswords();
             IsBusy = false;
         }
 
-        public async void RefreshPasswords()
+        public async Task RefreshPasswords()
         {
             AllPasswords.Clear();
-            //AllPasswords = new List<Password>() { new Password() { PasswordName = "Test1" }, new Password() { PasswordName = "Test2" } };
             AllPasswords = await DatabaseService.GetUserPasswords(ActiveUserService.Instance.User.Id);
 
-            FilteredPasswords.Clear();
-            FilteredPasswords.AddRange(AllPasswords);
-
-            //Device.BeginInvokeOnMainThread(() =>
-            //{
-            //    Task.Delay(100).Wait();
-            //    FilteredPasswords.AddRange(AllPasswords);
-            //    Task.Delay(100).Wait();
-            //});
-
-            //PerformSearch(SearchText);
-            //PerformSearchCommand.Execute(SearchText); // refresh for FilteredPasswords
+            PerformSearch(SearchText);
         }
 
         private async void NewPassword()
         {
-            Views.NewPasswordPage newPasswordPage = new Views.NewPasswordPage();
-            (newPasswordPage.BindingContext as NewPasswordViewModel).PasswordsList = FilteredPasswords;
+            NewPasswordPage newPasswordPage = new NewPasswordPage();
             await (Application.Current.MainPage as NavigationPage).Navigation.PushAsync(newPasswordPage);
         }
 
@@ -109,8 +96,7 @@ namespace PasswordManager.ViewModels
 
         private async Task Detail(Password password)
         {
-            Views.PasswordDetailPage passwordDetailPage = new Views.PasswordDetailPage(password);
-            (passwordDetailPage.BindingContext as PasswordDetailViewModel).PasswordsList = FilteredPasswords;
+            PasswordDetailPage passwordDetailPage = new PasswordDetailPage(password);
             await (Application.Current.MainPage as NavigationPage).Navigation.PushAsync(passwordDetailPage);
         }
 
@@ -123,33 +109,10 @@ namespace PasswordManager.ViewModels
 
             var filteredList = AllPasswords.Where(x => x.PasswordName.ToLowerInvariant().StartsWith(searchText)).ToList();
             if(filteredList.Count() == 0)
-            {
                 filteredList = AllPasswords.Where(x => x.PasswordName.ToLowerInvariant().Contains(searchText)).ToList();
-            }
 
-            //Device.BeginInvokeOnMainThread(() =>
-            //{
             FilteredPasswords.Clear();
             FilteredPasswords.AddRange(filteredList);
-            //});
-
-            //foreach (var item in AllPasswords)
-            //{
-            //    if(!filteredList.Contains(item))
-            //    {
-            //        //Device.BeginInvokeOnMainThread(() => {
-            //        //    FilteredPasswords.Remove(item);
-            //        //});
-            //        //FilteredPasswords.Remove(item);
-            //    }
-            //    else if(!FilteredPasswords.Contains(item))
-            //    {
-            //        //Device.BeginInvokeOnMainThread(() => {
-            //        //    FilteredPasswords.Add(item);
-            //        //});
-            //        //FilteredPasswords.Add(item);
-            //    }
-            //}
         }
     }
 }
