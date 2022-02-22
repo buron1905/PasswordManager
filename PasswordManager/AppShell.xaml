@@ -101,6 +101,17 @@
         <ShellContent ContentTemplate="{DataTemplate local:PasswordsListPage}" Route="PasswordsListPage" />
     </FlyoutItem>
 
+    <FlyoutItem Title="Settings">
+        <FlyoutItem.Icon>
+            <FontImageSource FontFamily="FAS"
+                             Color="{AppThemeBinding 
+                                    Dark=White, 
+                                    Light={StaticResource PrimaryColor}}"
+                             Glyph="{x:Static fontAwesome:FontAwesomeIcons.Cog}"/>
+        </FlyoutItem.Icon>
+        <ShellContent ContentTemplate="{DataTemplate local:SettingsPage}" Route="SettingsPage" />
+    </FlyoutItem>
+
     <!--<FlyoutItem Title="TEST" >
         <Tab Title="Vault">
             <Tab.Icon>
