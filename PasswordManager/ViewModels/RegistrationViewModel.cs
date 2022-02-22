@@ -48,7 +48,7 @@ namespace PasswordManager.ViewModels
         {
             if (Email == "" || Password == "")
             {
-                PopupService.ShowError("Error", "Fields must not be empty");
+                await PopupService.ShowError("Error", "Fields must not be empty");
                 return;
             }
 
@@ -63,7 +63,7 @@ namespace PasswordManager.ViewModels
             }
             catch (Exception ex)
             {
-                PopupService.ShowError("Error", $"{ex.Message}");
+                await PopupService.ShowError("Error", $"{ex.Message}");
                 return;
             }
 

@@ -42,7 +42,7 @@ namespace PasswordManager.ViewModels
             if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
             {
                 
-                PopupService.ShowError("Error", "Fields cannot be empty");
+                await PopupService.ShowError("Error", "Fields cannot be empty");
                 return;
             }
 
@@ -52,7 +52,7 @@ namespace PasswordManager.ViewModels
             }
             else
             {
-                PopupService.ShowError("Error", "Invalid login. Please try again.");
+                await PopupService.ShowError("Error", "Invalid login. Please try again.");
             }
         }
 

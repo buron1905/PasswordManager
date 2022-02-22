@@ -47,7 +47,7 @@ namespace PasswordManager.ViewModels
         {
             if (string.IsNullOrWhiteSpace(Password.PasswordText) || string.IsNullOrWhiteSpace(Password.PasswordName) || string.IsNullOrWhiteSpace(Password.UserName))
             {
-                PopupService.ShowError("Error", "Fields cannot be empty");
+                await PopupService.ShowError("Error", "Fields cannot be empty");
                 return;
             }
             await DatabaseService.UpdatePassword(Password);

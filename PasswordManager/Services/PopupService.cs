@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 
 namespace PasswordManager.Services
@@ -10,12 +11,12 @@ namespace PasswordManager.Services
     public class PopupService
     {
 
-        public static async void ShowError()
+        public static async Task ShowError()
         {
             await Application.Current.MainPage.DisplayAlert("Error", "Unexpected error happened", "OK");
         }
 
-        public static async void ShowError(string title, string message, string cancel = "OK")
+        public static async Task ShowError(string title, string message, string cancel = "OK")
         {
             await Application.Current.MainPage.DisplayAlert(title, message, cancel);
         }
@@ -25,15 +26,16 @@ namespace PasswordManager.Services
             return await Application.Current.MainPage.DisplayAlert(title, question, optionTrue, optionFalse);
         }
 
-        //public static async Task<string> ShowActionSheet()
-        //{
-        //    return await Application.Current.MainPage.DisplayActionSheet("ActionSheet: Send to?", "Cancel", null, "Email", "Twitter", "Facebook");
-        //}
+        public static async Task<string> ShowActionSheet(string title, string cancel, string destruction, params string[] buttons)
+        {
+            return await Application.Current.MainPage.DisplayActionSheet(title, cancel, destruction, buttons);
+        }
 
-        //public static async Task<string> ShowPrompt()
-        //{
-        //    //return await Application.Current.MainPage.DisplayPromptAsync("Question 1", "What's your name?");
-        //    //return await Application.Current.MainPage.DisplayPromptAsync("Question 2", "What's 5 + 5?", initialValue: "10", maxLength: 2, keyboard: Keyboard.Numeric);
-        //}
+        public static async Task<string> ShowPrompt(string title, string message, string accept = "OK", string cancel = "Cancel", string placeholder = null,
+            int maxLength = -1, Keyboard keyboard = null, string initialValue = "")
+        {
+            return await Application.Current.MainPage.DisplayPromptAsync(title, message, accept, cancel, placeholder, maxLength, keyboard, initialValue);
+            //return await Application.Current.MainPage.DisplayPromptAsync("Question 2", "What's 5 + 5?", initialValue: "10", maxLength: 2, keyboard: Keyboard.Numeric);
+        }
     }
 }
