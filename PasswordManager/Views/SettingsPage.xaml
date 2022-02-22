@@ -4,7 +4,10 @@
              xmlns:viewmodels="clr-namespace:PasswordManager.ViewModels"
              x:Class="PasswordManager.Views.SettingsPage"
              x:DataType="viewmodels:SettingsViewModel"
-             BackgroundColor="{DynamicResource SecondaryColor}">
+             Title="{Binding Title}"
+             BackgroundColor="{AppThemeBinding 
+                    Dark={StaticResource WindowBackgroundColorDark}, 
+                    Light={StaticResource WindowBackgroundColor}}">
     <ContentPage.BindingContext>
         <viewmodels:SettingsViewModel/>
     </ContentPage.BindingContext>

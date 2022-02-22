@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:PasswordManager.ViewModels"
@@ -5,7 +6,10 @@
              x:DataType="viewmodels:LoginViewModel"
              Shell.FlyoutBehavior="Disabled"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="{DynamicResource SecondaryColor}">
+             Title="{Binding Title}"
+             BackgroundColor="{AppThemeBinding 
+                    Dark={StaticResource WindowBackgroundColorDark}, 
+                    Light={StaticResource WindowBackgroundColor}}">
     <ContentPage.BindingContext>
         <viewmodels:LoginViewModel/>
     </ContentPage.BindingContext>
@@ -36,20 +40,12 @@
             HorizontalTextAlignment="Center"
             IsPassword="True" />
 
-            <!--<Label HorizontalOptions="Center"
-            TextColor="Blue"
-            FontSize="20"
-            Text="Forgot Password?">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding ForgotPassword}" />
-                </Label.GestureRecognizers>
-            </Label>-->
-
             <Button 
             Text="Login"
             FontAttributes="Bold"
             Command="{Binding LoginCommand}"
-            HorizontalOptions="Center" />
+            HorizontalOptions="Center" 
+            Style="{StaticResource ButtonBase}"/>
 
             <Label HorizontalOptions="Center"
             TextColor="Blue"

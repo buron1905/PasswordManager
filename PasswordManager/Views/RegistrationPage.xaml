@@ -1,9 +1,13 @@
-﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:PasswordManager.ViewModels"
              x:Class="PasswordManager.Views.RegistrationPage"
              x:DataType="viewmodels:RegistrationViewModel"
-             BackgroundColor="{DynamicResource SecondaryColor}">
+             Title="{Binding Title}"
+             BackgroundColor="{AppThemeBinding 
+                    Dark={StaticResource WindowBackgroundColorDark}, 
+                    Light={StaticResource WindowBackgroundColor}}">
              <!--Shell.FlyoutBehavior="Disabled"-->
     <ContentPage.BindingContext>
         <viewmodels:RegistrationViewModel/>
@@ -40,7 +44,8 @@
             Text="Register"
             FontAttributes="Bold"
             Command="{Binding RegisterCommand}"
-            HorizontalOptions="Center" />
+            HorizontalOptions="Center" 
+            Style="{StaticResource ButtonBase}"/>
 
             <Label HorizontalOptions="Center"
             TextColor="Blue"
