@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       x:Class="PasswordManager.AppShell"
+       xmlns:local="clr-namespace:PasswordManager.Views"
+       xmlns:fontAwesome="clr-namespace:FontAwesome"
+       Title="AppShell"
+       BackgroundColor="White">
+
+    <Shell.Resources>
+        <ResourceDictionary>
+            <Style x:Key="BaseStyle" TargetType="Element">
+                <Setter Property="Shell.BackgroundColor" Value="{AppThemeBinding Dark=Black, Light=White}" />
+                <Setter Property="Shell.ForegroundColor" Value="{AppThemeBinding Dark=White, Light=Black}" />
+                <Setter Property="Shell.TitleColor" Value="{AppThemeBinding Dark=White, Light=Black}" />
+                <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
+                <Setter Property="Shell.UnselectedColor" Value="{AppThemeBinding Dark=#95FFFFFF, Light=#95000000}" />
+                <Setter Property="Shell.TabBarBackgroundColor" Value="{AppThemeBinding Dark=Black, Light=White}" />
+                <Setter Property="Shell.TabBarForegroundColor" Value="{AppThemeBinding Dark=White, Light=Black}" />
+                <Setter Property="Shell.TabBarUnselectedColor" Value="{AppThemeBinding Dark=#95FFFFFF, Light=#95000000}" />
+                <Setter Property="Shell.TabBarTitleColor" Value="{AppThemeBinding Dark=White, Light=Black}" />
+            </Style>
+            <Style BasedOn="{StaticResource BaseStyle}" TargetType="TabBar" />
+            <Style BasedOn="{StaticResource BaseStyle}" TargetType="FlyoutItem" />
+
+            <!--
+                Default Styles for all Flyout Items
+                https://docs.microsoft.com/xamarin/xamarin-forms/app-fundamentals/shell/flyout#flyoutitem-and-menuitem-style-classes
+            -->
+            <Style Class="FlyoutItemLabelStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="White" />
+            </Style>
+            <Style
+                ApplyToDerivedTypes="True"
+                Class="FlyoutItemLayoutStyle"
+                TargetType="Layout">
+                <Setter Property="BackgroundColor" Value="LightBlue" />
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="Transparent" />
+                                    <Setter TargetName="FlyoutItemLabel" Property="Label.TextColor" Value="{StaticResource Primary}" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Selected">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+
+            <!--
+                Custom Style you can apply to any Flyout Item
+            -->
+            <Style
+                ApplyToDerivedTypes="True"
+                Class="MenuItemLayoutStyle"
+                TargetType="Layout">
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter TargetName="FlyoutItemLabel" Property="Label.TextColor" Value="{StaticResource Primary}" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Shell.Resources>
+
+    <ShellItem Route="LoginPage" FlyoutItemIsVisible="False">
+        <ShellContent ContentTemplate="{DataTemplate local:LoginPage}"/>
+    </ShellItem>
+
+    <FlyoutItem Title="New">
+        <FlyoutItem.Icon>
+            <FontImageSource FontFamily="FAS"
+                             Color="{AppThemeBinding 
+                                    Dark=White, 
+                                    Light={StaticResource SecondaryColor}}"
+                             Glyph="{x:Static fontAwesome:FontAwesomeIcons.Cog}"/>
+        </FlyoutItem.Icon>
+        <ShellContent ContentTemplate="{DataTemplate local:NewPasswordPage}" Route="NewPasswordPage" />
+    </FlyoutItem>
+    <FlyoutItem Title="Vault">
+        <FlyoutItem.Icon>
+            <FontImageSource FontFamily="FAS"
+                             Color="{AppThemeBinding 
+                                    Dark=White, 
+                                    Light={StaticResource PrimaryColor}}"
+                             Glyph="{x:Static fontAwesome:FontAwesomeIcons.Wifi}"/>
+        </FlyoutItem.Icon>
+        <ShellContent ContentTemplate="{DataTemplate local:PasswordsListPage}" Route="PasswordsListPage" />
+    </FlyoutItem>
+
+    <!--<FlyoutItem Title="TEST" >
+        <Tab Title="Vault">
+            <Tab.Icon>
+                <FontImageSource FontFamily="FAS"
+                             Color="{AppThemeBinding 
+                                    Dark=White, 
+                                    Light={StaticResource SystemGray5Dark}}"
+                             Glyph="{StaticResource IconCoffee}"/>
+            </Tab.Icon>
+            <ShellContent Title="Light" ContentTemplate="{DataTemplate local:PasswordsListPage}" Route="PasswordsListPage" />
+        </Tab>
+        <Tab Title="Generate">
+            <ShellContent Title="tab 2" ContentTemplate="{DataTemplate local:NewPasswordPage}" Route="NewPasswordPage" />
+        </Tab>
+    </FlyoutItem>-->
+
+</Shell>

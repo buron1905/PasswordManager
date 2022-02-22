@@ -11,11 +11,14 @@ using System.Collections.ObjectModel;
 using Command = MvvmHelpers.Commands.Command;
 using MvvmHelpers;
 using MvvmHelpers.Commands;
+using PasswordManager.Views;
 
 namespace PasswordManager.ViewModels
 {
+    [QueryProperty(nameof(PasswordId), nameof(PasswordId))]
     public class EditPasswordViewModel : BaseViewModel
     {
+        public string PasswordId { get; set; }
         public ICommand SaveCommand { get; }
         public ICommand DeleteCommand { get; }
 
@@ -34,15 +37,21 @@ namespace PasswordManager.ViewModels
             SaveCommand = new AsyncCommand(Save);
         }
 
+        public async Task LoadPassword()
+        {
+            int.TryParse(PasswordId, out var parsedId);
+            Password = await DatabaseService.GetPassword(parsedId);
+        }
+
         private async Task Save()
         {
-            if (Password.PasswordText == "" || Password.PasswordName == "" || Password.UserName == "")
+            if (string.IsNullOrWhiteSpace(Password.PasswordText) || string.IsNullOrWhiteSpace(Password.PasswordName) || string.IsNullOrWhiteSpace(Password.UserName))
             {
                 PopupService.ShowError("Error", "Fields cannot be empty");
                 return;
             }
             await DatabaseService.UpdatePassword(Password);
-            await (Application.Current.MainPage as NavigationPage).Navigation.PopToRootAsync(true);
+            await Shell.Current.GoToAsync($"//{nameof(PasswordsListPage)}");
         }
 
         private async Task Delete()
@@ -53,7 +62,7 @@ namespace PasswordManager.ViewModels
             if (await PopupService.ShowYesNo($"{Password.PasswordName}", $"Are you sure you want to delete this password?"))
             {
                 await DatabaseService.RemovePassword(Password.Id);
-                await (Application.Current.MainPage as NavigationPage).Navigation.PopToRootAsync(true);
+                await Shell.Current.GoToAsync($"//{nameof(PasswordsListPage)}");
             }
         }
     }

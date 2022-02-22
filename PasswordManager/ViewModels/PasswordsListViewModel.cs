@@ -20,6 +20,12 @@ namespace PasswordManager.ViewModels
     {
         public List<Password> AllPasswords { get; set; }
         public ObservableRangeCollection<Password> FilteredPasswords { get; set; }
+        public ICommand LogoutCommand { get; }
+        public ICommand RefreshCommand { get; }
+        public ICommand NewPasswordCommand { get; }
+        public ICommand DeleteCommand { get; }
+        public ICommand DetailCommand { get; }
+        public ICommand PerformSearchCommand { get; }
 
         public PasswordsListViewModel()
         {
@@ -28,20 +34,14 @@ namespace PasswordManager.ViewModels
             AllPasswords = new List<Password>();
             FilteredPasswords = new ObservableRangeCollection<Password>();
 
-            LogoutCommand = new Command(Logout);
+            LogoutCommand = new AsyncCommand(Logout);
             RefreshCommand = new AsyncCommand(Refresh);
-            NewPasswordCommand = new Command(NewPassword);
+            NewPasswordCommand = new AsyncCommand(NewPassword);
             DetailCommand = new AsyncCommand<Password>(Detail);
             DeleteCommand = new AsyncCommand<Password>(Delete);
+
             PerformSearchCommand = new MvvmHelpers.Commands.Command<string>(PerformSearch);
         }
-
-        public ICommand LogoutCommand { get; }
-        public ICommand RefreshCommand { get; }
-        public ICommand NewPasswordCommand { get; }
-        public ICommand DeleteCommand { get; }
-        public ICommand DetailCommand { get; }
-        public ICommand PerformSearchCommand { get; }
 
         string _searchText;
         public string SearchText
@@ -50,14 +50,11 @@ namespace PasswordManager.ViewModels
             set => SetProperty(ref _searchText, value);
         }
 
-        private async void Logout()
+        private async Task Logout()
         {
             ActiveUserService.Instance.Logout();
 
-            (Application.Current.MainPage as NavigationPage).Navigation.InsertPageBefore(new LoginPage(), 
-                Application.Current.MainPage.Navigation.NavigationStack[0]);
-            await Task.Delay(100);
-            await (Application.Current.MainPage as NavigationPage).Navigation.PopToRootAsync(true);
+            await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
         }
 
         private async Task Refresh()
@@ -75,10 +72,9 @@ namespace PasswordManager.ViewModels
             PerformSearch(SearchText);
         }
 
-        private async void NewPassword()
+        private async Task NewPassword()
         {
-            NewPasswordPage newPasswordPage = new NewPasswordPage();
-            await (Application.Current.MainPage as NavigationPage).Navigation.PushAsync(newPasswordPage);
+            await Shell.Current.GoToAsync($"{nameof(NewPasswordPage)}");
         }
 
         private async Task Delete(Password password)
@@ -96,8 +92,7 @@ namespace PasswordManager.ViewModels
 
         private async Task Detail(Password password)
         {
-            PasswordDetailPage passwordDetailPage = new PasswordDetailPage(password);
-            await (Application.Current.MainPage as NavigationPage).Navigation.PushAsync(passwordDetailPage);
+            await Shell.Current.GoToAsync($"{nameof(PasswordDetailPage)}?PasswordId={password.Id}");
         }
 
         private void PerformSearch(string searchText)

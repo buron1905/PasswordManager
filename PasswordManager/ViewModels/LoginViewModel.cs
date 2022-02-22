@@ -1,17 +1,7 @@
 ﻿using Microsoft.Maui.Controls;
 using PasswordManager.Services;
-using Microsoft.Maui.Essentials;
 using PasswordManager.Views;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using PasswordManager.Services;
-using MAUIModelsLib;
-using Microsoft.Maui.Controls.Hosting;
 using Command = MvvmHelpers.Commands.Command;
 using MvvmHelpers;
 
@@ -44,23 +34,21 @@ namespace PasswordManager.ViewModels
 
         private async void Registration()
         {
-            await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PushAsync(new Views.RegistrationPage(), true);
+            await Shell.Current.GoToAsync($"{nameof(RegistrationPage)}");
         }
 
         private async void Login()
         {
-            if (Email == "" || Password == "")
+            if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
             {
+                
                 PopupService.ShowError("Error", "Fields cannot be empty");
                 return;
             }
 
             if (await LoginService.Login(Email, Password))
             {
-                var t = (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.NavigationStack;
-                (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.InsertPageBefore(new Views.PasswordsListPage(), Application.Current.MainPage.Navigation.NavigationStack[0]);
-                await Task.Delay(100);
-                await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PopToRootAsync(true);
+                await Shell.Current.GoToAsync($"//{nameof(PasswordsListPage)}");
             }
             else
             {

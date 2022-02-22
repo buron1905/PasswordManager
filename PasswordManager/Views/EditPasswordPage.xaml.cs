@@ -14,11 +14,16 @@ namespace PasswordManager.Views
     public partial class EditPasswordPage : ContentPage
     {
         public EditPasswordViewModel ViewModel { get; set; }
-        public EditPasswordPage(Password password)
+        public EditPasswordPage()
         {
             InitializeComponent();
             ViewModel = (BindingContext as EditPasswordViewModel);
-            ViewModel.Password = password;//.DeepCopy();
+        }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            await ViewModel.LoadPassword();
         }
     }
 }

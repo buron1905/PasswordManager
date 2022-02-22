@@ -52,7 +52,7 @@ namespace PasswordManager.ViewModels
 
         private async void Save()
         {
-            if (Password == "" || PasswordName == "" || UserName == "")
+            if (string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(PasswordName) || string.IsNullOrWhiteSpace(UserName))
             {
                 PopupService.ShowError("Error", "Fields cannot be empty");
                 return;
@@ -68,7 +68,7 @@ namespace PasswordManager.ViewModels
             };
 
             await DatabaseService.AddPassword(newPassword);
-            await (Application.Current.MainPage as NavigationPage).Navigation.PopAsync(true);
+            await Shell.Current.GoToAsync("..");
         }
 
     }

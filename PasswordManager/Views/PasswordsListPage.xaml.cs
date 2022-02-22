@@ -12,22 +12,22 @@ namespace PasswordManager.Views
 {
     public partial class PasswordsListPage : ContentPage
     {
+        public PasswordsListViewModel ViewModel { get; set; }
         public PasswordsListPage()
         {
             InitializeComponent();
-
+            ViewModel = BindingContext as PasswordsListViewModel;
         }
 
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-
-            await (BindingContext as PasswordsListViewModel).RefreshPasswords();
+            await ViewModel.RefreshPasswords();
         }
 
         private void searchBar_TextChanged(object sender, TextChangedEventArgs e)
         {
-            (BindingContext as PasswordsListViewModel).PerformSearchCommand.Execute(e.NewTextValue);
+            ViewModel.PerformSearchCommand.Execute(e.NewTextValue);
         }
     }
 }

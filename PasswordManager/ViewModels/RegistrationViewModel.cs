@@ -9,6 +9,7 @@ using PasswordManager.Services;
 using MAUIModelsLib;
 using Command = MvvmHelpers.Commands.Command;
 using MvvmHelpers;
+using PasswordManager.Views;
 
 namespace PasswordManager.ViewModels
 {
@@ -40,7 +41,7 @@ namespace PasswordManager.ViewModels
 
         private async void Login()
         {
-            await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PopAsync(true);
+            await Shell.Current.GoToAsync("..");
         }
 
         private async void Register()
@@ -66,9 +67,7 @@ namespace PasswordManager.ViewModels
                 return;
             }
 
-            (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.InsertPageBefore(new Views.PasswordsListPage(), Application.Current.MainPage.Navigation.NavigationStack[0]);
-            await Task.Delay(100);
-            await (Microsoft.Maui.Controls.Application.Current.MainPage as NavigationPage).Navigation.PopToRootAsync(true);
+            await Shell.Current.GoToAsync($"//{nameof(PasswordsListPage)}");
         }
     }
 }

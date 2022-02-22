@@ -20,6 +20,9 @@ namespace PasswordManager
 				.ConfigureFonts(fonts =>
 				{
 					fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+					fonts.AddFont("fa-6-Brands-Regular-400.otf", "FAR");
+					fonts.AddFont("fa-6-Free-Regular-400.otf", "FAB");
+					fonts.AddFont("fa-6-Free-Solid-900.otf", "FAS");
 				});
 
             DatabaseService.Init();

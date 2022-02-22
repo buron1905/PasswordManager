@@ -11,11 +11,14 @@ using System.Collections.ObjectModel;
 using Command = MvvmHelpers.Commands.Command;
 using MvvmHelpers;
 using MvvmHelpers.Commands;
+using PasswordManager.Views;
 
 namespace PasswordManager.ViewModels
 {
+    [QueryProperty(nameof(PasswordId), nameof(PasswordId))]
     public class PasswordDetailViewModel : BaseViewModel
     {
+        public string PasswordId { get; set; }
         public ICommand EditCommand { get; }
         public ICommand DeleteCommand { get; }
         public ICommand TogglePasswordVisibilityCommand { get; }
@@ -42,6 +45,13 @@ namespace PasswordManager.ViewModels
             EditCommand = new AsyncCommand(Edit);
             DeleteCommand = new AsyncCommand(Delete);
             TogglePasswordVisibilityCommand = new Command(TogglePasswordVisibility);
+
+        }
+
+        public async Task LoadPassword()
+        {
+            int.TryParse(PasswordId, out var parsedId);
+            Password = await DatabaseService.GetPassword(parsedId);
         }
 
         private void TogglePasswordVisibility()
@@ -51,8 +61,7 @@ namespace PasswordManager.ViewModels
 
         private async Task Edit()
         {
-            Views.EditPasswordPage editPasswordPage = new Views.EditPasswordPage(Password);
-            await (Application.Current.MainPage as NavigationPage).Navigation.PushAsync(editPasswordPage);
+            await Shell.Current.GoToAsync($"//{nameof(PasswordsListPage)}/{nameof(EditPasswordPage)}?PasswordId={Password.Id}");
         }
 
         private async Task Delete()
@@ -63,7 +72,7 @@ namespace PasswordManager.ViewModels
             if (await PopupService.ShowYesNo($"{Password.PasswordName}", $"Are you sure you want to delete this password?"))
             {
                 await DatabaseService.RemovePassword(Password.Id);
-                await (Application.Current.MainPage as NavigationPage).Navigation.PopAsync(true);
+                await Shell.Current.GoToAsync("..");
             }
         }
     }

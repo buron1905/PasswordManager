@@ -4,6 +4,7 @@
              x:Class="PasswordManager.Views.RegistrationPage"
              x:DataType="viewmodels:RegistrationViewModel"
              BackgroundColor="{DynamicResource SecondaryColor}">
+             <!--Shell.FlyoutBehavior="Disabled"-->
     <ContentPage.BindingContext>
         <viewmodels:RegistrationViewModel/>
     </ContentPage.BindingContext>

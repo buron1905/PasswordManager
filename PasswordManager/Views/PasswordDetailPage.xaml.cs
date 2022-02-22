@@ -13,10 +13,16 @@ namespace PasswordManager.Views
     public partial class PasswordDetailPage : ContentPage
     {
         public PasswordDetailViewModel ViewModel { get; set; }
-        public PasswordDetailPage(Password password)
+        public PasswordDetailPage()
         {
             InitializeComponent();
-            (BindingContext as PasswordDetailViewModel).Password = password;
+            ViewModel = BindingContext as PasswordDetailViewModel;
+        }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            await ViewModel.LoadPassword();
         }
     }
 }

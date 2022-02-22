@@ -3,6 +3,8 @@
              xmlns:viewmodels="clr-namespace:PasswordManager.ViewModels"
              x:Class="PasswordManager.Views.LoginPage"
              x:DataType="viewmodels:LoginViewModel"
+             Shell.FlyoutBehavior="Disabled"
+             Shell.NavBarIsVisible="False"
              BackgroundColor="{DynamicResource SecondaryColor}">
     <ContentPage.BindingContext>
         <viewmodels:LoginViewModel/>
