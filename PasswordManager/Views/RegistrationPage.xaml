@@ -23,11 +23,6 @@
                 Style="{StaticResource EntryBase}"/>
 
             <Label Text="Password:" Style="{StaticResource LabelSmall}"/>
-            <!--<Entry 
-                Text="{Binding Password}"
-                Placeholder="Password"
-                IsPassword="True"
-                Style="{StaticResource EntryBase}"/>-->
             <controls:TogglePasswordEntry Placeholder="Password"
                                           Text="{Binding Password}"
                                           HidePassword="True" Style="{StaticResource TogglePasswordBase}"/>
