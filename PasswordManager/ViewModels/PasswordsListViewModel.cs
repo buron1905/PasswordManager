@@ -44,6 +44,13 @@ namespace PasswordManager.ViewModels
             PerformSearchCommand = new MvvmHelpers.Commands.Command<string>(PerformSearch);
         }
 
+        bool _noPasswordsLabelIsVisible;
+        public bool NoPasswordsLabelIsVisible
+        {
+            get => _noPasswordsLabelIsVisible;
+            set => SetProperty(ref _noPasswordsLabelIsVisible, value);
+        }
+
         string _searchText;
         public string SearchText
         {
@@ -109,6 +116,8 @@ namespace PasswordManager.ViewModels
 
             FilteredPasswords.Clear();
             FilteredPasswords.AddRange(filteredList);
+
+            NoPasswordsLabelIsVisible = FilteredPasswords.Count == 0;
         }
     }
 }
