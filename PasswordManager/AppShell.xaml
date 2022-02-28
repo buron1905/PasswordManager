@@ -46,16 +46,16 @@
         <FlyoutItem.Icon>
             <FontImageSource FontFamily="FAS"
                              Color="{AppThemeBinding 
-                                    Dark=White, 
-                                    Light={StaticResource PrimaryColor}}"
+                    Dark={StaticResource TextColor}, 
+                    Light={StaticResource TextColorDark}}"
                              Glyph="{x:Static fontAwesome:FontAwesomeIcons.Home}"/>
         </FlyoutItem.Icon>
         <Tab Title="Vault">
             <Tab.Icon>
                 <FontImageSource FontFamily="FAS"
                              Color="{AppThemeBinding 
-                                    Dark=White, 
-                                    Light={StaticResource PrimaryColor}}"
+                    Dark={StaticResource TextColor}, 
+                    Light={StaticResource TextColorDark}}"
                              Glyph="{x:Static fontAwesome:FontAwesomeIcons.List}"/>
             </Tab.Icon>
             <ShellContent Title="Vault" ContentTemplate="{DataTemplate local:PasswordsListPage}" Route="PasswordsListPage" />
@@ -64,8 +64,8 @@
             <Tab.Icon>
                 <FontImageSource FontFamily="FAS"
                              Color="{AppThemeBinding 
-                                    Dark=White, 
-                                    Light={StaticResource PrimaryColor}}"
+                    Dark={StaticResource TextColor}, 
+                    Light={StaticResource TextColorDark}}"
                              Glyph="{x:Static fontAwesome:FontAwesomeIcons.Plus}"/>
             </Tab.Icon>
             <ShellContent Title="Generate" ContentTemplate="{DataTemplate local:NewPasswordPage}" Route="NewPasswordPage" />
@@ -76,8 +76,8 @@
         <FlyoutItem.Icon>
             <FontImageSource FontFamily="FAS"
                              Color="{AppThemeBinding 
-                                    Dark=White, 
-                                    Light={StaticResource PrimaryColor}}"
+                    Dark={StaticResource TextColor}, 
+                    Light={StaticResource TextColorDark}}"
                              Glyph="{x:Static fontAwesome:FontAwesomeIcons.Cogs}"/>
         </FlyoutItem.Icon>
         <ShellContent ContentTemplate="{DataTemplate local:SettingsPage}" Route="SettingsPage" />

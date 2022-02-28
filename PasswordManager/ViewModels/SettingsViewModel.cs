@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using PasswordManager.Services;
-using MAUIModelsLib;
+using PasswordManager.Helpers;
 using System.Collections.ObjectModel;
 using Command = MvvmHelpers.Commands.Command;
 using MvvmHelpers;
@@ -17,7 +17,10 @@ namespace PasswordManager.ViewModels
     {
         public SettingsViewModel()
         {
+            Title = "Settings";
 
+            
         }
+
     }
 }
