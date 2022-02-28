@@ -1,15 +1,16 @@
 ﻿<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:windows="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.WindowsSpecific;assembly=Microsoft.Maui.Controls"
+             xmlns:controls="clr-namespace:PasswordManager.Views.Controls"
              xmlns:local="clr-namespace:PasswordManager"
              x:Class="PasswordManager.App"
              windows:Application.ImageDirectory="Assets">
     <Application.Resources>
         <ResourceDictionary>
-            <!--styles from https://github.com/jamesmontemagno/mycoffeeapp?WT.mc_id=friends-0000-jamont-->
 
+            <!--styles from https://github.com/jamesmontemagno/mycoffeeapp?WT.mc_id=friends-0000-jamont-->
             <!--COLORS-->
-            <Color x:Key="Primary">#2196F3</Color>
+            <Color x:Key="Primary">#FF9500</Color>
             <Color x:Key="TextColor">#000000</Color>
             <Color x:Key="TextColorDark">White</Color>
 
@@ -54,6 +55,20 @@
             <Color x:Key="SystemGray6Dark">#1C1C1E</Color>
 
             <!--STYLES-->
+            
+            <!--ContenPage-->
+            <Style x:Key="BaseContentPage" TargetType="ContentPage">
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding 
+                    Dark={StaticResource WindowBackgroundColorDark}, 
+                    Light={StaticResource WindowBackgroundColor}}"/>
+            </Style>
+            
+            <!--StackLayout-->
+            <Style x:Key="StackLayoutCenterForm" TargetType="StackLayout">
+                <Setter Property="Padding" Value="40"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+                <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
+            </Style>
 
             <!--RefreshView-->
             <Style x:Key="BaseRefreshView" TargetType="RefreshView">
@@ -66,10 +81,9 @@
                 <Setter Property="BackgroundColor" Value="Transparent"/>
             </Style>
 
-
             <!--Label-->
             <Style x:Key="LabelBase" TargetType="Label">
-                <Setter Property="TextColor" Value="{AppThemeBinding Dark={StaticResource TextColorDark}, Light={StaticResource TextColor}}" />
+                <Setter Property="TextColor" Value="{AppThemeBinding Dark={StaticResource TextColorDark}, Light={StaticResource SystemGray}}" />
             </Style>
 
             <Style x:Key="LabelMicro" TargetType="Label" BasedOn="{StaticResource LabelBase}">
@@ -88,16 +102,47 @@
                 <Setter Property="FontSize" Value="Large"/>
             </Style>
 
+            <Style x:Key="LabelLink" TargetType="Label" BasedOn="{StaticResource LabelMedium}">
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="TextDecorations" Value="Underline" />
+                <Setter Property="Margin" Value="15 0 0 0" />
+            </Style>
+
+            <!--Entry-->
+            <Style x:Key="EntryBase" TargetType="Entry">
+                <Setter Property="HorizontalTextAlignment" Value="Start" />
+                <Setter Property="Margin" Value="0 0 5 0" />
+            </Style>
+
+            <Style x:Key="TogglePasswordBase" TargetType="controls:TogglePasswordEntry">
+                <Setter Property="Margin" Value="0 0 5 0" />
+            </Style>
+
             <!--Button-->
             <Style x:Key="ButtonBase" TargetType="Button">
-                <Setter Property="TextColor" Value="{StaticResource TextColorDark}" />
+                <Setter Property="TextColor" Value="{AppThemeBinding Dark={StaticResource TextColor}, Light={StaticResource TextColorDark}}" />
                 <Setter Property="HeightRequest" Value="{OnPlatform iOS=30, Android=40}" />
                 <Setter Property="FontSize" Value="Small" />
+                <Setter Property="FontAttributes" Value="Bold" />
                 <Setter Property="CornerRadius" Value="6" />
                 <Setter Property="BackgroundColor" Value="{AppThemeBinding Dark={StaticResource SystemOrangeDark}, Light={StaticResource SystemOrange}}" />
                 <Setter Property="BorderColor" Value="{StaticResource TextColor}" />
                 <Setter Property="HorizontalOptions" Value="Center" />
-                <!--<Setter Property="WidthRequest" Value="150" />-->
+                <Setter Property="Margin" Value="5" />
+            </Style>
+
+            <Style x:Key="ImageButtonBase" TargetType="ImageButton">
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Dark={StaticResource SystemOrangeDark}, Light={StaticResource SystemOrange}}" />
+            </Style>
+
+            <Style x:Key="ActionFloatButton" TargetType="ImageButton" BasedOn="{StaticResource ImageButtonBase}">
+                <Setter Property="VerticalOptions" Value="End" />
+                <Setter Property="HorizontalOptions" Value="End" />
+                <Setter Property="HeightRequest" Value="50" />
+                <Setter Property="WidthRequest" Value="50" />
+                <Setter Property="CornerRadius" Value="60" />
+                <Setter Property="Margin" Value="20" />
+                <Setter Property="Aspect" Value="Center" />
             </Style>
 
             <!--Frame-->

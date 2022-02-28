@@ -13,6 +13,7 @@ namespace PasswordManager.Views
     public partial class PasswordsListPage : ContentPage
     {
         public PasswordsListViewModel ViewModel { get; set; }
+
         public PasswordsListPage()
         {
             InitializeComponent();

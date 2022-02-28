@@ -2,17 +2,23 @@
 using PasswordManager.Services;
 using PasswordManager.Views;
 using System.Windows.Input;
-using Command = MvvmHelpers.Commands.Command;
+using System.Threading.Tasks;
 using MvvmHelpers;
+using MvvmHelpers.Commands;
 
 namespace PasswordManager.ViewModels
 {
     public class LoginViewModel : BaseViewModel
     {
+        public ICommand LoginCommand { get; }
+        public ICommand RegistrationCommand { get; }
+
         public LoginViewModel()
         {
-            LoginCommand = new Command(Login);
-            RegistrationCommand = new Command(Registration);
+            Title = "Login";
+
+            LoginCommand = new AsyncCommand(Login);
+            RegistrationCommand = new AsyncCommand(Registration);
         }
 
         string _email = "";
@@ -29,20 +35,16 @@ namespace PasswordManager.ViewModels
             set => SetProperty(ref _password, value);
         }
 
-        public ICommand LoginCommand { get; }
-        public ICommand RegistrationCommand { get; }
-
-        private async void Registration()
+        private async Task Registration()
         {
             await Shell.Current.GoToAsync($"{nameof(RegistrationPage)}");
         }
 
-        private async void Login()
+        private async Task Login()
         {
             if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
             {
-                
-                await PopupService.ShowError("Error", "Fields cannot be empty");
+                await PopupService.ShowError("Error", "Fields must not be empty");
                 return;
             }
 

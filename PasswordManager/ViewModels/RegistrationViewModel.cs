@@ -15,8 +15,13 @@ namespace PasswordManager.ViewModels
 {
     public class RegistrationViewModel : BaseViewModel
     {
+        public ICommand RegisterCommand { get; }
+        public ICommand LoginCommand { get; }
+
         public RegistrationViewModel()
         {
+            Title = "Registration";
+
             RegisterCommand = new Command(Register);
             LoginCommand = new Command(Login);
         }
@@ -35,18 +40,14 @@ namespace PasswordManager.ViewModels
             set => SetProperty(ref _password, value);
         }
 
-
-        public ICommand RegisterCommand { get; }
-        public ICommand LoginCommand { get; }
-
         private async void Login()
         {
-            await Shell.Current.GoToAsync("..");
+            await Shell.Current.GoToAsync("..", true);
         }
 
         private async void Register()
         {
-            if (Email == "" || Password == "")
+            if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
             {
                 await PopupService.ShowError("Error", "Fields must not be empty");
                 return;

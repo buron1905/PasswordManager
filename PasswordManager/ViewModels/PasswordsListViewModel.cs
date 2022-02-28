@@ -20,6 +20,7 @@ namespace PasswordManager.ViewModels
     {
         public List<Password> AllPasswords { get; set; }
         public ObservableRangeCollection<Password> FilteredPasswords { get; set; }
+
         public ICommand LogoutCommand { get; }
         public ICommand RefreshCommand { get; }
         public ICommand NewPasswordCommand { get; }
@@ -29,7 +30,7 @@ namespace PasswordManager.ViewModels
 
         public PasswordsListViewModel()
         {
-            Title = "List of passwords";
+            Title = "Vault";
 
             AllPasswords = new List<Password>();
             FilteredPasswords = new ObservableRangeCollection<Password>();

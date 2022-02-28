@@ -5,14 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using PasswordManager.ViewModels;
 
 namespace PasswordManager.Views
 {
     public partial class RegistrationPage : ContentPage
     {
+        public RegistrationViewModel ViewModel { get; set; }
+
         public RegistrationPage()
         {
             InitializeComponent();
+			ViewModel = BindingContext as RegistrationViewModel;
         }
     }
 }
