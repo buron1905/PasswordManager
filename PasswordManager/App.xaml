@@ -88,7 +88,7 @@
 
             <!--Label-->
             <Style x:Key="LabelBase" TargetType="Label">
-                <Setter Property="TextColor" Value="{AppThemeBinding Dark={StaticResource TextColorDark}, Light={StaticResource SystemGray}}" />
+                <Setter Property="TextColor" Value="{AppThemeBinding Dark={StaticResource TextColorDark}, Light={StaticResource SystemGray2Dark}}" />
             </Style>
 
             <Style x:Key="LabelMicro" TargetType="Label" BasedOn="{StaticResource LabelBase}">
@@ -107,10 +107,19 @@
                 <Setter Property="FontSize" Value="Large"/>
             </Style>
 
+            <!--Label Link-->
             <Style x:Key="LabelLink" TargetType="Label" BasedOn="{StaticResource LabelMedium}">
                 <Setter Property="HorizontalOptions" Value="Center"/>
                 <Setter Property="TextDecorations" Value="Underline" />
                 <Setter Property="Margin" Value="15 0 0 0" />
+            </Style>
+
+            <!--Label Heading-->
+            <Style x:Key="LabelHeading" TargetType="Label" BasedOn="{StaticResource LabelMedium}">
+                <Setter Property="SemanticProperties.HeadingLevel" Value="Level1" />
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="FontSize" Value="32"/>
+                <Setter Property="Padding" Value="0,5,0,20" />
             </Style>
 
             <!--Entry-->
@@ -136,6 +145,7 @@
                 <Setter Property="Margin" Value="5" />
             </Style>
 
+            <!--ImageButton-->
             <Style x:Key="ImageButtonBase" TargetType="ImageButton">
                 <Setter Property="BackgroundColor" Value="{AppThemeBinding Dark={StaticResource SystemOrangeDark}, Light={StaticResource SystemOrange}}" />
             </Style>

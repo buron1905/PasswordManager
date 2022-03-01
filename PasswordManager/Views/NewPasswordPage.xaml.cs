@@ -17,5 +17,17 @@ namespace PasswordManager.Views
             InitializeComponent();
             ViewModel = BindingContext as NewPasswordViewModel;
         }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            Shell.Current.Navigating += ViewModel.Current_Navigating;
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            Shell.Current.Navigating -= ViewModel.Current_Navigating;
+        }
     }
 }

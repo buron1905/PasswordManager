@@ -10,17 +10,22 @@ using MAUIModelsLib;
 using System.Collections.ObjectModel;
 using Command = MvvmHelpers.Commands.Command;
 using MvvmHelpers;
+using MvvmHelpers.Commands;
 
 namespace PasswordManager.ViewModels
 {
     public class NewPasswordViewModel : BaseViewModel
     {
+        public ICommand SaveCommand { get; }
+        public ICommand CancelCommand { get; }
+
         public NewPasswordViewModel()
         {
-            SaveCommand = new Command(Save);
-        }
+            Title = "New password";
 
-        public ICommand SaveCommand { get; }
+            SaveCommand = new AsyncCommand(Save);
+            CancelCommand = new AsyncCommand(Cancel);
+        }
 
         string _passwordName = "";
         public string PasswordName
@@ -50,9 +55,22 @@ namespace PasswordManager.ViewModels
             set => SetProperty(ref _description, value);
         }
 
-        private async void Save()
+        public async void Current_Navigating(object sender, ShellNavigatingEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(PasswordName) || string.IsNullOrWhiteSpace(UserName))
+            var deferral = e.GetDeferral();
+
+            if(!string.IsNullOrEmpty(UserName) || !string.IsNullOrEmpty(Password) || !string.IsNullOrEmpty(PasswordName))
+            {
+                if(!await PopupService.ShowYesNo("Leave unsaved changes?", "Unsaved changes will be lost. Do you still want to leave?"))
+                    e.Cancel();
+            }
+
+            deferral.Complete();
+        }
+
+        private async Task Save()
+        {
+            if (string.IsNullOrWhiteSpace(UserName) || string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(PasswordName))
             {
                 await PopupService.ShowError("Error", "Fields cannot be empty");
                 return;
@@ -68,8 +86,13 @@ namespace PasswordManager.ViewModels
             };
 
             await DatabaseService.AddPassword(newPassword);
+            Shell.Current.Navigating -= Current_Navigating;
             await Shell.Current.GoToAsync("..");
         }
 
+        private async Task Cancel()
+        {
+            await Shell.Current.GoToAsync("..");
+        }
     }
 }
