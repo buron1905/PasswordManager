@@ -40,6 +40,13 @@ namespace PasswordManager.ViewModels
             set => SetProperty(ref _password, value);
         }
 
+        string _passwordAgain = "";
+        public string PasswordAgain
+        {
+            get => _passwordAgain;
+            set => SetProperty(ref _passwordAgain, value);
+        }
+
         private async void Login()
         {
             await Shell.Current.GoToAsync("..", true);
@@ -49,7 +56,13 @@ namespace PasswordManager.ViewModels
         {
             if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
             {
-                await PopupService.ShowError("Error", "Fields must not be empty");
+                await PopupService.ShowError("Error", "Following fields must not be empty: email, master password");
+                return;
+            }
+
+            if(Password != PasswordAgain)
+            {
+                await PopupService.ShowError("Error", "Entered passwords don't match");
                 return;
             }
 

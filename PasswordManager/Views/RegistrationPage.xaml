@@ -22,9 +22,14 @@
                 Keyboard="Email"
                 Style="{StaticResource EntryBase}"/>
 
-            <Label Text="Password:" Style="{StaticResource LabelSmall}"/>
+            <Label Text="Master password:" Style="{StaticResource LabelSmall}"/>
             <controls:TogglePasswordEntry Placeholder="Password"
                                           Text="{Binding Password}"
+                                          HidePassword="True" Style="{StaticResource TogglePasswordBase}"/>
+            <Label Text="Master password (again):" Style="{StaticResource LabelSmall}"/>
+            
+            <controls:TogglePasswordEntry Placeholder="Password"
+                                          Text="{Binding PasswordAgain}"
                                           HidePassword="True" Style="{StaticResource TogglePasswordBase}"/>
 
             <Button 
