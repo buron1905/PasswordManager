@@ -12,6 +12,7 @@ using Command = MvvmHelpers.Commands.Command;
 using MvvmHelpers;
 using MvvmHelpers.Commands;
 using PasswordManager.Views;
+using Microsoft.Maui.Essentials;
 
 namespace PasswordManager.ViewModels
 {
@@ -21,6 +22,7 @@ namespace PasswordManager.ViewModels
         public string PasswordId { get; set; }
         public ICommand EditCommand { get; }
         public ICommand DeleteCommand { get; }
+        public ICommand CopyCommand { get; }
         public ICommand TogglePasswordVisibilityCommand { get; }
 
         private bool _passwordVisible = false;
@@ -31,6 +33,7 @@ namespace PasswordManager.ViewModels
 
             EditCommand = new AsyncCommand(Edit);
             DeleteCommand = new AsyncCommand(Delete);
+            CopyCommand = new AsyncCommand<string>(Copy);
             TogglePasswordVisibilityCommand = new Command(TogglePasswordVisibility);
         }
 
@@ -67,6 +70,11 @@ namespace PasswordManager.ViewModels
                 await DatabaseService.RemovePassword(Password.Id);
                 await Shell.Current.GoToAsync("..");
             }
+        }
+
+        private async Task Copy(string text)
+        {
+            await Clipboard.SetTextAsync(text);
         }
     }
 }

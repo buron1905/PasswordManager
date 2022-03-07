@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:fontAwesome="clr-namespace:FontAwesome"
+             x:Class="PasswordManager.Views.Controls.ReadOnlyDetailEntry"
+             x:Name="root">
+    <ContentView.Content>
+        <Grid BindingContext="{x:Reference root}" Style="{StaticResource GridLayoutForm}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Entry Placeholder="{Binding Placeholder}"
+             Text="{Binding Text}"
+                   Style="{StaticResource EntryReadOnly}"
+                   Grid.Row="0"
+                   Grid.Column="0"/>
+            
+            <ImageButton Clicked="OnCopyButtonClicked"
+                   BackgroundColor="Transparent"
+                   Margin="3"
+                   Grid.Row="0"
+                   Grid.Column="1">
+                <ImageButton.Source>
+                    <FontImageSource FontFamily="FAS"
+                        Color="{AppThemeBinding 
+                        Dark={StaticResource TextColorDark}, 
+                        Light={StaticResource SystemGray2Dark}}"
+                        Glyph="{x:Static fontAwesome:FontAwesomeIcons.Copy}"/>
+                </ImageButton.Source>
+            </ImageButton>
+
+        </Grid>
+    </ContentView.Content>
+</ContentView>
