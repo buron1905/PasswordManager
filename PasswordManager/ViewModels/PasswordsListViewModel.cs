@@ -110,9 +110,7 @@ namespace PasswordManager.ViewModels
 
             searchText = searchText.ToLowerInvariant();
 
-            var filteredList = AllPasswords.Where(x => x.PasswordName.ToLowerInvariant().StartsWith(searchText)).ToList();
-            if(filteredList.Count() == 0)
-                filteredList = AllPasswords.Where(x => x.PasswordName.ToLowerInvariant().Contains(searchText)).ToList();
+            var filteredList = AllPasswords.Where(x => x.PasswordName.ToLowerInvariant().Contains(searchText)).ToList();
 
             FilteredPasswords.Clear();
             FilteredPasswords.AddRange(filteredList);

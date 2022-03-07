@@ -20,50 +20,94 @@ namespace PasswordManager.ViewModels
     {
         public string PasswordId { get; set; }
         public ICommand SaveCommand { get; }
-        public ICommand DeleteCommand { get; }
-
-        Password _password;
-        public Password Password
-        {
-            get => _password;
-            set => SetProperty(ref _password, value);
-        }
+        public ICommand CancelCommand { get; }
 
         public EditPasswordViewModel()
         {
             Title = "Edit password";
 
-            DeleteCommand = new AsyncCommand(Delete);
             SaveCommand = new AsyncCommand(Save);
+            CancelCommand = new AsyncCommand(Cancel);
+        }
+
+        Password _passwordOriginal;
+        public Password PasswordOriginal
+        {
+            get => _passwordOriginal;
+            set => SetProperty(ref _passwordOriginal, value);
+        }
+
+        string _passwordName = "";
+        public string PasswordName
+        {
+            get => _passwordName;
+            set => SetProperty(ref _passwordName, value);
+        }
+
+        string _userName = "";
+        public string UserName
+        {
+            get => _userName;
+            set => SetProperty(ref _userName, value);
+        }
+
+        string _password = "";
+        public string Password
+        {
+            get => _password;
+            set => SetProperty(ref _password, value);
+        }
+
+        string _description = "";
+        public string Description
+        {
+            get => _description;
+            set => SetProperty(ref _description, value);
+        }
+
+        public async void Current_Navigating(object sender, ShellNavigatingEventArgs e)
+        {
+            var deferral = e.GetDeferral();
+
+            if (UserName != PasswordOriginal.UserName || Password != PasswordOriginal.PasswordText || PasswordName != PasswordOriginal.PasswordName)
+            {
+                if (!await PopupService.ShowYesNo("Leave unsaved changes?", "Unsaved changes will be lost. Do you still want to leave?"))
+                    e.Cancel();
+            }
+
+            deferral.Complete();
         }
 
         public async Task LoadPassword()
         {
             int.TryParse(PasswordId, out var parsedId);
-            Password = await DatabaseService.GetPassword(parsedId);
+            PasswordOriginal = await DatabaseService.GetPassword(parsedId);
+
+            PasswordName = PasswordOriginal.PasswordName;
+            UserName = PasswordOriginal.UserName;
+            Password = PasswordOriginal.PasswordText;
+            Description = PasswordOriginal.Description;
         }
 
         private async Task Save()
         {
-            if (string.IsNullOrWhiteSpace(Password.PasswordText) || string.IsNullOrWhiteSpace(Password.PasswordName) || string.IsNullOrWhiteSpace(Password.UserName))
+            if (string.IsNullOrWhiteSpace(UserName) || string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(PasswordName))
             {
                 await PopupService.ShowError("Error", "Fields cannot be empty");
                 return;
             }
-            await DatabaseService.UpdatePassword(Password);
+
+            PasswordOriginal.PasswordName = PasswordName;
+            PasswordOriginal.UserName = UserName;
+            PasswordOriginal.PasswordText = Password;
+            PasswordOriginal.Description = Description;
+            await DatabaseService.UpdatePassword(PasswordOriginal);
             await Shell.Current.GoToAsync($"//{nameof(PasswordsListPage)}");
         }
 
-        private async Task Delete()
+        private async Task Cancel()
         {
-            if (Password == null)
-                return;
-
-            if (await PopupService.ShowYesNo($"{Password.PasswordName}", $"Are you sure you want to delete this password?"))
-            {
-                await DatabaseService.RemovePassword(Password.Id);
-                await Shell.Current.GoToAsync($"//{nameof(PasswordsListPage)}");
-            }
+            await Shell.Current.GoToAsync($"//{nameof(PasswordsListPage)}/{nameof(PasswordDetailPage)}?PasswordId={PasswordId}");
         }
     }
 }

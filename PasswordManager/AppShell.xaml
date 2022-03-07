@@ -32,12 +32,6 @@
         </ResourceDictionary>
     </Shell.Resources>
 
-
-
-
-
-
-
     <ShellItem Route="LoginPage" FlyoutItemIsVisible="False">
         <ShellContent ContentTemplate="{DataTemplate local:LoginPage}"/>
     </ShellItem>
@@ -80,7 +74,7 @@
                     Light={StaticResource TextColorDark}}"
                              Glyph="{x:Static fontAwesome:FontAwesomeIcons.Cogs}"/>
         </FlyoutItem.Icon>
-        <ShellContent ContentTemplate="{DataTemplate local:SettingsPage}" Route="SettingsPage" />
+        <ShellContent ContentTemplate="{DataTemplate local:SettingsPage}" Route="SettingsPage"/>
     </FlyoutItem>
 
 </Shell>

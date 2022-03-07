@@ -13,36 +13,38 @@
     </ContentPage.BindingContext>
 
     <ContentPage.Content>
-        <StackLayout Style="{StaticResource StackLayoutCenterForm}">
+        <ScrollView>
+            <StackLayout Style="{StaticResource StackLayoutCenterForm}">
 
-            <Label Text="Email:" Style="{StaticResource LabelSmall}"/>
-            <Entry
+                <Label Text="Email:" Style="{StaticResource LabelSmall}"/>
+                <Entry
                 Text="{Binding Email}"
                 Placeholder="Email" 
                 Keyboard="Email"
                 Style="{StaticResource EntryBase}"/>
 
-            <Label Text="Master password:" Style="{StaticResource LabelSmall}"/>
-            <controls:TogglePasswordEntry Placeholder="Password"
+                <Label Text="Master password:" Style="{StaticResource LabelSmall}"/>
+                <controls:TogglePasswordEntry Placeholder="Password"
                                           Text="{Binding Password}"
                                           HidePassword="True" Style="{StaticResource TogglePasswordBase}"/>
-            <Label Text="Master password (again):" Style="{StaticResource LabelSmall}"/>
-            
-            <controls:TogglePasswordEntry Placeholder="Password"
+                <Label Text="Master password (again):" Style="{StaticResource LabelSmall}"/>
+
+                <controls:TogglePasswordEntry Placeholder="Password"
                                           Text="{Binding PasswordAgain}"
                                           HidePassword="True" Style="{StaticResource TogglePasswordBase}"/>
 
-            <Button 
+                <Button 
                 Text="Register"
                 Command="{Binding RegisterCommand}"
                 Style="{StaticResource ButtonBase}"/>
 
-            <Label Text="Login" Style="{StaticResource LabelLink}">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding LoginCommand}" />
-                </Label.GestureRecognizers>
-            </Label>
+                <Label Text="Login" Style="{StaticResource LabelLink}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding LoginCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
 
-        </StackLayout>
+            </StackLayout>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>

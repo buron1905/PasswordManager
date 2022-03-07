@@ -23,29 +23,22 @@ namespace PasswordManager.ViewModels
         public ICommand DeleteCommand { get; }
         public ICommand TogglePasswordVisibilityCommand { get; }
 
+        private bool _passwordVisible = false;
+
+        public PasswordDetailViewModel()
+        {
+            Title = "Detail";
+
+            EditCommand = new AsyncCommand(Edit);
+            DeleteCommand = new AsyncCommand(Delete);
+            TogglePasswordVisibilityCommand = new Command(TogglePasswordVisibility);
+        }
+
         Password _password;
         public Password Password
         {
             get => _password;
             set => SetProperty(ref _password, value);
-        }
-
-        private bool _passwordVisible = false;
-        string _toggleVisibilityText = "Show password";
-        public string ToggleVisibilityText
-        {
-            get => _toggleVisibilityText;
-            set => SetProperty(ref _toggleVisibilityText, value);
-        }
-
-        public PasswordDetailViewModel()
-        {
-            Title = "Password detail";
-
-            EditCommand = new AsyncCommand(Edit);
-            DeleteCommand = new AsyncCommand(Delete);
-            TogglePasswordVisibilityCommand = new Command(TogglePasswordVisibility);
-
         }
 
         public async Task LoadPassword()
@@ -61,7 +54,7 @@ namespace PasswordManager.ViewModels
 
         private async Task Edit()
         {
-            await Shell.Current.GoToAsync($"//{nameof(PasswordsListPage)}/{nameof(EditPasswordPage)}?PasswordId={Password.Id}");
+            await Shell.Current.GoToAsync($"{nameof(EditPasswordPage)}?PasswordId={Password.Id}");
         }
 
         private async Task Delete()

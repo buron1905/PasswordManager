@@ -70,6 +70,13 @@
                 <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
             </Style>
 
+            <!--GridLayout - used in TogglePassword-->
+            <Style x:Key="GridLayoutForm" TargetType="Grid">
+                <Setter Property="Padding" Value="40, 0"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+                <Setter Property="HorizontalOptions" Value="CenterAndExpand"/>
+            </Style>
+
             <!--RefreshView-->
             <Style x:Key="BaseRefreshView" TargetType="RefreshView">
                 <Setter Property="RefreshColor" Value="{StaticResource SystemGray6Dark}"/>
@@ -107,6 +114,12 @@
                 <Setter Property="FontSize" Value="Large"/>
             </Style>
 
+            <Style x:Key="LabelInfo" TargetType="Label" BasedOn="{StaticResource LabelBase}">
+                <Setter Property="TextColor" Value="{AppThemeBinding Dark={StaticResource TextColorDark}, Light={StaticResource SystemGray4Dark}}" />
+                <Setter Property="FontSize" Value="Medium"/>
+                <Setter Property="HorizontalOptions" Value="Start"/>
+            </Style>
+
             <!--Label Link-->
             <Style x:Key="LabelLink" TargetType="Label" BasedOn="{StaticResource LabelMedium}">
                 <Setter Property="HorizontalOptions" Value="Center"/>
@@ -128,6 +141,24 @@
                 <Setter Property="Margin" Value="0 0 5 0" />
             </Style>
 
+            <Style x:Key="EntryReadOnly" TargetType="Entry" BasedOn="{StaticResource EntryBase}">
+                <Setter Property="IsEnabled" Value="False" />
+                <Setter Property="TextColor" Value="{AppThemeBinding Dark={StaticResource TextColorDark}, Light={StaticResource TextColor}}" />
+            </Style>
+
+            <!--Editor-->
+            <Style x:Key="EditorBase" TargetType="Editor">
+                <Setter Property="HorizontalTextAlignment" Value="Start" />
+                <Setter Property="Margin" Value="0 0 5 0" />
+                <Setter Property="AutoSize" Value="TextChanges" />
+            </Style>
+
+            <Style x:Key="EditorReadOnly" TargetType="Editor" BasedOn="{StaticResource EditorBase}">
+                <Setter Property="IsEnabled" Value="False" />
+                <Setter Property="TextColor" Value="{AppThemeBinding Dark={StaticResource TextColorDark}, Light={StaticResource TextColor}}" />
+            </Style>
+            
+            <!--Custom controls-->
             <Style x:Key="TogglePasswordBase" TargetType="controls:TogglePasswordEntry">
                 <Setter Property="Margin" Value="0 0 5 0" />
             </Style>
@@ -164,6 +195,7 @@
             <Style x:Key="FrameCard" TargetType="Frame">
                 <Setter Property="HasShadow" Value="{OnPlatform Android=true, iOS=false, Default=true}"/>
                 <Setter Property="CornerRadius" Value="20"/>
+                <Setter Property="Margin" Value="2,0"/> <!--this is due to shadow on sides-->
                 <Setter Property="BackgroundColor" Value="{AppThemeBinding Dark={StaticResource CardBackgroundDark}, Light={StaticResource CardBackground}}"/>
             </Style>
 

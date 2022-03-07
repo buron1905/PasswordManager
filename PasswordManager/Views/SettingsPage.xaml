@@ -102,8 +102,8 @@
     </ContentPage.Resources>
 
     <ContentPage.Content>
-
         <ScrollView>
+            
             <Grid Padding="12" ColumnDefinitions=".05*,.9*,.05*">
                 <StackLayout Grid.Column="1">
                     <Label
@@ -166,8 +166,8 @@
                     </Frame>
                 </StackLayout>
             </Grid>
+            
         </ScrollView>
-        
     </ContentPage.Content>
 </ContentPage>
 

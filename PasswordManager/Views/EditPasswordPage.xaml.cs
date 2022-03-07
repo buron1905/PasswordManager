@@ -24,6 +24,13 @@ namespace PasswordManager.Views
         {
             base.OnAppearing();
             await ViewModel.LoadPassword();
+            Shell.Current.Navigating += ViewModel.Current_Navigating;
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            Shell.Current.Navigating -= ViewModel.Current_Navigating;
         }
     }
 }
