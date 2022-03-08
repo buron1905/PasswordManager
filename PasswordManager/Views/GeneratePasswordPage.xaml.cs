@@ -19,11 +19,11 @@ namespace PasswordManager.Views
             ViewModel = BindingContext as GeneratePasswordViewModel;
         }
 
-        protected override async void OnAppearing()
+        protected override void OnAppearing()
         {
             base.OnAppearing();
 
-            await ViewModel.GenerateNew();
+            ViewModel.GenerateNew();
         }
     }
 }

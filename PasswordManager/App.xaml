@@ -46,7 +46,7 @@
             <Color x:Key="SystemRedDark">#FF453A</Color>
             <Color x:Key="SystemTealDark">#64D2FF</Color>
             <Color x:Key="SystemYellowDark">#FFD60A</Color>
-
+            
             <Color x:Key="SystemGrayDark">#8E8E93</Color>
             <Color x:Key="SystemGray2Dark">#636366</Color>
             <Color x:Key="SystemGray3Dark">#484848</Color>
@@ -54,6 +54,7 @@
             <Color x:Key="SystemGray5Dark">#2C2C2E</Color>
             <Color x:Key="SystemGray6Dark">#1C1C1E</Color>
 
+            <Color x:Key="OrangeDarker">#CC9243</Color>
             <!--STYLES-->
             
             <!--ContenPage-->
@@ -133,6 +134,18 @@
                 <Setter Property="HorizontalOptions" Value="Center"/>
                 <Setter Property="FontSize" Value="32"/>
                 <Setter Property="Padding" Value="0,5,0,20" />
+            </Style>
+
+            <!--Slider-->
+            <Style x:Key="SliderBase" TargetType="Slider">
+                <Setter Property="ThumbColor" Value="{StaticResource Primary}" />
+            </Style>
+            
+            <!--Switch-->
+            <Style x:Key="SwitchBase" TargetType="Switch">
+                <Setter Property="VerticalOptions" Value="Center" />
+                <Setter Property="ThumbColor" Value="{StaticResource Primary}" />
+                <Setter Property="OnColor" Value="{StaticResource OrangeDarker}" />
             </Style>
 
             <!--Entry-->

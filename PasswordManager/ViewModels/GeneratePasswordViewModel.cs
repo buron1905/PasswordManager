@@ -24,7 +24,7 @@ namespace PasswordManager.ViewModels
         {
             Title = "Generate password";
 
-            GenerateNewCommand = new AsyncCommand(GenerateNew);
+            GenerateNewCommand = new Command(GenerateNew);
             CopyCommand = new AsyncCommand(Copy);
         }
 
@@ -35,14 +35,85 @@ namespace PasswordManager.ViewModels
             set => SetProperty(ref _password, value);
         }
 
+        int _length;
+        public int Length
+        {
+            get => Preferences.Get(nameof(Length), 8);
+            set
+            {
+                SetProperty(ref _length, value);
+                Preferences.Set(nameof(Length), value);
+                LengthText = $"Length {_length}";
+                GenerateNew();
+            }
+        }
+
+        string _lengthText = "";
+        public string LengthText
+        {
+            get => _lengthText;
+            set => SetProperty(ref _lengthText, value);
+        }
+
+        bool _uppercaseOn;
+        public bool UppercaseOn
+
+        {
+            get => Preferences.Get(nameof(UppercaseOn), true);
+            set
+            {
+                SetProperty(ref _uppercaseOn, value);
+                Preferences.Set(nameof(UppercaseOn), value);
+                GenerateNew();
+            }
+        }
+
+        bool _lowercaseOn;
+        public bool LowercaseOn
+
+        {
+            get => Preferences.Get(nameof(LowercaseOn), true);
+            set
+            {
+                SetProperty(ref _lowercaseOn, value);
+                Preferences.Set(nameof(LowercaseOn), value);
+                GenerateNew();
+            }
+        }
+
+        bool _numbersOn;
+        public bool NumbersOn
+
+        {
+            get => Preferences.Get(nameof(NumbersOn), true);
+            set
+            {
+                SetProperty(ref _numbersOn, value);
+                Preferences.Set(nameof(NumbersOn), value);
+                GenerateNew();
+            }
+        }
+
+        bool _specialCharsOn;
+        public bool SpecialCharsOn
+        {
+            get => Preferences.Get(nameof(SpecialCharsOn), true);
+            set
+            {
+                SetProperty(ref _specialCharsOn, value);
+                Preferences.Set(nameof(SpecialCharsOn), value);
+                GenerateNew();
+            }
+        }
+
         private async Task Copy()
         {
             await Clipboard.SetTextAsync(Password);
         }
 
-        public async Task GenerateNew()
+        public void GenerateNew()
         {
-
+            Password = PasswordGeneratorService.GeneratePassword(Length, NumbersOn, SpecialCharsOn, UppercaseOn, LowercaseOn);
         }
     }
 }
