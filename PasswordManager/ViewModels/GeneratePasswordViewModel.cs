@@ -113,6 +113,9 @@ namespace PasswordManager.ViewModels
 
         public void GenerateNew()
         {
+            if (!NumbersOn && !SpecialCharsOn && !UppercaseOn && !LowercaseOn)
+                LowercaseOn = true;
+
             Password = PasswordGeneratorService.GeneratePassword(Length, NumbersOn, SpecialCharsOn, UppercaseOn, LowercaseOn);
         }
     }
