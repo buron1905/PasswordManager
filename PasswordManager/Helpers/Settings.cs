@@ -9,12 +9,12 @@ namespace PasswordManager.Helpers
 {
     public static class Settings
     {
-        // 0 = default, 1 = light, 2 = dark
-        const int theme = 0;
-        public static int Theme
+        private const Theme _themeDefault = Theme.Unspecified;
+        //const int theme = 0;
+        public static Theme Theme
         {
-            get => Preferences.Get(nameof(Theme), theme);
-            set => Preferences.Set(nameof(Theme), value);
+            get => (Theme)Preferences.Get(nameof(Theme), (int)_themeDefault);
+            set => Preferences.Set(nameof(Theme), (int)value);
         }
     }
 }

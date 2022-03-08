@@ -12,9 +12,10 @@ namespace PasswordManager
 	{
 		public App()
 		{
-			InitializeComponent();
+            TheTheme.SetTheme();
+            InitializeComponent();
 
-			MainPage = new AppShell();
+            MainPage = new AppShell();
         }
 
         protected override void OnStart()

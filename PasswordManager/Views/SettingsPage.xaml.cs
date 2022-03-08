@@ -18,48 +18,48 @@ namespace PasswordManager.Views
             InitializeComponent();
             ViewModel = BindingContext as SettingsViewModel;
 
-            switch (Settings.Theme)
-            {
-                case 0:
-                    RadioButtonSystem.IsChecked = true;
-                    break;
-                case 1:
-                    RadioButtonLight.IsChecked = true;
-                    break;
-                case 2:
-                    RadioButtonDark.IsChecked = true;
-                    break;
-            }
+            //switch (Settings.Theme)
+            //{
+            //    case 0:
+            //        RadioButtonSystem.IsChecked = true;
+            //        break;
+            //    case 1:
+            //        RadioButtonLight.IsChecked = true;
+            //        break;
+            //    case 2:
+            //        RadioButtonDark.IsChecked = true;
+            //        break;
+            //}
         }
 
         private bool loaded = true;
 
-        void RadioButton_CheckedChanged(object sender, CheckedChangedEventArgs e)
-        {
-            if (!loaded)
-                return;
+        //void RadioButton_CheckedChanged(object sender, CheckedChangedEventArgs e)
+        //{
+        //    if (!loaded)
+        //        return;
 
-            if (!e.Value)
-                return;
+        //    if (!e.Value)
+        //        return;
 
-            var val = (sender as RadioButton)?.Value as string;
-            if (string.IsNullOrWhiteSpace(val))
-                return;
+        //    var val = (sender as RadioButton)?.Value as string;
+        //    if (string.IsNullOrWhiteSpace(val))
+        //        return;
 
-            switch (val)
-            {
-                case "System":
-                    Settings.Theme = 0;
-                    break;
-                case "Light":
-                    Settings.Theme = 1;
-                    break;
-                case "Dark":
-                    Settings.Theme = 2;
-                    break;
-            }
+        //    switch (val)
+        //    {
+        //        case "System":
+        //            Settings.Theme = Theme.Unspecified;
+        //            break;
+        //        case "Light":
+        //            Settings.Theme = Theme.Light;
+        //            break;
+        //        case "Dark":
+        //            Settings.Theme = Theme.Dark;
+        //            break;
+        //    }
 
-            TheTheme.SetTheme();
-        }
+        //    TheTheme.SetTheme();
+        //}
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Maui.Controls;
+﻿using Microsoft.Maui.Graphics;
+using Microsoft.Maui.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,13 @@ using System.Threading.Tasks;
 
 namespace PasswordManager.Helpers
 {
+    public enum Theme
+    {
+        Unspecified,
+        Light,
+        Dark
+    }
+
     public static class TheTheme
     {
         public static void SetTheme()
@@ -14,15 +22,15 @@ namespace PasswordManager.Helpers
             switch (Settings.Theme)
             {
                 //default
-                case 0:
+                case Theme.Unspecified:
                     App.Current.UserAppTheme = OSAppTheme.Unspecified;
                     break;
                 //light
-                case 1:
+                case Theme.Light:
                     App.Current.UserAppTheme = OSAppTheme.Light;
                     break;
                 //dark
-                case 2:
+                case Theme.Dark:
                     App.Current.UserAppTheme = OSAppTheme.Dark;
                     break;
             }
@@ -30,7 +38,6 @@ namespace PasswordManager.Helpers
             //Application.Current.Resources.MergedDictionaries
             //https://docs.microsoft.com/en-us/xamarin/xamarin-forms/user-interface/theming/theming
 
-            //var nav = App.Current.MainPage as NavigationPage;
             //var e = DependencyService.Get<IEnvironment>();
             //if (App.Current.RequestedTheme == OSAppTheme.Dark)
             //{

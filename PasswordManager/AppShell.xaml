@@ -24,7 +24,7 @@
        Shell.TabBarTitleColor="{AppThemeBinding 
                     Dark={StaticResource TextColor}, 
                     Light={StaticResource TextColorDark}}"
-       Shell.TabBarUnselectedColor="{StaticResource SystemGray}"
+       Shell.TabBarUnselectedColor="{StaticResource SystemGray2Dark}"
        >
 
     <Shell.Resources>
@@ -36,14 +36,8 @@
         <ShellContent ContentTemplate="{DataTemplate local:LoginPage}"/>
     </ShellItem>
 
-    <FlyoutItem Title="Home" >
-        <FlyoutItem.Icon>
-            <FontImageSource FontFamily="FAS"
-                             Color="{AppThemeBinding 
-                    Dark={StaticResource TextColor}, 
-                    Light={StaticResource TextColorDark}}"
-                             Glyph="{x:Static fontAwesome:FontAwesomeIcons.Home}"/>
-        </FlyoutItem.Icon>
+
+    <TabBar>
         <Tab Title="Vault">
             <Tab.Icon>
                 <FontImageSource FontFamily="FAS"
@@ -60,21 +54,20 @@
                              Color="{AppThemeBinding 
                     Dark={StaticResource TextColor}, 
                     Light={StaticResource TextColorDark}}"
-                             Glyph="{x:Static fontAwesome:FontAwesomeIcons.Plus}"/>
+                             Glyph="{x:Static fontAwesome:FontAwesomeIcons.RedoAlt}"/>
             </Tab.Icon>
-            <ShellContent Title="Generate" ContentTemplate="{DataTemplate local:NewPasswordPage}" Route="NewPasswordPage" />
+            <ShellContent Title="Generate" ContentTemplate="{DataTemplate local:GeneratePasswordPage}" Route="GeneratePasswordPage" />
         </Tab>
-    </FlyoutItem>
-
-    <FlyoutItem Title="Settings">
-        <FlyoutItem.Icon>
-            <FontImageSource FontFamily="FAS"
+        <Tab Title="Settings">
+            <Tab.Icon>
+                <FontImageSource FontFamily="FAS"
                              Color="{AppThemeBinding 
                     Dark={StaticResource TextColor}, 
                     Light={StaticResource TextColorDark}}"
                              Glyph="{x:Static fontAwesome:FontAwesomeIcons.Cogs}"/>
-        </FlyoutItem.Icon>
-        <ShellContent ContentTemplate="{DataTemplate local:SettingsPage}" Route="SettingsPage"/>
-    </FlyoutItem>
+            </Tab.Icon>
+            <ShellContent Title="Settingsss" ContentTemplate="{DataTemplate local:SettingsPage}" Route="SettingsPage"/>
+        </Tab>
+    </TabBar>
 
 </Shell>
