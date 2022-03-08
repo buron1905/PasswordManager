@@ -118,7 +118,13 @@
             <Style x:Key="LabelInfo" TargetType="Label" BasedOn="{StaticResource LabelBase}">
                 <Setter Property="TextColor" Value="{AppThemeBinding Dark={StaticResource TextColorDark}, Light={StaticResource SystemGray4Dark}}" />
                 <Setter Property="FontSize" Value="Medium"/>
-                <Setter Property="HorizontalOptions" Value="Start"/>
+            </Style>
+
+            <Style x:Key="LabelGeneratedPassword" TargetType="Label">
+                <Setter Property="TextColor" Value="{AppThemeBinding Dark={StaticResource TextColorDark}, Light={StaticResource SystemGray4Dark}}" />
+                <Setter Property="FontSize" Value="Large"/>
+                <Setter Property="Margin" Value="0, 0, 0, 20"/>
+                <Setter Property="LineBreakMode" Value="CharacterWrap"/>
             </Style>
 
             <!--Label Link-->
