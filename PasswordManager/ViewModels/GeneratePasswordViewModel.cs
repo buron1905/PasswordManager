@@ -11,7 +11,8 @@ using Command = MvvmHelpers.Commands.Command;
 using MvvmHelpers;
 using PasswordManager.Views;
 using MvvmHelpers.Commands;
-using Microsoft.Maui.Essentials;
+using Microsoft.Maui.Storage;
+using Microsoft.Maui.ApplicationModel.DataTransfer;
 
 namespace PasswordManager.ViewModels
 {

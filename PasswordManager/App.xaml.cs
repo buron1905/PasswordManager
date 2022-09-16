@@ -1,8 +1,8 @@
 ﻿using Microsoft.Maui;
+using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Controls.PlatformConfiguration.WindowsSpecific;
-using Microsoft.Maui.Essentials;
 using PasswordManager.Helpers;
 using Application = Microsoft.Maui.Controls.Application;
 

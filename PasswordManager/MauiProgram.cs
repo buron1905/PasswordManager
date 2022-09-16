@@ -2,7 +2,6 @@
 using Microsoft.Maui;
 using Microsoft.Maui.Controls.Compatibility;
 using Microsoft.Maui.Controls.Hosting;
-using Microsoft.Maui.Essentials;
 using Microsoft.Maui.Hosting;
 using PasswordManager.Services;
 using System;

@@ -12,7 +12,7 @@ using Command = MvvmHelpers.Commands.Command;
 using MvvmHelpers;
 using MvvmHelpers.Commands;
 using PasswordManager.Views;
-using Microsoft.Maui.Essentials;
+using Microsoft.Maui.ApplicationModel.DataTransfer;
 
 namespace PasswordManager.ViewModels
 {
