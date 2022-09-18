@@ -13,12 +13,15 @@ import { TokenInterceptorService } from './services/token-interceptor.service';
 import { ErrorInterceptorService } from './services/error-interceptor.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
+import { PasswordService } from './services/password.service';
+import { CreatePasswordComponent } from './create-password/create-password.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    CreatePasswordComponent
   ],
   imports: [
     BrowserModule,
@@ -31,6 +34,7 @@ import { ToastrModule } from 'ngx-toastr';
   providers: [
     AuthService,
     AuthGuardService,
+    PasswordService,
     {
       provide: HTTP_INTERCEPTORS ,
       useClass: TokenInterceptorService,

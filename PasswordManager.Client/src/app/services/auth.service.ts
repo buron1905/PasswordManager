@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthService {
+  
   private loginPath = `${environment.apiUrl}/auth/login`;
   private registerPath = `${environment.apiUrl}/auth/register`;
   
