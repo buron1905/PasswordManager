@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -12,7 +13,7 @@ export class LoginComponent implements OnInit {
   submitted = false;
   wrongCredentials = false;
 
-  constructor(private fb: FormBuilder, private authService: AuthService) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.loginForm = this.fb.group({
       emailAddress: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
@@ -30,10 +31,11 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(this.loginForm.value).subscribe(
       data => {
+        console.log("Saving...");
+        console.log("Data: (returned from server)");
         console.log(data);
-        // if(!data.success) {
-        //   this.wrongCredentials = true;
-        // }
+        this.authService.saveToken(data.token);
+        this.router.navigate(['/passwords']);
       }
     );
     console.log(this.loginForm.value);

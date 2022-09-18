@@ -19,14 +19,14 @@ namespace PasswordManager.WebAPI.Controllers
                 return BadRequest("Invalid client request");
             }
 
-            if (user.UserName == "johndoe" && user.Password == "def@123")
+            if (user.EmailAddress == "admin" && user.Password == "heslo123")
             {
                 var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"));
                 var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Name, user.EmailAddress),
                     new Claim(ClaimTypes.Role, "Manager")
                 };
 
