@@ -10,16 +10,16 @@ import { AuthService } from '../services/auth.service';
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   submitted = false;
+  wrongCredentials = false;
 
   constructor(private fb: FormBuilder, private authService: AuthService) {
     this.loginForm = this.fb.group({
-      emailAddress: ['', Validators.required],
+      emailAddress: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
   }
 
   ngOnInit(): void {
-    
   }
 
   login() : void {
@@ -31,9 +31,11 @@ export class LoginComponent implements OnInit {
     this.authService.login(this.loginForm.value).subscribe(
       data => {
         console.log(data);
+        // if(!data.success) {
+        //   this.wrongCredentials = true;
+        // }
       }
     );
-    
     console.log(this.loginForm.value);
   }
 
@@ -48,5 +50,4 @@ export class LoginComponent implements OnInit {
   get password() {
     return this.loginForm.get('password');
   }
-
 }

@@ -11,12 +11,14 @@ import Validation from '../utils/validation';
 export class RegisterComponent implements OnInit {
   registerForm : FormGroup;
   submitted = false;
+  emailIsAlreadyUsed = false;
 
   constructor(private fb: FormBuilder, private authService: AuthService) {
     this.registerForm = this.fb.group({
-      emailAddress: ['',[Validators.required, Validators.email]],
+      emailAddress: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(255)]],
-      confirmPassword: ['', [Validators.required, Validators.minLength(6)]]
+      confirmPassword: ['', [Validators.required, Validators.minLength(6)]],
+      acceptTerms: [false, Validators.requiredTrue],
       },
       {
         validators: Validation.match('password', 'confirmPassword')
@@ -36,12 +38,13 @@ export class RegisterComponent implements OnInit {
     this.authService.register(this.registerForm.value).subscribe(
       data => {
         console.log(data);
+        // if(!data.success) {
+        //   this.emailIsAlreadyUsed = true;
+        // }
       }
     );
-
     console.log(this.registerForm.value);
   }
-
   
   get f(): { [key: string]: AbstractControl } {
     return this.registerForm.controls;
@@ -59,5 +62,7 @@ export class RegisterComponent implements OnInit {
     return this.registerForm.get('confirmPassword');
   }
 
-
+  get acceptTerms() {
+    return this.registerForm.get('acceptTerms');
+  }
 }

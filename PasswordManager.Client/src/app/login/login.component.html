@@ -5,28 +5,25 @@
               <form [formGroup]="loginForm" (ngSubmit)="login()">
                 <div class="mb-3">
                   <label for="emailAddress" class="form-label">Email address</label>
-                  <input type="email" class="form-control" id="emailAddress" formControlName="emailAddress" aria-describedby="emailAddressHelpBlock" required>
-                  <div *ngIf="emailAddress?.invalid && (emailAddress?.dirty || emailAddress?.touched)" id="emailAddressHelpBlock"
-                    class="alert alert-danger">
-                    <div *ngIf="emailAddress?.errors?.['required']">
-                      This field is required.
-                    </div>
+                  <input type="email" class="form-control" id="emailAddress" formControlName="emailAddress" aria-describedby="emailAddressHelpBlock" required
+                    [ngClass]="{ 'is-invalid': submitted && emailAddress?.errors }">
+                    <div *ngIf="submitted && emailAddress?.errors" class="invalid-feedback">
+                      <div *ngIf="emailAddress?.errors?.['required']">This field is required.</div>
+                      <div *ngIf="emailAddress?.errors?.['email']">Email is not in valid format.</div>
                   </div>
                 </div>
                 <div class="mb-3">
                   <label for="password" class="form-label">Password</label>
-                  <input type="password" class="form-control" id="password" formControlName="password" aria-describedby="passwordHelpBlock" required>
-                  <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" id="passwordHelpBlock"
-                    class="alert alert-danger">
-                    <div *ngIf="password?.errors?.['required']">
-                      This field is required.
+                  <input type="password" class="form-control" id="password" formControlName="password" aria-describedby="passwordHelpBlock" required
+                    [ngClass]="{ 'is-invalid': submitted && password?.errors }">
+                    <div *ngIf="submitted && emailAddress?.errors" class="invalid-feedback">
+                      <div *ngIf="password?.errors?.['required']">This field is required.</div>
                     </div>
-                  </div>
                 </div>
                 <button type="submit" class="btn btn-primary"aria-describedby="submitHelpBlock">Login</button>
-                <!-- <div *ngIf="" id="submitHelpBlock" class="form-text alert alert-danger">
-                  <b>Error: </b>You must enter a valid email address and password.
-                </div> -->
+                <div *ngIf="submitted && wrongCredentials" id="submitHelpBlock" class="form-text alert alert-danger">
+                  <b>Error: </b>Wrong credentials.
+                </div>
               </form>
         </div>
         <div class="col-lg-4"></div>

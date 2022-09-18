@@ -5,50 +5,46 @@
               <form [formGroup]="registerForm" (ngSubmit)="register()">
                 <div class="mb-3">
                   <label for="emailAddress" class="form-label">Email address</label>
-                  <input type="email" class="form-control" id="emailAddress" formControlName="emailAddress" aria-describedby="emailAddressHelpBlock" required>
-                  <div *ngIf="emailAddress?.invalid && (emailAddress?.dirty || emailAddress?.touched)" id="emailAddressHelpBlock"
-                    class="alert alert-danger">
-                    <div *ngIf="emailAddress?.errors?.['required']">
-                      This field is required.
-                    </div>
-                    <div *ngIf="emailAddress?.errors?.['email']">
-                      Email is not in valid format.
-                    </div>
+                  <input type="email" class="form-control" id="emailAddress" formControlName="emailAddress" aria-describedby="emailAddressHelpBlock" required
+                    [ngClass]="{ 'is-invalid': submitted && emailAddress?.errors }">
+                  <div *ngIf="submitted && emailAddress?.errors" class="invalid-feedback">
+                    <div *ngIf="emailAddress?.errors?.['required']">This field is required.</div>
+                    <div *ngIf="emailAddress?.errors?.['email']">Email is not in valid format.</div>
                   </div>
-                </div>
                 <div class="mb-3">
                   <label for="password" class="form-label">Password</label>
-                  <input type="password" class="form-control" id="password" formControlName="password" aria-describedby="passwordHelpBlock" required>
-                  <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" id="passwordHelpBlock"
-                    class="alert alert-danger">
-                    <div *ngIf="password?.errors?.['required']">
-                      This field is required.
+                  <input type="password" class="form-control" id="password" formControlName="password" aria-describedby="passwordHelpBlock" required
+                    [ngClass]="{ 'is-invalid': submitted && password?.errors }">
+                    <div *ngIf="submitted && password?.errors" class="invalid-feedback">
+                      <div *ngIf="password?.errors?.['required']">This field is required.</div>
+                      <div *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters long.</div>
+                      <div *ngIf="password?.errors?.['maxlength']">Password must not exceed 255 characters.</div>
                     </div>
-                    <div *ngIf="password?.errors?.['minlength']">
-                      Password must be at least 6 characters long.
-                    </div>
-                    <div *ngIf="password?.errors?.['maxlength']">
-                      Password must not exceed 255 characters.
-                    </div>
-                  </div>
                 </div>
                 <div class="mb-3">
                   <label for="confirmPassword" class="form-label">Confirm Password</label>
-                  <input type="password" class="form-control" id="confirmPassword" formControlName="confirmPassword" aria-describedby="confirmPasswordHelpBlock" required>
-                  <div *ngIf="confirmPassword?.invalid && (confirmPassword?.dirty || confirmPassword?.touched)" id="confirmPasswordHelpBlock"
-                    class="alert alert-danger">
-                    <div *ngIf="confirmPassword?.errors?.['required']">
-                      This field is required.
-                    </div>
-                    <div *ngIf="confirmPassword?.errors?.['minlength']">
-                      Password must be at least 6 characters long.
-                    </div>
-                    <div *ngIf="confirmPassword?.errors?.['matching']">
-                      Passwords do not match.
+                  <input type="password" class="form-control" id="confirmPassword" formControlName="confirmPassword" aria-describedby="confirmPasswordHelpBlock" required
+                    [ngClass]="{ 'is-invalid': submitted && confirmPassword?.errors }">
+                    <div *ngIf="submitted && confirmPassword?.errors" class="invalid-feedback">
+                      <div *ngIf="confirmPassword?.errors?.['required']">This field is required.</div>
+                      <div *ngIf="confirmPassword?.errors?.['minlength']">Password must be at least 6 characters long.</div>
+                      <div *ngIf="confirmPassword?.errors?.['matching']">Passwords do not match.</div>
                     </div>
                   </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Register</button>
+
+                <div class="mb-3">
+                    <div class="form-group form-check">
+                    <input type="checkbox" formControlName="acceptTerms" class="form-check-input" required
+                      [ngClass]="{ 'is-invalid': submitted && acceptTerms?.errors }"/>
+                    <label for="acceptTerms" class="form-check-label">Agree to terms and conditions</label>
+                    <div *ngIf="submitted && acceptTerms?.errors" class="invalid-feedback">You must agree before submitting.</div>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary"aria-describedby="submitHelpBlock">Register</button>
+                <div *ngIf="submitted && emailIsAlreadyUsed" id="submitHelpBlock" class="form-text alert alert-danger">
+                  <b>Error: </b>Email is already used by another account.
+                </div>
               </form>
         </div>
         <div class="col-lg-4"></div>
