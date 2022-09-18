@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Maui.ApplicationModel;
 
 namespace PasswordManager.Helpers
 {
@@ -23,15 +24,15 @@ namespace PasswordManager.Helpers
             {
                 //default
                 case Theme.Unspecified:
-                    App.Current.UserAppTheme = OSAppTheme.Unspecified;
+                    Application.Current.UserAppTheme = AppTheme.Unspecified;
                     break;
                 //light
                 case Theme.Light:
-                    App.Current.UserAppTheme = OSAppTheme.Light;
+                    Application.Current.UserAppTheme = AppTheme.Light;
                     break;
                 //dark
                 case Theme.Dark:
-                    App.Current.UserAppTheme = OSAppTheme.Dark;
+                    Application.Current.UserAppTheme = AppTheme.Dark;
                     break;
             }
 

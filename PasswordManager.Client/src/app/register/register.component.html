@@ -1,0 +1,56 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-4"></div>
+            <div class="col-lg-4">
+              <form [formGroup]="registerForm" (ngSubmit)="register()">
+                <div class="mb-3">
+                  <label for="emailAddress" class="form-label">Email address</label>
+                  <input type="email" class="form-control" id="emailAddress" formControlName="emailAddress" aria-describedby="emailAddressHelpBlock" required>
+                  <div *ngIf="emailAddress?.invalid && (emailAddress?.dirty || emailAddress?.touched)" id="emailAddressHelpBlock"
+                    class="alert alert-danger">
+                    <div *ngIf="emailAddress?.errors?.['required']">
+                      This field is required.
+                    </div>
+                    <div *ngIf="emailAddress?.errors?.['email']">
+                      Email is not in valid format.
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="password" class="form-label">Password</label>
+                  <input type="password" class="form-control" id="password" formControlName="password" aria-describedby="passwordHelpBlock" required>
+                  <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" id="passwordHelpBlock"
+                    class="alert alert-danger">
+                    <div *ngIf="password?.errors?.['required']">
+                      This field is required.
+                    </div>
+                    <div *ngIf="password?.errors?.['minlength']">
+                      Password must be at least 6 characters long.
+                    </div>
+                    <div *ngIf="password?.errors?.['maxlength']">
+                      Password must not exceed 255 characters.
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="confirmPassword" class="form-label">Confirm Password</label>
+                  <input type="password" class="form-control" id="confirmPassword" formControlName="confirmPassword" aria-describedby="confirmPasswordHelpBlock" required>
+                  <div *ngIf="confirmPassword?.invalid && (confirmPassword?.dirty || confirmPassword?.touched)" id="confirmPasswordHelpBlock"
+                    class="alert alert-danger">
+                    <div *ngIf="confirmPassword?.errors?.['required']">
+                      This field is required.
+                    </div>
+                    <div *ngIf="confirmPassword?.errors?.['minlength']">
+                      Password must be at least 6 characters long.
+                    </div>
+                    <div *ngIf="confirmPassword?.errors?.['matching']">
+                      Passwords do not match.
+                    </div>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Register</button>
+              </form>
+        </div>
+        <div class="col-lg-4"></div>
+    </div>
+</div>

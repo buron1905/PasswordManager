@@ -7,20 +7,20 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  public forecasts?: WeatherForecast[];
+  // public forecasts?: WeatherForecast[];
 
   constructor(http: HttpClient) {
-    http.get<WeatherForecast[]>('/weatherforecast').subscribe(result => {
-      this.forecasts = result;
-    }, error => console.error(error));
+    // http.get<WeatherForecast[]>('/weatherforecast').subscribe(result => {
+    //   this.forecasts = result;
+    // }, error => console.error(error));
   }
 
   title = 'PasswordManager.Client';
 }
 
-interface WeatherForecast {
-  date: string;
-  temperatureC: number;
-  temperatureF: number;
-  summary: string;
-}
+// interface WeatherForecast {
+//   date: string;
+//   temperatureC: number;
+//   temperatureF: number;
+//   summary: string;
+// }

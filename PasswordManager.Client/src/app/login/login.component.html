@@ -2,21 +2,31 @@
     <div class="row">
         <div class="col-lg-4"></div>
             <div class="col-lg-4">
-            <form>
+              <form [formGroup]="loginForm" (ngSubmit)="login()">
                 <div class="mb-3">
-                  <label for="exampleInputEmail1" class="form-label">Email address</label>
-                  <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                  <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                  <label for="emailAddress" class="form-label">Email address</label>
+                  <input type="email" class="form-control" id="emailAddress" formControlName="emailAddress" aria-describedby="emailAddressHelpBlock" required>
+                  <div *ngIf="emailAddress?.invalid && (emailAddress?.dirty || emailAddress?.touched)" id="emailAddressHelpBlock"
+                    class="alert alert-danger">
+                    <div *ngIf="emailAddress?.errors?.['required']">
+                      This field is required.
+                    </div>
+                  </div>
                 </div>
                 <div class="mb-3">
-                  <label for="exampleInputPassword1" class="form-label">Password</label>
-                  <input type="password" class="form-control" id="exampleInputPassword1">
+                  <label for="password" class="form-label">Password</label>
+                  <input type="password" class="form-control" id="password" formControlName="password" aria-describedby="passwordHelpBlock" required>
+                  <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" id="passwordHelpBlock"
+                    class="alert alert-danger">
+                    <div *ngIf="password?.errors?.['required']">
+                      This field is required.
+                    </div>
+                  </div>
                 </div>
-                <div class="mb-3 form-check">
-                  <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                  <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary"aria-describedby="submitHelpBlock">Login</button>
+                <!-- <div *ngIf="" id="submitHelpBlock" class="form-text alert alert-danger">
+                  <b>Error: </b>You must enter a valid email address and password.
+                </div> -->
               </form>
         </div>
         <div class="col-lg-4"></div>
