@@ -2,7 +2,7 @@
   "profiles": {
     "PasswordManager.WebAPI": {
       "commandName": "Project",
-      "launchUrl": "weatherforecast",
+      "launchUrl": "passwordmanager",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
@@ -12,7 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "passwordmanager",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
