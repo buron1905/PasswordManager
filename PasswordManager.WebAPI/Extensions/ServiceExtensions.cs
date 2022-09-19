@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using PasswordManager.WebAPI.Features.Identity.Services;
+using PasswordManager.WebAPI.Features.Passwords.Services;
 using System.Text;
 
 namespace PasswordManager.WebAPI.Extensions
@@ -42,14 +44,27 @@ namespace PasswordManager.WebAPI.Extensions
             return services;
         }
 
-        public static IServiceCollection ConfigureIISIntegration(this IServiceCollection services)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            services.Configure<IISOptions>(options =>
-            {
-            });
+            // AddScoped, AddSingleton, AddTransient
+            services.AddTransient<IIdentityService, IdentityService>();
+            services.AddTransient<IPasswordService, PasswordService>();
             return services;
+
+            // add application services with reflection
+            // var assembly = Assembly.GetExecutingAssembly();
+            // var types = assembly.GetTypes().Where(t => t.IsClass && t.Namespace.Contains("Services"));
+            // foreach (var type in types)
+            
         }
 
+        //public static IServiceCollection ConfigureIISIntegration(this IServiceCollection services)
+        //{
+        //    services.Configure<IISOptions>(options =>
+        //    {
+        //    });
+        //    return services;
+        //}
         //public static void ConfigureLoggerService(this IServiceCollection services)
         //{
         //    services.AddSingleton<ILoggerManager, LoggerManager>();

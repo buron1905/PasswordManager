@@ -2,17 +2,17 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 
-namespace PasswordManager.WebAPI.Controllers
+namespace PasswordManager.WebAPI.Features.Passwords.Controllers
 {
 
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomersController : ControllerBase
+    public class PasswordsController : ControllerBase
     {
-        [HttpGet, Authorize(Roles = "Manager")]
+        [HttpGet, Authorize]
         public IEnumerable<string> Get()
         {
-            return new string[] { "John Doe", "Jane Doe" };
+            return new string[] { "pass1", "pass2" };
         }
     }
 }

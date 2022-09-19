@@ -11,6 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.ConfigureJwtAuthentication(builder.Configuration.GetAppSettings(builder.Services));
 
+builder.Services.AddApplicationServices();
+
 builder.Services.ConfigureCors();
 
 builder.Services.AddControllers();

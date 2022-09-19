@@ -1,4 +1,4 @@
-﻿namespace PasswordManager.WebAPI.Models
+﻿namespace PasswordManager.WebAPI.Features.Identity.Models
 {
     public class LoginModel
     {
