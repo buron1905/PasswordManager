@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using PasswordManager.WebAPI.Features.Identity.Services;
 using PasswordManager.WebAPI.Features.Passwords.Services;
+using System.Reflection;
 using System.Text;
 
 namespace PasswordManager.WebAPI.Extensions
@@ -22,8 +23,6 @@ namespace PasswordManager.WebAPI.Extensions
 
         public static IServiceCollection ConfigureJwtAuthentication(this IServiceCollection services, AppSettings appSettings)
         {
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-
             services.AddAuthentication(opt => {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -38,7 +37,7 @@ namespace PasswordManager.WebAPI.Extensions
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = "https://localhost:5001",
                     ValidAudience = "https://localhost:5001",
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.Secret))
                 };
             });
             return services;
@@ -46,16 +45,22 @@ namespace PasswordManager.WebAPI.Extensions
 
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            // AddScoped, AddSingleton, AddTransient
-            services.AddTransient<IIdentityService, IdentityService>();
-            services.AddTransient<IPasswordService, PasswordService>();
-            return services;
+            // maybe use AddScoped
+            //services.AddTransient<IIdentityService, IdentityService>();
+            //services.AddTransient<IPasswordService, PasswordService>();
+            //return services;
 
-            // add application services with reflection
-            // var assembly = Assembly.GetExecutingAssembly();
-            // var types = assembly.GetTypes().Where(t => t.IsClass && t.Namespace.Contains("Services"));
-            // foreach (var type in types)
-            
+            var assembly = Assembly.GetExecutingAssembly();
+            var types = assembly.GetTypes().Where(t => t.IsClass && (t.Namespace?.Contains("Services") ?? false));
+            foreach (var type in types)
+            {
+                var interfaces = type.GetInterfaces();
+                foreach (var @interface in interfaces)
+                {
+                    services.AddTransient(@interface, type);
+                }
+            }
+            return services;
         }
 
         //public static IServiceCollection ConfigureIISIntegration(this IServiceCollection services)
