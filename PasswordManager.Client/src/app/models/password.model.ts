@@ -1,4 +1,4 @@
-export interface Password {
+export interface PasswordModel {
     id: number;
     Passwordname: string;
     Username: string;
