@@ -6,7 +6,7 @@ namespace PasswordManager.WebAPI.Extensions
 {
     public static class ServiceExtensions
     {
-        public static void ConfigureCors(this IServiceCollection services)
+        public static IServiceCollection ConfigureCors(this IServiceCollection services)
         {
             services.AddCors(options =>
             {
@@ -15,10 +15,13 @@ namespace PasswordManager.WebAPI.Extensions
                     .AllowAnyMethod()
                     .AllowAnyHeader());
             });
+            return services;
         }
 
-        public static void ConfigureJwtAuthentication(this IServiceCollection services)
+        public static IServiceCollection ConfigureJwtAuthentication(this IServiceCollection services, AppSettings appSettings)
         {
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+
             services.AddAuthentication(opt => {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -33,29 +36,29 @@ namespace PasswordManager.WebAPI.Extensions
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = "https://localhost:5001",
                     ValidAudience = "https://localhost:5001",
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
                 };
             });
+            return services;
         }
 
-        public static void ConfigureIISIntegration(this IServiceCollection services)
+        public static IServiceCollection ConfigureIISIntegration(this IServiceCollection services)
         {
             services.Configure<IISOptions>(options =>
             {
             });
+            return services;
         }
 
         //public static void ConfigureLoggerService(this IServiceCollection services)
         //{
         //    services.AddSingleton<ILoggerManager, LoggerManager>();
         //}
-
         //public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration config)
         //{
         //    var connectionString = config["mysqlconnection:connectionString"];
         //    services.AddDbContext<RepositoryContext>(o => o.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
         //}
-
         //public static void ConfigureRepositoryManager(this IServiceCollection services)
         //{
         //    services.AddScoped<IRepositoryManager, RepositoryManager>();
