@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { AbstractControl } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { Password } from '../models/password';
+import { PasswordModel } from '../models/password.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +14,8 @@ export class PasswordService {
   
   constructor(private http: HttpClient) { }
 
-  create(data : AbstractControl<any, any>) : Observable<Password> {
-    return this.http.post<Password>(this.passwordsPath, data);
+  create(data : AbstractControl<any, any>) : Observable<PasswordModel> {
+    return this.http.post<PasswordModel>(this.passwordsPath, data);
   }
 
 }

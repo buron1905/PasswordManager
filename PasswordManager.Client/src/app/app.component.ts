@@ -11,5 +11,5 @@ export class AppComponent {
   constructor(http: HttpClient) {
   }
 
-  title = 'PasswordManager';
+  title = 'Password Manager';
 }

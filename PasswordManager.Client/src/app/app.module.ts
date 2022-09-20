@@ -15,13 +15,24 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { PasswordService } from './services/password.service';
 import { CreatePasswordComponent } from './create-password/create-password.component';
+import { JwtModule } from '@auth0/angular-jwt';
+import { HomeComponent } from './home/home.component';
+import { PasswordsComponent } from './passwords/passwords.component';
+import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
+
+export function tokenGetter() { 
+  return localStorage.getItem("token"); 
+}
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    CreatePasswordComponent
+    CreatePasswordComponent,
+    HomeComponent,
+    PasswordsComponent,
+    NavigationBarComponent
   ],
   imports: [
     BrowserModule,
@@ -29,17 +40,19 @@ import { CreatePasswordComponent } from './create-password/create-password.compo
     ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        allowedDomains: ["localhost:5001"],
+        disallowedRoutes: []
+      }
+    }),
   ],
   providers: [
     AuthService,
     AuthGuardService,
     PasswordService,
-    {
-      provide: HTTP_INTERCEPTORS ,
-      useClass: TokenInterceptorService,
-      multi: true
-    },
     {
       provide: HTTP_INTERCEPTORS ,
       useClass: ErrorInterceptorService,

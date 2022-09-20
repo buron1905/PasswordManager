@@ -5,6 +5,8 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { LoginModel } from './../models/login.model';
+import { AuthenticatedResponseModel } from './../models/authenticated-response.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +18,9 @@ export class AuthService {
   
   constructor(private http: HttpClient, private router: Router, private jwtHelper: JwtHelperService) { }
 
+
   login(data : AbstractControl<any, any>) : Observable<any> {
-    return this.http.post(this.loginPath, data);
+    return this.http.post<AuthenticatedResponseModel>(this.loginPath, data);
   }
 
   register(data : AbstractControl<any, any>) : Observable<any> {

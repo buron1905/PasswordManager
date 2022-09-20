@@ -30,7 +30,7 @@ namespace PasswordManager.WebAPI.Features.Identity.Controllers
                 return BadRequest("Invalid client request");
             }
 
-            if (user.EmailAddress == "admin" && user.Password == "heslo123")
+            if (user.EmailAddress == "admin@admin" && user.Password == "heslo123")
             {
                 var tokenString = identityService.GenerateJwtToken("1", user.EmailAddress, appSettings.Secret);
 
