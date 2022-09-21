@@ -1,5 +1,5 @@
-<app-navigation-bar></app-navigation-bar>
-<div class="container">
+<div class="d-flex align-items-center justify-content-center vh-100">
+  <div class="container">
     <div class="row">
         <div class="col-lg-4"></div>
             <div class="col-lg-4">
@@ -15,7 +15,7 @@
                 <div class="mb-3">
                   <label for="password" class="form-label">Password</label>
                   <input type="password" class="form-control" id="password" formControlName="password" aria-describedby="passwordHelpBlock" required
-                    [ngClass]="{ 'is-invalid': submitted && password?.errors }">
+                  [ngClass]="{ 'is-invalid': submitted && password?.errors }">
                     <div *ngIf="submitted && password?.errors" class="invalid-feedback">
                       <div *ngIf="password?.errors?.['required']">This field is required.</div>
                       <div *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters long.</div>
@@ -33,10 +33,10 @@
                     </div>
                   </div>
                 </div>
-
+                
                 <div class="mb-3">
                     <div class="form-group form-check">
-                    <input type="checkbox" formControlName="acceptTerms" class="form-check-input" required
+                      <input type="checkbox" formControlName="acceptTerms" class="form-check-input" required
                       [ngClass]="{ 'is-invalid': submitted && acceptTerms?.errors }"/>
                     <label for="acceptTerms" class="form-check-label">Agree to terms and conditions</label>
                     <div *ngIf="submitted && acceptTerms?.errors" class="invalid-feedback">You must agree before submitting.</div>
@@ -50,4 +50,5 @@
         </div>
         <div class="col-lg-4"></div>
     </div>
+  </div>
 </div>

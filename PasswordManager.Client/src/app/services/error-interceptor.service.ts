@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ErrorInterceptorService implements HttpInterceptor {
 
-  constructor(private toastrService: ToastrService) { }
+  constructor(private toastrService: ToastrService, private router: Router) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
@@ -20,6 +21,7 @@ export class ErrorInterceptorService implements HttpInterceptor {
         if (err.status === 401) {
           // refresh token or navigate to login
           errorMessage = 'Unauthorized';
+          this.router.navigate(['/login']);
 
           // auto logout if 401 response returned from api
           // this.authenticationService.logout();
@@ -29,8 +31,8 @@ export class ErrorInterceptorService implements HttpInterceptor {
           errorMessage = 'Forbidden';
         }
         else if(err.status === 404) {
-          // this.router.navigate(['/not-found']);
           errorMessage = 'Not Found';
+          this.router.navigate(['/page-not-found']);
         }
         else if(err.status === 500) {
           errorMessage = 'Server Error';

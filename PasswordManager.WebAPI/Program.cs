@@ -31,6 +31,7 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+//app.MapControllerRoute()
 app.MapControllers();
 
 if (app.Environment.IsDevelopment())

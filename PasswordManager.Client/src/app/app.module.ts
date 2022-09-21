@@ -19,6 +19,7 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { HomeComponent } from './home/home.component';
 import { PasswordsComponent } from './passwords/passwords.component';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 export function tokenGetter() { 
   return localStorage.getItem("token"); 
@@ -32,7 +33,8 @@ export function tokenGetter() {
     CreatePasswordComponent,
     HomeComponent,
     PasswordsComponent,
-    NavigationBarComponent
+    NavigationBarComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
