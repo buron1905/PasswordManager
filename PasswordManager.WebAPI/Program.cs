@@ -13,8 +13,6 @@ builder.Services.ConfigureJwtAuthentication(builder.Configuration.GetAppSettings
 
 builder.Services.AddApplicationServices();
 
-builder.Services.ConfigureCors();
-
 builder.Services.AddControllers();
 
 builder.Services.AddSwaggerGen();
@@ -25,13 +23,10 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-app.UseCors("EnableCORS");
-
 app.UseAuthentication();
 
 app.UseAuthorization();
 
-//app.MapControllerRoute()
 app.MapControllers();
 
 if (app.Environment.IsDevelopment())
@@ -42,6 +37,10 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
         options.RoutePrefix = string.Empty;
     });
+    //app.UseSpa(builder =>
+    //{
+    //    builder.UseProxyToSpaDevelopmentServer("http://localhost:4200/");
+    //});
 }
 
 app.Run();
