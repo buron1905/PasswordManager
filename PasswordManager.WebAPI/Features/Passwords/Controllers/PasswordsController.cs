@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PasswordManager.WebAPI.Controllers;
 using System.Data;
 
 namespace PasswordManager.WebAPI.Features.Passwords.Controllers
 {
-
-    [Route("api/[controller]")]
-    [ApiController]
-    public class PasswordsController : ControllerBase
+    public class PasswordsController : ApiControllerBase
     {
         [HttpGet, Authorize]
         public IEnumerable<string> Get()

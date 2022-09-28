@@ -6,12 +6,11 @@ using System.Text;
 using PasswordManager.WebAPI.Features.Identity.Models;
 using Microsoft.Extensions.Options;
 using PasswordManager.WebAPI.Features.Identity.Services;
+using PasswordManager.WebAPI.Controllers;
 
 namespace PasswordManager.WebAPI.Features.Identity.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class IdentityController : ControllerBase
+    public class IdentityController : ApiControllerBase
     {
         private readonly AppSettings appSettings;
         private readonly IIdentityService identityService;
@@ -30,7 +29,7 @@ namespace PasswordManager.WebAPI.Features.Identity.Controllers
                 return BadRequest("Invalid client request");
             }
 
-            if (user.EmailAddress == "admin@admin" && user.Password == "heslo123")
+            if (user.EmailAddress == "admin@admin" && user.Password == "admin")
             {
                 var tokenString = identityService.GenerateJwtToken("1", user.EmailAddress, appSettings.Secret);
 
