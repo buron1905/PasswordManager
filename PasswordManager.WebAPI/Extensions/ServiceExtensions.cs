@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using LoggerService;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using PasswordManager.WebAPI.Features.Identity.Services;
-using PasswordManager.WebAPI.Features.Passwords.Services;
+using Services.Abstraction;
 using System.Reflection;
 using System.Text;
 
@@ -63,17 +63,11 @@ namespace PasswordManager.WebAPI.Extensions
             return services;
         }
 
-        //public static IServiceCollection ConfigureIISIntegration(this IServiceCollection services)
-        //{
-        //    services.Configure<IISOptions>(options =>
-        //    {
-        //    });
-        //    return services;
-        //}
-        //public static void ConfigureLoggerService(this IServiceCollection services)
-        //{
-        //    services.AddSingleton<ILoggerManager, LoggerManager>();
-        //}
+        public static void ConfigureLoggerService(this IServiceCollection services)
+        {
+            services.AddSingleton<ILoggerManager, LoggerManager>();
+        }
+
         //public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration config)
         //{
         //    var connectionString = config["mysqlconnection:connectionString"];

@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using NLog;
 using PasswordManager.WebAPI;
 using PasswordManager.WebAPI.Extensions;
+using PasswordManager.WebAPI.Helpers;
 using PasswordManager.WebAPI.Models;
 using System.Text;
 
@@ -15,6 +17,9 @@ builder.Services.ConfigureJwtAuthentication(builder.Configuration.GetAppSettings
 
 builder.Services.AddApplicationServices();
 
+LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
+builder.Services.ConfigureLoggerService();
+
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<PasswordsContext>(opt =>
@@ -25,6 +30,8 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 

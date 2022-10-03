@@ -1,24 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using PasswordManager.WebAPI.Features.Identity.Models;
 using Microsoft.Extensions.Options;
+using PasswordManager.WebAPI.Helpers;
 using PasswordManager.WebAPI.Models.Identity;
 using PasswordManager.WebAPI.Services;
+using Services.Abstraction;
 
 namespace PasswordManager.WebAPI.Controllers
 {
     public class IdentityController : ApiControllerBase
     {
-        private readonly AppSettings appSettings;
-        private readonly IIdentityService identityService;
+        private readonly ILoggerManager _logger;
+        private readonly AppSettings _appSettings;
+        private readonly IIdentityService _identityService;
 
-        public IdentityController(IOptions<AppSettings> appSettings, IIdentityService identityService)
+        public IdentityController(ILoggerManager loggerManager, IOptions<AppSettings> appSettings, IIdentityService identityService)
         {
-            this.appSettings = appSettings.Value;
-            this.identityService = identityService;
+            _logger = loggerManager;
+            _appSettings = appSettings.Value;
+            _identityService = identityService;
         }
 
         [HttpPost("login")]
@@ -31,7 +30,9 @@ namespace PasswordManager.WebAPI.Controllers
 
             if (user.EmailAddress == "admin@admin" && user.Password == "admin")
             {
-                var tokenString = identityService.GenerateJwtToken("1", user.EmailAddress, appSettings.Secret);
+                _logger.LogInfo("Successful login.");
+
+                var tokenString = _identityService.GenerateJwtToken("1", user.EmailAddress, _appSettings.Secret);
 
                 return Ok(new LoginResponseDTO { Token = tokenString });
             }
