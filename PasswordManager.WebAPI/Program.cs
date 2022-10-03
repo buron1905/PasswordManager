@@ -4,9 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using NLog;
 using PasswordManager.WebAPI;
+using PasswordManager.WebAPI.Data;
 using PasswordManager.WebAPI.Extensions;
 using PasswordManager.WebAPI.Helpers;
-using PasswordManager.WebAPI.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,10 +20,12 @@ builder.Services.AddApplicationServices();
 LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
 builder.Services.ConfigureLoggerService();
 
+builder.Services.AddAutoMapper(typeof(Program));
+
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<PasswordsContext>(opt =>
-    opt.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"));
+    opt.UseSqlServer(""));
 
 builder.Services.AddSwaggerGen();
 

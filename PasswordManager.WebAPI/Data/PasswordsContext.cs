@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PasswordManager.WebAPI.Models.Passwords;
 
-namespace PasswordManager.WebAPI.Models
+namespace PasswordManager.WebAPI.Data
 {
     public class PasswordsContext : DbContext
     {

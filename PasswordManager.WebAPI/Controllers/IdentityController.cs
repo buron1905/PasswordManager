@@ -21,7 +21,7 @@ namespace PasswordManager.WebAPI.Controllers
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginDTO user)
+        public async Task<IActionResult> Login([FromBody] LoginDTO user)
         {
             if (user is null)
             {

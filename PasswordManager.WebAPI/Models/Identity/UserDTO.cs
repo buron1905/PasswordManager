@@ -3,14 +3,13 @@ using static PasswordManager.WebAPI.Data.Validation.User;
 
 namespace PasswordManager.WebAPI.Models.Identity
 {
-    public class LoginDTO
+    public class UserDTO
     {
         [Required]
-        [EmailAddress]
-        public string? EmailAddress { get; set; }
-        
-        [Required]
         [MaxLength(MaxEmailLength)]
-        public string? Password { get; set; }
+        public string Email { get; set; }
+
+        [Required]
+        public string Password { get; set; }
     }
 }
