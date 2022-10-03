@@ -1,4 +1,4 @@
-﻿namespace PasswordManager.WebAPI.Features.Identity.Services
+﻿namespace PasswordManager.WebAPI.Services
 {
     public interface IIdentityService
     {

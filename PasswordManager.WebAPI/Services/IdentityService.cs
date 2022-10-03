@@ -3,7 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace PasswordManager.WebAPI.Features.Identity.Services
+namespace PasswordManager.WebAPI.Services
 {
     public class IdentityService : IIdentityService
     {

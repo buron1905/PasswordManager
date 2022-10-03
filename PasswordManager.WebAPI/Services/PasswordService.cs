@@ -1,4 +1,4 @@
-﻿namespace PasswordManager.WebAPI.Features.Passwords.Services
+﻿namespace PasswordManager.WebAPI.Services
 {
     public class PasswordService : IPasswordService
     {

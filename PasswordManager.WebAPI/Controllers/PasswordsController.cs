@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PasswordManager.WebAPI.Controllers;
 using System.Data;
 
-namespace PasswordManager.WebAPI.Features.Passwords.Controllers
+namespace PasswordManager.WebAPI.Controllers
 {
     public class PasswordsController : ApiControllerBase
     {

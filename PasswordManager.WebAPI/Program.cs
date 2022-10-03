@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using PasswordManager.WebAPI;
 using PasswordManager.WebAPI.Extensions;
+using PasswordManager.WebAPI.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +16,9 @@ builder.Services.ConfigureJwtAuthentication(builder.Configuration.GetAppSettings
 builder.Services.AddApplicationServices();
 
 builder.Services.AddControllers();
+
+builder.Services.AddDbContext<PasswordsContext>(opt =>
+    opt.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"));
 
 builder.Services.AddSwaggerGen();
 

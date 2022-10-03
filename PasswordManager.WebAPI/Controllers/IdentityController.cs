@@ -5,10 +5,10 @@ using System.Security.Claims;
 using System.Text;
 using PasswordManager.WebAPI.Features.Identity.Models;
 using Microsoft.Extensions.Options;
-using PasswordManager.WebAPI.Features.Identity.Services;
-using PasswordManager.WebAPI.Controllers;
+using PasswordManager.WebAPI.Models.Identity;
+using PasswordManager.WebAPI.Services;
 
-namespace PasswordManager.WebAPI.Features.Identity.Controllers
+namespace PasswordManager.WebAPI.Controllers
 {
     public class IdentityController : ApiControllerBase
     {
@@ -22,7 +22,7 @@ namespace PasswordManager.WebAPI.Features.Identity.Controllers
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginModel user)
+        public IActionResult Login([FromBody] LoginDTO user)
         {
             if (user is null)
             {
@@ -33,7 +33,7 @@ namespace PasswordManager.WebAPI.Features.Identity.Controllers
             {
                 var tokenString = identityService.GenerateJwtToken("1", user.EmailAddress, appSettings.Secret);
 
-                return Ok(new LoginResponseModel { Token = tokenString });
+                return Ok(new LoginResponseDTO { Token = tokenString });
             }
 
             return Unauthorized();
