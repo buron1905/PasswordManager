@@ -1,4 +1,4 @@
-﻿namespace PasswordManager.WebAPI.Models.Identity
+﻿namespace Models.DTOs
 {
     public class LoginResponseDTO
     {

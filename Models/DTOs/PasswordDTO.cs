@@ -1,4 +1,4 @@
-﻿namespace PasswordManager.WebAPI.Models.Passwords
+﻿namespace Models.DTOs
 {
     public class PasswordDTO
     {

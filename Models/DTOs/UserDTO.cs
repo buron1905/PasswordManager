@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using static PasswordManager.WebAPI.Data.Validation.User;
+using static Models.Helpers.Validation.User;
 
-namespace PasswordManager.WebAPI.Models.Identity
+namespace Models.DTOs
 {
     public class UserDTO
     {

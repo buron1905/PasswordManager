@@ -1,4 +1,4 @@
-﻿namespace PasswordManager.WebAPI.Data
+﻿namespace Models.Helpers
 {
     public class Validation
     {

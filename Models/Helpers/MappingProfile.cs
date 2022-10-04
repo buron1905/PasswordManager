@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using PasswordManager.WebAPI.Models.Identity;
-using PasswordManager.WebAPI.Models.Passwords;
+using Models;
+using Models.DTOs;
 
-namespace PasswordManager.WebAPI.Helpers
+namespace Models.Helpers
 {
     public class MappingProfile : Profile
     {
