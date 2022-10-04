@@ -1,8 +1,9 @@
 ﻿using LoggerService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using PasswordManager.WebAPI.Services;
+using Services;
 using Services.Abstraction;
-using System.Reflection;
 using System.Text;
 
 namespace PasswordManager.WebAPI.Extensions
@@ -45,22 +46,22 @@ namespace PasswordManager.WebAPI.Extensions
 
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            // maybe use AddScoped
-            //services.AddTransient<IIdentityService, IdentityService>();
-            //services.AddTransient<IPasswordService, PasswordService>();
-            //return services;
-
-            var assembly = Assembly.GetExecutingAssembly();
-            var types = assembly.GetTypes().Where(t => t.IsClass && (t.Namespace?.Contains("Services") ?? false));
-            foreach (var type in types)
-            {
-                var interfaces = type.GetInterfaces();
-                foreach (var @interface in interfaces)
-                {
-                    services.AddTransient(@interface, type);
-                }
-            }
+            services.AddTransient<IIdentityService, IdentityService>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IPasswordService, PasswordService>();
             return services;
+
+            //var assembly = Assembly.GetExecutingAssembly();
+            //var types = assembly.GetTypes().Where(t => t.IsClass && (t.Namespace?.Contains("Services") ?? false));
+            //foreach (var type in types)
+            //{
+            //    var interfaces = type.GetInterfaces();
+            //    foreach (var @interface in interfaces)
+            //    {
+            //        services.AddTransient(@interface, type);
+            //    }
+            //}
+            //return services;
         }
 
         public static void ConfigureLoggerService(this IServiceCollection services)

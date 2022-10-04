@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models;
 
-namespace PasswordManager.WebAPI.Data
+namespace EFDataAccessLib
 {
     public class DataContext : DbContext
     {

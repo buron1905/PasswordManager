@@ -1,10 +1,10 @@
+using EFDataAccessLib;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using NLog;
 using PasswordManager.WebAPI;
-using PasswordManager.WebAPI.Data;
 using PasswordManager.WebAPI.Extensions;
 using PasswordManager.WebAPI.Helpers;
 using System.Text;
@@ -25,7 +25,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<DataContext>(opt =>
-    opt.UseSqlServer(""));
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 builder.Services.AddSwaggerGen();
 
