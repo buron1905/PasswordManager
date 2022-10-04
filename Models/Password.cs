@@ -1,33 +1,36 @@
-﻿namespace Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using static Models.Helpers.Validation;
+
+namespace Models
 {
     public class Password
     {
-        public int Id { get; set; }
-        public int UserId { get; set; }
-        public string PasswordName { get; set; }
-        public string UserName { get; set; }
-        public string PasswordText { get; set; }
-        public string PasswordDecrypted { get; set; }
-        public string Description { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid Id { get; set; }
+        
+        [Required]
+        [MaxLength(MaxPasswordNameLength, ErrorMessage = MaxPasswordNameLengthErrorMessage)]
+        public string? PasswordName { get; set; }
 
-        public void Encrypt()
-        {
-        }
+        [Required]
+        [MaxLength(MaxUserNameLength, ErrorMessage = MaxUserNameLengthErrorMessage)]
+        public string? UserName { get; set; }
 
-        public void Decrypt()
-        {
-        }
+        [Required]
+        public string? PasswordEncrypted { get; set; }
+        
+        [NotMapped]
+        [MaxLength(MaxPasswordLength, ErrorMessage = MaxPasswordLengthErrorMessage)]
+        public string? PasswordDecrypted { get; set; }
 
-        public Password DeepCopy()
-        {
-            Password other = (Password)this.MemberwiseClone();
+        [MaxLength(MaxPasswordDescriptionLength, ErrorMessage = MaxPasswordDescriptionLengthErrorMessage)]
+        public string? Description { get; set; }
+        
 
-            other.PasswordName = new string(PasswordName);
-            other.PasswordText = new string(PasswordText);
-            other.UserName = new string(UserName);
-            other.Description = new string(Description);
-
-            return other;
-        }
+        [ForeignKey(nameof(User))]
+        public Guid UserId { get; set; }
+        public User? User { get; set; }
     }
 }

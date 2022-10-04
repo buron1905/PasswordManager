@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using PasswordManager.WebAPI.Helpers;
-using PasswordManager.WebAPI.Models.Identity;
+using Models;
 using PasswordManager.WebAPI.Services;
 using Services.Abstraction;
+using Models.DTOs;
 
 namespace PasswordManager.WebAPI.Controllers
 {

@@ -1,0 +1,18 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Models;
+
+namespace PasswordManager.WebAPI.Data
+{
+    public class DataContext : DbContext
+    {
+
+        public DataContext(DbContextOptions<DataContext> options)
+            : base(options)
+        {
+        }
+        
+        public DbSet<User> Users { get; set; } = null!;
+        public DbSet<Password> Passwords { get; set; } = null!;
+        public DbSet<Settings> Settings { get; set; } = null!;
+    }
+}

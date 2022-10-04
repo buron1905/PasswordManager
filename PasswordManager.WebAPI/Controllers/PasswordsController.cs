@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PasswordManager.WebAPI.Models.Passwords;
+using Models;
 using System.Data;
 
 namespace PasswordManager.WebAPI.Controllers

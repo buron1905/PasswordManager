@@ -1,15 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using static Models.Helpers.Validation.User;
+using static Models.Helpers.Validation;
 
 namespace Models.DTOs
 {
     public class UserDTO
     {
         [Required]
-        [MaxLength(MaxEmailLength)]
-        public string Email { get; set; }
+        [EmailAddress]
+        [MaxLength(MaxEmailLength, ErrorMessage = MaxEmailLengthErrorMessage)]
+        public string? Email { get; set; }
 
         [Required]
-        public string Password { get; set; }
+        public string? Password { get; set; }
     }
 }

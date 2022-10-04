@@ -10,6 +10,7 @@ namespace Models.Helpers
         {
             CreateMap<User, UserDTO>();
             CreateMap<Password, PasswordDTO>();
+            CreateMap<Settings, SettingsDTO>();
         }
     }
 }

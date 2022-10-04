@@ -24,7 +24,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<PasswordsContext>(opt =>
+builder.Services.AddDbContext<DataContext>(opt =>
     opt.UseSqlServer(""));
 
 builder.Services.AddSwaggerGen();
