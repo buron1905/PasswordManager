@@ -5,6 +5,8 @@ namespace Models.DTOs
 {
     public class UserDTO
     {
+        public Guid Id { get; set; }
+        
         [Required]
         [EmailAddress]
         [MaxLength(MaxEmailLength, ErrorMessage = MaxEmailLengthErrorMessage)]

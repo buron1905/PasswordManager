@@ -1,4 +1,5 @@
-﻿using LoggerService;
+﻿using EFDataAccessLib.Repositories;
+using LoggerService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using PasswordManager.WebAPI.Services;
@@ -47,36 +48,14 @@ namespace PasswordManager.WebAPI.Extensions
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddTransient<IIdentityService, IdentityService>();
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IPasswordService, PasswordService>();
+            services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+            services.AddScoped<IServiceWrapper, ServiceWrapper>();
             return services;
-
-            //var assembly = Assembly.GetExecutingAssembly();
-            //var types = assembly.GetTypes().Where(t => t.IsClass && (t.Namespace?.Contains("Services") ?? false));
-            //foreach (var type in types)
-            //{
-            //    var interfaces = type.GetInterfaces();
-            //    foreach (var @interface in interfaces)
-            //    {
-            //        services.AddTransient(@interface, type);
-            //    }
-            //}
-            //return services;
         }
 
         public static void ConfigureLoggerService(this IServiceCollection services)
         {
             services.AddSingleton<ILoggerManager, LoggerManager>();
         }
-
-        //public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration config)
-        //{
-        //    var connectionString = config["mysqlconnection:connectionString"];
-        //    services.AddDbContext<RepositoryContext>(o => o.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-        //}
-        //public static void ConfigureRepositoryManager(this IServiceCollection services)
-        //{
-        //    services.AddScoped<IRepositoryManager, RepositoryManager>();
-        //}
     }
 }

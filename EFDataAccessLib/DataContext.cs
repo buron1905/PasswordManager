@@ -14,5 +14,8 @@ namespace EFDataAccessLib
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<Password> Passwords { get; set; } = null!;
         public DbSet<Settings> Settings { get; set; } = null!;
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder) =>
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(DataContext).Assembly);
     }
 }
