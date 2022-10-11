@@ -51,6 +51,8 @@ namespace PasswordManager.WebAPI.Helpers
                     ValidAudience = "https://localhost:5001",
                     ValidIssuer = "https://localhost:5001",
                     ValidateAudience = true,
+                    ValidateIssuer = true,
+                    ValidateLifetime = true,
 
                     // public key for signing
                     IssuerSigningKey = signingKey,
