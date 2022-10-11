@@ -2,6 +2,7 @@
 using LoggerService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using PasswordManager.WebAPI.Helpers;
 using PasswordManager.WebAPI.Services;
 using Services;
 using Services.Abstraction;
@@ -11,15 +12,12 @@ namespace PasswordManager.WebAPI.Extensions
 {
     public static class ServiceExtensions
     {
-        public static IServiceCollection ConfigureCors(this IServiceCollection services)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            services.AddCors(options =>
-            {
-                options.AddPolicy("EnableCORS",
-                    builder => builder.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader());
-            });
+            services.AddTransient<IIdentityService, IdentityService>();
+            services.AddScoped<IJwtUtils, JwtUtils>();
+            services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+            services.AddScoped<IServiceWrapper, ServiceWrapper>();
             return services;
         }
 
@@ -45,11 +43,34 @@ namespace PasswordManager.WebAPI.Extensions
             return services;
         }
 
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        public static IServiceCollection ConfigureJweAuthentication(this IServiceCollection services, AppSettings appSettings)
         {
-            services.AddTransient<IIdentityService, IdentityService>();
-            services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
-            services.AddScoped<IServiceWrapper, ServiceWrapper>();
+            services.AddAuthentication(opt => {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    //ValidIssuer = "https://localhost:5001",
+                    //ValidAudience = "https://localhost:5001",
+
+                    //ValidateIssuer = true,
+                    //ValidateAudience = true,
+                    //ValidateLifetime = true,
+
+                    // public key for signing
+                    IssuerSigningKey = JwtMiddleware._publicSigningKey,
+                    
+                    // private key for encryption
+                    TokenDecryptionKey = JwtMiddleware._privateEncryptionKey,
+
+                    // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
+                    //ClockSkew = TimeSpan.Zero
+                };
+            });
             return services;
         }
 

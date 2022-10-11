@@ -1,18 +1,15 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿//using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using System.Data;
+using PasswordManager.WebAPI.Helpers;
 
 namespace PasswordManager.WebAPI.Controllers
 {
     public class PasswordsController : ApiControllerBase
     {
-        private IMapper _mapper;
-
-        public PasswordsController(IMapper mapper)
+        public PasswordsController()
         {
-            _mapper = mapper;
         }
 
         [HttpGet, Authorize]

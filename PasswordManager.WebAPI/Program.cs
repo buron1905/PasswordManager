@@ -13,14 +13,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.ConfigureJwtAuthentication(builder.Configuration.GetAppSettings(builder.Services));
+//builder.Services.ConfigureJweAuthentication(builder.Configuration.GetAppSettings(builder.Services));
 
 builder.Services.AddApplicationServices();
 
 LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
 builder.Services.ConfigureLoggerService();
-
-builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddControllers();
 
@@ -37,7 +35,8 @@ app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
+//app.UseAuthentication();
+app.UseMiddleware<JwtMiddleware>();
 
 app.UseAuthorization();
 

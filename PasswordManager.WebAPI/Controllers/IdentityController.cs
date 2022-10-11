@@ -4,6 +4,9 @@ using Models;
 using PasswordManager.WebAPI.Services;
 using Services.Abstraction;
 using Models.DTOs;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Cryptography;
+using PasswordManager.WebAPI.Helpers;
 
 namespace PasswordManager.WebAPI.Controllers
 {
@@ -12,12 +15,15 @@ namespace PasswordManager.WebAPI.Controllers
         private readonly ILoggerManager _logger;
         private readonly AppSettings _appSettings;
         private readonly IIdentityService _identityService;
+        
 
         public IdentityController(ILoggerManager loggerManager, IOptions<AppSettings> appSettings, IIdentityService identityService)
         {
             _logger = loggerManager;
             _appSettings = appSettings.Value;
             _identityService = identityService;
+
+            
         }
 
         [HttpPost("login")]
@@ -32,7 +38,8 @@ namespace PasswordManager.WebAPI.Controllers
             {
                 _logger.LogInfo("Successful login.");
 
-                var tokenString = _identityService.GenerateJwtToken("1", user.EmailAddress, _appSettings.Secret);
+                var tokenString = new JwtUtils().GenerateToken(user.Password, JwtMiddleware._privateSigningKey, JwtMiddleware._publicEncryptionKey);
+                //var tokenString = _identityService.GenerateJwtToken("1", user.EmailAddress, _appSettings.Secret);
 
                 return Ok(new LoginResponseDTO { Token = tokenString });
             }
