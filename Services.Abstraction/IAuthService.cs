@@ -10,7 +10,7 @@ namespace Services.Abstraction
     public interface IAuthService
     {
         Task<AuthResponseDTO?> LoginAsync(LoginRequestDTO requestDTO);
-
         Task<AuthResponseDTO?> RegisterAsync(RegisterRequestDTO requestDTO);
+        bool TokenIsValid(string token);
     }
 }

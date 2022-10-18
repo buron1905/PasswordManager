@@ -11,5 +11,6 @@ namespace Services.Abstraction
     {
         public string GenerateJweToken(string masterPassword, SecurityKey signingKey, SecurityKey encryptionKey);
         public string? ValidateJweToken(string token, SecurityKey signingKey, SecurityKey encryptionKey);
+        public string GenerateJwtToken(string userId, string emailAddress, string secret);
     }
 }

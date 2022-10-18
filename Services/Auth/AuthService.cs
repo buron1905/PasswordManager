@@ -51,6 +51,13 @@ namespace Services.Auth
             return new AuthResponseDTO { Token = tokenString };
         }
 
+        public bool TokenIsValid(string token)
+        {
+            var password = new JwtService().ValidateJweToken(token, JWTKeys._publicSigningKey, JWTKeys._privateEncryptionKey);
+
+            return password != null;
+        }
+
         private bool IsRequestValid(LoginRequestDTO requestDTO)
         {
             if (requestDTO is null)

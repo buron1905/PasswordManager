@@ -44,5 +44,13 @@ namespace PasswordManager.WebAPI.Controllers
 
             return Ok(response);
         }
+
+        [HttpGet("token-is-valid")]
+        public IActionResult TokenIsValid(string token)
+        {
+            bool response = _authService.TokenIsValid(token);
+            
+            return Ok(new { isValid = response });
+        }
     }
 }
