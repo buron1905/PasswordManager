@@ -1,3 +1,5 @@
-export interface AuthResponseModel{
-    Token: string;
+export interface AuthResponseModel {
+  Token: string;
+  RefreshToken: string;
+  ExpirationDateTime: Date;
   }

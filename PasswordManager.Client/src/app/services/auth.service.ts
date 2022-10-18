@@ -20,8 +20,14 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router, private jwtHelper: JwtHelperService) { }
 
 
-  login(data : AbstractControl<any, any>) : Observable<any> {
+  authenticate(data : AbstractControl<any, any>) : Observable<any> {
     return this.http.post<AuthResponseModel>(this.loginPath, data);
+  }
+
+  login(data: AuthResponseModel) : void {
+    localStorage.setItem('token', data.Token);
+    localStorage.setItem('refreshToken', data.RefreshToken);
+    localStorage.setItem('expirationDateTime', data.ExpirationDateTime.toString());
   }
 
   register(data : AbstractControl<any, any>) : Observable<any> {
@@ -53,7 +59,7 @@ export class AuthService {
       return false;
   }
 
-  async getTokenValidity(): Promise<boolean> {
+  async getTokenIsValid(): Promise<boolean> {
     const token = this.getToken();
     if (token) {
       return (await lastValueFrom(this.http.post<{ isValid: boolean }>(this.tokenIsValidPath, token))).isValid;
