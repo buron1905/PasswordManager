@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
-namespace PasswordManager.WebAPI.Helpers
+namespace PasswordManager.WebAPI.Helpers.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class AuthorizeAttribute : Attribute, IAuthorizationFilter
@@ -14,7 +14,7 @@ namespace PasswordManager.WebAPI.Helpers
             var allowAnonymous = context.ActionDescriptor.EndpointMetadata.OfType<AllowAnonymousAttribute>().Any();
             if (allowAnonymous)
                 return;
-            
+
             // authorization
             string password = context.HttpContext.Items["password"]?.ToString();
             //var user = (User)context.HttpContext.Items["User"];

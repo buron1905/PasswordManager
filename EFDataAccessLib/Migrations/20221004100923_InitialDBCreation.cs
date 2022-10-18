@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace EFDataAccessLib.Migrations
+namespace Persistance.Migrations
 {
     public partial class InitialDBCreation : Migration
     {

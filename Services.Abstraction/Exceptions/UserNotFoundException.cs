@@ -12,5 +12,10 @@ namespace Services.Abstraction.Exceptions
             : base($"The user with the identifier {userId} was not found.")
         {
         }
+
+        public UserNotFoundException(string email)
+            : base($"The user with the email {email} was not found.")
+        {
+        }
     }
 }

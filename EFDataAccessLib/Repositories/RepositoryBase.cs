@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Models;
 using Services.Abstraction;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EFDataAccessLib.Repositories
+namespace Persistance.Repositories
 {
     public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {
@@ -27,7 +28,17 @@ namespace EFDataAccessLib.Repositories
         {
             return _dataContext.Set<T>().Where(expression).AsNoTracking();
         }
+
+        public Task<T?> FindSingleOrDefaultByCondition(Expression<Func<T, bool>> expression)
+        {
+            return _dataContext.Set<T>().SingleOrDefaultAsync(expression); //.AsNoTracking();
+        }
         
+        public async Task<bool> CheckIfExistsAnyByCondition(Expression<Func<T, bool>> expression)
+        {
+            return await _dataContext.Set<T>().AnyAsync(expression);
+        }
+
         public void Create(T entity)
         {
             _dataContext.Set<T>().Add(entity);

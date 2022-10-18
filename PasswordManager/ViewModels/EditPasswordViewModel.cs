@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using PasswordManager.Services;
-using MAUIModelsLib;
+using Models;
 using System.Collections.ObjectModel;
 using Command = MvvmHelpers.Commands.Command;
 using MvvmHelpers;
@@ -69,7 +69,7 @@ namespace PasswordManager.ViewModels
         {
             var deferral = e.GetDeferral();
 
-            if (UserName != PasswordOriginal.UserName || Password != PasswordOriginal.PasswordText || PasswordName != PasswordOriginal.PasswordName)
+            if (UserName != PasswordOriginal.UserName || Password != PasswordOriginal.PasswordDecrypted || PasswordName != PasswordOriginal.PasswordName)
             {
                 if (!await PopupService.ShowYesNo("Leave unsaved changes?", "Unsaved changes will be lost. Do you still want to leave?"))
                     e.Cancel();
@@ -85,7 +85,7 @@ namespace PasswordManager.ViewModels
 
             PasswordName = PasswordOriginal.PasswordName;
             UserName = PasswordOriginal.UserName;
-            Password = PasswordOriginal.PasswordText;
+            Password = PasswordOriginal.PasswordDecrypted;
             Description = PasswordOriginal.Description;
         }
 
@@ -99,7 +99,7 @@ namespace PasswordManager.ViewModels
 
             PasswordOriginal.PasswordName = PasswordName;
             PasswordOriginal.UserName = UserName;
-            PasswordOriginal.PasswordText = Password;
+            PasswordOriginal.PasswordDecrypted = Password;
             PasswordOriginal.Description = Description;
             await DatabaseService.UpdatePassword(PasswordOriginal);
             await Shell.Current.GoToAsync($"//{nameof(PasswordsListPage)}");

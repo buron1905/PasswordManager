@@ -1,12 +1,14 @@
-﻿using EFDataAccessLib.Repositories;
+﻿using Persistance.Repositories;
 using LoggerService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using PasswordManager.WebAPI.Helpers;
-using PasswordManager.WebAPI.Services;
-using Services;
 using Services.Abstraction;
 using System.Text;
+using Services.Data;
+using Services.Auth;
+using PasswordManager.WebAPI.Middleware;
+using Services.TMP;
 
 namespace PasswordManager.WebAPI.Extensions
 {
@@ -14,10 +16,12 @@ namespace PasswordManager.WebAPI.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            services.AddTransient<IIdentityService, IdentityService>();
-            services.AddScoped<IJwtUtils, JwtUtils>();
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
-            services.AddScoped<IServiceWrapper, ServiceWrapper>();
+            services.AddScoped<IDataServiceWrapper, DataServiceWrapper>();
+            
+            services.AddTransient<IJwtService, JwtService>();
+            services.AddTransient<IAuthService, AuthService>();
+            
             return services;
         }
 
@@ -62,10 +66,10 @@ namespace PasswordManager.WebAPI.Extensions
                     //ValidateLifetime = true,
 
                     // public key for signing
-                    IssuerSigningKey = JwtMiddleware._publicSigningKey,
+                    IssuerSigningKey = JWTKeys._publicSigningKey,
                     
                     // private key for encryption
-                    TokenDecryptionKey = JwtMiddleware._privateEncryptionKey,
+                    TokenDecryptionKey = JWTKeys._privateEncryptionKey,
 
                     // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
                     //ClockSkew = TimeSpan.Zero

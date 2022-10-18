@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using PasswordManager.Services;
 using System.Collections.ObjectModel;
-using MAUIModelsLib;
+using Models;
 using MvvmHelpers;
 using MvvmHelpers.Commands;
 using Microsoft.Maui.Controls;

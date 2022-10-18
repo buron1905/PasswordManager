@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Models.DTOs
 {
-    public class RegisterDTO
+    public class AuthResponseDTO
     {
+        public string? Token { get; set; }
     }
 }

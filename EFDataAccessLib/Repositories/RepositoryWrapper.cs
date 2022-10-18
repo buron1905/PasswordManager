@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EFDataAccessLib.Repositories
+namespace Persistance.Repositories
 {
     public class RepositoryWrapper : IRepositoryWrapper
     {

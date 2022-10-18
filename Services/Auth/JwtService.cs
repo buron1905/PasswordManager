@@ -1,19 +1,18 @@
-﻿using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.JsonWebTokens;
+﻿using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-using Models;
-using System.IdentityModel.Tokens.Jwt;
+using Services.Abstraction;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace PasswordManager.WebAPI.Helpers
+namespace Services.Auth
 {
-    public class JwtUtils : IJwtUtils
+    public class JwtService : IJwtService
     {
-
-
-        public string GenerateToken(string masterPassword, SecurityKey signingKey, SecurityKey encryptionKey)
+        public string GenerateJweToken(string masterPassword, SecurityKey signingKey, SecurityKey encryptionKey)
         {
             var handler = new JsonWebTokenHandler();
 
@@ -32,14 +31,14 @@ namespace PasswordManager.WebAPI.Helpers
 
                 // public key for encryption
                 EncryptingCredentials = new EncryptingCredentials(encryptionKey, SecurityAlgorithms.RsaOAEP, SecurityAlgorithms.Aes256CbcHmacSha512),
-                
+
                 Expires = DateTime.UtcNow.AddMinutes(10)
             };
 
             return handler.CreateToken(tokenDescriptor);
         }
 
-        public string? ValidateToken(string token, SecurityKey signingKey, SecurityKey encryptionKey)
+        public string? ValidateJweToken(string token, SecurityKey signingKey, SecurityKey encryptionKey)
         {
             var handler = new JsonWebTokenHandler();
 
@@ -66,7 +65,7 @@ namespace PasswordManager.WebAPI.Helpers
 
             if (result.IsValid)
                 return result.ClaimsIdentity.Claims.First(x => x.Type == "password").Value.ToString();
-                //return result.Claims.First(x => x.Key == "password").Value.ToString();
+            //return result.Claims.First(x => x.Key == "password").Value.ToString();
             else
                 return null;
         }

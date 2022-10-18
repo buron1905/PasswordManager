@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using PasswordManager.Services;
-using MAUIModelsLib;
+using Models;
 using System.Collections.ObjectModel;
 using Command = MvvmHelpers.Commands.Command;
 using MvvmHelpers;
@@ -81,7 +81,7 @@ namespace PasswordManager.ViewModels
                 UserId = ActiveUserService.Instance.User.Id,
                 PasswordName = PasswordName,
                 UserName = UserName,
-                PasswordText = Password,
+                PasswordDecrypted = Password,
                 Description = Description
             };
 

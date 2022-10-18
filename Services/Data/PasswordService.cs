@@ -10,7 +10,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services
+namespace Services.Data
 {
     public class PasswordService : IPasswordService
     {

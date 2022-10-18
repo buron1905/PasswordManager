@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using PasswordManager.Services;
-using MAUIModelsLib;
+using Models;
 using Command = MvvmHelpers.Commands.Command;
 using MvvmHelpers;
 using PasswordManager.Views;

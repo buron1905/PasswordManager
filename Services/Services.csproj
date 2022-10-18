@@ -7,11 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Mapster" Version="7.3.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EFDataAccessLib\EFDataAccessLib.csproj" />
+    <ProjectReference Include="..\EFDataAccessLib\Persistance.csproj" />
     <ProjectReference Include="..\Models\Models.csproj" />
     <ProjectReference Include="..\Services.Abstraction\Services.Abstraction.csproj" />
   </ItemGroup>

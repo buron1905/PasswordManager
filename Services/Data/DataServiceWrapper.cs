@@ -5,15 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services
+namespace Services.Data
 {
-    public class ServiceWrapper : IServiceWrapper
+    public class DataServiceWrapper : IDataServiceWrapper
     {
         private readonly Lazy<IUserService> _lazyUserService;
         private readonly Lazy<IPasswordService> _lazyPasswordService;
         private readonly Lazy<ISettingsService> _lazySettingsService;
 
-        public ServiceWrapper(IRepositoryWrapper repositoryWrapper)
+        public DataServiceWrapper(IRepositoryWrapper repositoryWrapper)
         {
             _lazyUserService = new Lazy<IUserService>(() => new UserService(repositoryWrapper));
             _lazyPasswordService = new Lazy<IPasswordService>(() => new PasswordService(repositoryWrapper));

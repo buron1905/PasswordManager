@@ -1,4 +1,4 @@
-﻿using MAUIModelsLib;
+﻿using Models;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -106,7 +106,7 @@ namespace MAUIDatabaseLib
                 return false;
         }
 
-        public static async Task<bool> RemovePassword(int id)
+        public static async Task<bool> RemovePassword(Guid id)
         {
             if (await _connection.DeleteAsync<Password>(id) == 1)
                 return true;
@@ -136,7 +136,7 @@ namespace MAUIDatabaseLib
             return await _connection.FindAsync<User>(id);
         }
 
-        public static async Task<Settings?> GetSettings(int userId)
+        public static async Task<Settings?> GetSettings(Guid userId)
         {
             return await _connection.FindAsync<Settings>(userId);
         }
@@ -160,7 +160,7 @@ namespace MAUIDatabaseLib
             }
         }
 
-        public static async Task<List<Password>> GetUserPasswords(int userId)
+        public static async Task<List<Password>> GetUserPasswords(Guid userId)
         {
             return await _connection.QueryAsync<Password>("SELECT * FROM Passwords WHERE UserId = ?", userId);
         }

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EFDataAccessLib.Repositories
+namespace Persistance.Repositories
 {
     public class UserRepository : RepositoryBase<User>, IUserRepository
     {
@@ -24,15 +24,19 @@ namespace EFDataAccessLib.Repositories
                .ToListAsync();
         }
 
-        public async Task<User?> GetByIdAsync(Guid userId)
+        public Task<User?> GetByIdAsync(Guid userId)
         {
-            return await FindByCondition(user => user.Id.Equals(userId))
-                .FirstOrDefaultAsync();
+            return FindSingleOrDefaultByCondition(user => user.Id.Equals(userId));
         }
 
-        public async Task<User?> GetUserWithPasswordsAndSettingsAsync(Guid userId)
+        public Task<User?> GetByEmailAsync(string email)
         {
-            return await FindByCondition(user => user.Id.Equals(userId))
+            return FindSingleOrDefaultByCondition(user => user.Email.Equals(email));
+        }
+
+        public Task<User?> GetUserWithPasswordsAndSettingsAsync(Guid userId)
+        {
+            return FindByCondition(user => user.Id.Equals(userId))
                 .Include(user => user.Passwords)
                 .Include(user => user.Settings)
                 .FirstOrDefaultAsync();

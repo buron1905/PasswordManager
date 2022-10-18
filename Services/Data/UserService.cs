@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services
+namespace Services.Data
 {
     public class UserService : IUserService
     {
@@ -41,7 +41,18 @@ namespace Services
             return userDTO;
         }
 
-        public async Task<UserDTO> CreateAsync(RegisterDTO registerDTO)
+        public async Task<UserDTO> GetByEmailAsync(string email)
+        {
+            var user = await _repositoryWrapper.UserRepository.FindSingleOrDefaultByCondition(user => user.Email.Equals(email));
+            
+            if (user is null)
+                throw new UserNotFoundException(email);
+
+            var userDTO = user.Adapt<UserDTO>();
+            return userDTO;
+        }
+
+        public async Task<UserDTO> CreateAsync(RegisterRequestDTO registerDTO)
         {
             var user = registerDTO.Adapt<User>();
 

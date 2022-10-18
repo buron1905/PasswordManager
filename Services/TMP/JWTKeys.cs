@@ -1,13 +1,15 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace PasswordManager.WebAPI.Helpers
+namespace Services.TMP
 {
-    public class JwtMiddleware
+    public static class JWTKeys
     {
-        private readonly RequestDelegate _next;
-        
-        
         // TODO move securely keys
         public static RSA _encryptionKey = RSA.Create(3072); // public key for encryption, private key for decryption
         public static ECDsa _signingKey = ECDsa.Create(ECCurve.NamedCurves.nistP256); // private key for signing, public key for validation
@@ -17,24 +19,5 @@ namespace PasswordManager.WebAPI.Helpers
         public static RsaSecurityKey _publicEncryptionKey = new RsaSecurityKey(_encryptionKey.ExportParameters(false)) { KeyId = _encryptionKid };
         public static ECDsaSecurityKey _privateSigningKey = new ECDsaSecurityKey(_signingKey) { KeyId = _signingKid };
         public static ECDsaSecurityKey _publicSigningKey = new ECDsaSecurityKey(ECDsa.Create(_signingKey.ExportParameters(false))) { KeyId = _signingKid };
-
-        public JwtMiddleware(RequestDelegate next)
-        {
-            _next = next;
-        }
-
-        public async Task Invoke(HttpContext context, IJwtUtils jwtUtils)
-        {
-            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-            var password = jwtUtils.ValidateToken(token, _publicSigningKey, _privateEncryptionKey);
-            if (password != null)
-            {
-                // attach user to context on successful jwt validation
-                context.Items["password"] = password;
-                //context.Items["User"] = userService.GetById(userId.Value);
-            }
-
-            await _next(context);
-        }
     }
 }

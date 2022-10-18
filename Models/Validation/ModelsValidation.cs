@@ -1,6 +1,6 @@
-﻿namespace Models.Helpers
+﻿namespace Models.Validation
 {
-    public class Validation
+    public class ModelsValidation
     {
         public const int MaxEmailLength                 = 256;
         public const int MaxPasswordNameLength          = 256;
@@ -13,6 +13,7 @@
         public const string MaxUserNameLengthErrorMessage               = "User name can't be longer than {1} characters";
         public const string MaxPasswordLengthErrorMessage               = "Password can't be longer than {1} characters";
         public const string MaxPasswordDescriptionLengthErrorMessage    = "Password description can't be longer than {1} characters";
+        public const string PasswordsDoNotMatchErrorMessage             = "Passwords do not match";
 
         public const string RequiredErrorMessage                        = "{0} is required.";
     }

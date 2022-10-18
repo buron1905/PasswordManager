@@ -1,8 +1,9 @@
 ﻿using Services.Abstraction;
+using Services.Abstraction.Exceptions;
 using System.Net;
 using System.Text.Json;
 
-namespace PasswordManager.WebAPI.Helpers
+namespace PasswordManager.WebAPI.Middleware
 {
     public class ErrorHandlerMiddleware
     {
@@ -32,15 +33,12 @@ namespace PasswordManager.WebAPI.Helpers
                     switch (error)
                     {
                         case AppException e:
-                            // custom application error
                             response.StatusCode = (int)HttpStatusCode.BadRequest;
                             break;
                         case KeyNotFoundException e:
-                            // not found error
                             response.StatusCode = (int)HttpStatusCode.NotFound;
                             break;
                         default:
-                            // unhandled error
                             response.StatusCode = (int)HttpStatusCode.InternalServerError;
                             break;
                     }

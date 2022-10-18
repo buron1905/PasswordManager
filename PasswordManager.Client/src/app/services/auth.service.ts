@@ -13,8 +13,8 @@ import { AuthenticatedResponseModel } from './../models/authenticated-response.m
 })
 export class AuthService {
   
-  private loginPath = `${environment.apiUrl}/identity/login`;
-  private registerPath = `${environment.apiUrl}/identity/register`;
+  private loginPath = `${environment.apiUrl}/auth/login`;
+  private registerPath = `${environment.apiUrl}/auth/register`;
   
   constructor(private http: HttpClient, private router: Router, private jwtHelper: JwtHelperService) { }
 

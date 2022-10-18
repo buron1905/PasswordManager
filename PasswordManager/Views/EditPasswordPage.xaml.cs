@@ -6,7 +6,7 @@ using System.Text;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using MAUIModelsLib;
+using Models;
 using PasswordManager.ViewModels;
 
 namespace PasswordManager.Views

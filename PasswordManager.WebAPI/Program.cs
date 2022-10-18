@@ -1,4 +1,4 @@
-using EFDataAccessLib;
+using Persistance;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -6,8 +6,8 @@ using Microsoft.IdentityModel.Tokens;
 using NLog;
 using PasswordManager.WebAPI;
 using PasswordManager.WebAPI.Extensions;
-using PasswordManager.WebAPI.Helpers;
 using System.Text;
+using PasswordManager.WebAPI.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,9 +29,9 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-app.UseMiddleware<ErrorHandlerMiddleware>();
-
 app.UseHttpsRedirection();
+
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseRouting();
 

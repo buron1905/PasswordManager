@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Services.Abstraction
 {
-    public interface IServiceWrapper
+    public interface IDataServiceWrapper
     {
         IUserService UserService { get; }
         IPasswordService PasswordService { get; }

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EFDataAccessLib.Repositories
+namespace Persistance.Repositories
 {
     public class SettingsRepository : RepositoryBase<Settings>, ISettingsRepository
     {
@@ -16,20 +16,19 @@ namespace EFDataAccessLib.Repositories
         {
         }
 
-        public async Task<Settings?> GetSettingsByUser(Guid ownerId)
+        public Task<Settings?> GetSettingsByUser(Guid ownerId)
         {
-            return await FindByCondition(a => a.UserId.Equals(ownerId)).FirstOrDefaultAsync();
+            return FindSingleOrDefaultByCondition(settings => settings.UserId.Equals(ownerId));
         }
 
-        public async Task<Settings?> GetByIdAsync(Guid settingsId)
+        public Task<Settings?> GetByIdAsync(Guid settingsId)
         {
-            return await FindByCondition(settings => settings.Id.Equals(settingsId))
-                .FirstOrDefaultAsync();
+            return FindSingleOrDefaultByCondition(settings => settings.Id.Equals(settingsId));
         }
 
-        public async Task<Settings?> GetSettingsWithUserAsync(Guid settingsId)
+        public Task<Settings?> GetSettingsWithUserAsync(Guid settingsId)
         {
-            return await FindByCondition(settings => settings.Id.Equals(settingsId))
+            return FindByCondition(settings => settings.Id.Equals(settingsId))
                 .Include(settings => settings.User)
                 .FirstOrDefaultAsync();
         }

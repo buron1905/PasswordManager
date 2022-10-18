@@ -1,5 +1,5 @@
 ﻿using MAUIDatabaseLib;
-using MAUIModelsLib;
+using Models;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -61,7 +61,7 @@ namespace PasswordManager.Services
             await DatabaseSQLiteMobile.RemoveSettings(id);
         }
 
-        public static async Task RemovePassword(int id)
+        public static async Task RemovePassword(Guid id)
         {
             await DatabaseSQLiteMobile.RemovePassword(id);
         }
@@ -88,7 +88,7 @@ namespace PasswordManager.Services
             return await DatabaseSQLiteMobile.GetUser(id);
         }
 
-        public static async Task<Settings?> GetSettings(int userId)
+        public static async Task<Settings?> GetSettings(Guid userId)
         {
             return await DatabaseSQLiteMobile.GetSettings(userId);
         }
@@ -103,7 +103,7 @@ namespace PasswordManager.Services
             return await DatabaseSQLiteMobile.GetUser(email);
         }
 
-        public static async Task<List<Password>> GetUserPasswords(int userId)
+        public static async Task<List<Password>> GetUserPasswords(Guid userId)
         {
             return await DatabaseSQLiteMobile.GetUserPasswords(userId);
         }

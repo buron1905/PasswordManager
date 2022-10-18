@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models;
 
-namespace EFDataAccessLib
+namespace Persistance
 {
     public class DataContext : DbContext
     {

@@ -8,7 +8,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EFDataAccessLib.Repositories
+namespace Persistance.Repositories
 {
     public class PasswordRepository : RepositoryBase<Password>, IPasswordRepository
     {
@@ -22,15 +22,14 @@ namespace EFDataAccessLib.Repositories
             return await FindByCondition(a => a.UserId.Equals(ownerId)).ToListAsync();
         }
 
-        public async Task<Password?> GetByIdAsync(Guid passwordId)
+        public Task<Password?> GetByIdAsync(Guid passwordId)
         {
-            return await FindByCondition(password => password.Id.Equals(passwordId))
-                .FirstOrDefaultAsync();
+            return FindSingleOrDefaultByCondition(password => password.Id.Equals(passwordId));
         }
 
-        public async Task<Password?> GetPasswordWithUserAsync(Guid passwordId)
+        public Task<Password?> GetPasswordWithUserAsync(Guid passwordId)
         {
-            return await FindByCondition(password => password.Id.Equals(passwordId))
+            return FindByCondition(password => password.Id.Equals(passwordId))
                 .Include(password => password.User)
                 .FirstOrDefaultAsync();
         }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static Models.Helpers.Validation;
+using static Models.Validation.ModelsValidation;
 
 namespace Models.DTOs
 {
