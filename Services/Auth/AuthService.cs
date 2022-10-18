@@ -33,8 +33,13 @@ namespace Services.Auth
                 return null;
 
             var tokenString = new JwtService().GenerateJweToken(requestDTO.Password!, JWTKeys._privateSigningKey, JWTKeys._publicEncryptionKey);
+            var refreshTokenString = new JwtService().GenerateJwtToken(requestDTO.Password!, JWTKeys._privateSigningKey, JWTKeys._publicEncryptionKey);
 
-            return new AuthResponseDTO { Token = tokenString };
+            return new AuthResponseDTO { 
+                Token = tokenString, 
+                RefreshToken = refreshTokenString,
+                ExpirationDateTime = DateTime.Now.AddMinutes(30)
+            };
         }
 
         public async Task<AuthResponseDTO?> RegisterAsync(RegisterRequestDTO requestDTO)
@@ -47,8 +52,14 @@ namespace Services.Auth
             var user = await _dataServiceWrapper.UserService.CreateAsync(requestDTO);
 
             var tokenString = new JwtService().GenerateJweToken(requestDTO.Password!, JWTKeys._privateSigningKey, JWTKeys._publicEncryptionKey);
+            //var refreshTokenString = new JwtService().GenerateJwtToken(requestDTO.Password!, JWTKeys._privateSigningKey, JWTKeys._publicEncryptionKey);
 
-            return new AuthResponseDTO { Token = tokenString };
+            return new AuthResponseDTO
+            {
+                Token = tokenString,
+                RefreshToken = refreshTokenString,
+                ExpirationDateTime = DateTime.Now.AddMinutes(30)
+            };
         }
 
         public bool TokenIsValid(string token)

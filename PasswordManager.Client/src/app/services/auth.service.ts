@@ -49,6 +49,8 @@ export class AuthService {
 
   private removeToken() : void { 
     localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('expirationDateTime');
   }
 
   isAuthenticated() : boolean {
