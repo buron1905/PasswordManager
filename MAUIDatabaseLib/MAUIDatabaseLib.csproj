@@ -19,7 +19,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\MAUICryptographyLib\MAUICryptographyLib.csproj" />
 	  <ProjectReference Include="..\Models\Models.csproj" />
 	</ItemGroup>
 

@@ -34,8 +34,10 @@ export class AuthService {
     return this.http.post(this.registerPath, data);
   }
 
-  logout() : void {
-    this.removeToken();
+  logout(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('expirationDateTime');
     this.router.navigate(['login']);
   }
 
@@ -45,12 +47,6 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem('token');
-  }
-
-  private removeToken() : void { 
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('expirationDateTime');
   }
 
   isAuthenticated() : boolean {

@@ -33,11 +33,11 @@ namespace Services.Auth
                 return null;
 
             var tokenString = new JwtService().GenerateJweToken(requestDTO.Password!, JWTKeys._privateSigningKey, JWTKeys._publicEncryptionKey);
-            var refreshTokenString = new JwtService().GenerateJwtToken(requestDTO.Password!, JWTKeys._privateSigningKey, JWTKeys._publicEncryptionKey);
+            //var refreshTokenString = new JwtService().GenerateJwtToken(requestDTO.Password!, JWTKeys._privateSigningKey, JWTKeys._publicEncryptionKey);
 
             return new AuthResponseDTO { 
                 Token = tokenString, 
-                RefreshToken = refreshTokenString,
+                //RefreshToken = refreshTokenString,
                 ExpirationDateTime = DateTime.Now.AddMinutes(30)
             };
         }
@@ -57,7 +57,7 @@ namespace Services.Auth
             return new AuthResponseDTO
             {
                 Token = tokenString,
-                RefreshToken = refreshTokenString,
+                //RefreshToken = refreshTokenString,
                 ExpirationDateTime = DateTime.Now.AddMinutes(30)
             };
         }
