@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using static Models.Validation.ModelsValidation;
 
@@ -17,8 +16,8 @@ namespace Models.DTOs
         [Required]
         public string? Password { get; set; }
 
-        
-        [IgnoreDataMember]
+
+        [JsonIgnore]
         public string? PasswordHASH { get; set; }
     }
 }

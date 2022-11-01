@@ -1,7 +1,8 @@
 ﻿using Mapster;
 using Models;
 using Models.DTOs;
-using Services.Abstraction;
+using Services.Abstraction.Data;
+using Services.Abstraction.Data.Persistance;
 using Services.Abstraction.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -11,12 +12,12 @@ using System.Threading.Tasks;
 
 namespace Services.Data
 {
-    public class SettingsService : ISettingsService
+    public class SettingsService : DataServiceBase<Settings>, ISettingsService
     {
-
-        private readonly IRepositoryWrapper _repositoryWrapper;
-
-        public SettingsService(IRepositoryWrapper repositoryWrapper) => _repositoryWrapper = repositoryWrapper;
+        public SettingsService(IRepositoryWrapper repositoryWrapper)
+            : base(repositoryWrapper)
+        {
+        }
 
         public async Task<SettingsDTO> GetSettingsByUser(Guid userId)
         {

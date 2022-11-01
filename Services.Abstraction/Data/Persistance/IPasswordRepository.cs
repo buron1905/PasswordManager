@@ -6,7 +6,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.Abstraction
+namespace Services.Abstraction.Data.Persistance
 {
     public interface IPasswordRepository : IRepositoryBase<Password>
     {

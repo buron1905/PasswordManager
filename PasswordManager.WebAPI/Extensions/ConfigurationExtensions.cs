@@ -1,4 +1,6 @@
-﻿namespace PasswordManager.WebAPI.Extensions
+﻿using Models;
+
+namespace PasswordManager.WebAPI.Extensions
 {
     public static class ConfigurationExtensions
     {

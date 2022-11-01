@@ -1,7 +1,8 @@
 ﻿using Mapster;
 using Models;
 using Models.DTOs;
-using Services.Abstraction;
+using Services.Abstraction.Data;
+using Services.Abstraction.Data.Persistance;
 using Services.Abstraction.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -12,12 +13,13 @@ using System.Threading.Tasks;
 
 namespace Services.Data
 {
-    public class PasswordService : IPasswordService
+    public class PasswordService : DataServiceBase<Password>, IPasswordService
     {
-        private readonly IRepositoryWrapper _repositoryWrapper;
-
-        public PasswordService(IRepositoryWrapper repositoryWrapper) => _repositoryWrapper = repositoryWrapper;
-
+        public PasswordService(IRepositoryWrapper repositoryWrapper)
+            : base(repositoryWrapper)
+        {
+        }
+        
         public async Task<IEnumerable<PasswordDTO>> GetAllByUserIdAsync(Guid userId)
         {
             var passwords = await _repositoryWrapper.PasswordRepository.GetAllByUserIdAsync(userId);

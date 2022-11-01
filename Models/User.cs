@@ -21,6 +21,7 @@ namespace Models
 
         public Settings? Settings { get; set; }
         public ICollection<Password>? Passwords { get; set; }
+        public ICollection<RefreshToken>? RefreshTokens { get; set; }
 
     }
 }

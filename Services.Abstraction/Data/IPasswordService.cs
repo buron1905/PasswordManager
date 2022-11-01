@@ -1,13 +1,14 @@
-﻿using Models.DTOs;
+﻿using Models;
+using Models.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.Abstraction
+namespace Services.Abstraction.Data
 {
-    public interface IPasswordService
+    public interface IPasswordService : IDataServiceBase<Password>
     {
         Task<IEnumerable<PasswordDTO>> GetAllByUserIdAsync(Guid userId);
         Task<PasswordDTO> GetByIdAsync(Guid userId, Guid passwordId);

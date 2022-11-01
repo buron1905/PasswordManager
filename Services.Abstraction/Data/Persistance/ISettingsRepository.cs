@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.Abstraction
+namespace Services.Abstraction.Data.Persistance
 {
     public interface ISettingsRepository : IRepositoryBase<Settings>
     {

@@ -1,11 +1,14 @@
-﻿using Microsoft.IdentityModel.JsonWebTokens;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-using Services.Abstraction;
+using Models;
+using Services.Abstraction.Auth;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -39,7 +42,7 @@ namespace Services.Auth
             return handler.CreateToken(tokenDescriptor);
         }
 
-        public string? ValidateJweToken(string token, SecurityKey signingKey, SecurityKey encryptionKey)
+        public string? ValidateJweToken(string token, SecurityKey signingKey, SecurityKey encryptionKey, bool validateLifetime = true)
         {
             var handler = new JsonWebTokenHandler();
 
@@ -52,7 +55,7 @@ namespace Services.Auth
                     ValidIssuer = "https://localhost:5001",
                     ValidateAudience = true,
                     ValidateIssuer = true,
-                    ValidateLifetime = true,
+                    ValidateLifetime = validateLifetime,
 
                     // public key for signing
                     IssuerSigningKey = signingKey,
@@ -92,6 +95,22 @@ namespace Services.Auth
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
             return tokenString;
+        }
+
+        /// <summary>
+        /// Generates a refresh token
+        /// </summary>
+        /// <param name="token">Token string to be used. If null: Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)) is used.</param>
+        /// <param name="created">If null, DateTime.UtcNow is used</param>
+        /// <returns></returns>
+        public RefreshToken GenerateRefreshToken(string token, DateTime expires, DateTime? created = null)
+        {
+            return new RefreshToken
+            {
+                Token = token ?? Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                Expires = expires,
+                Created = created ?? DateTime.UtcNow,
+            };
         }
     }
 }

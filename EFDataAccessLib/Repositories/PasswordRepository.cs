@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models;
-using Services.Abstraction;
+using Services.Abstraction.Data.Persistance;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +17,9 @@ namespace Persistance.Repositories
         {
         }
 
-        public async Task<IEnumerable<Password>> GetAllByUserIdAsync(Guid ownerId)
+        public async Task<IEnumerable<Password>> GetAllByUserIdAsync(Guid userId)
         {
-            return await FindByCondition(a => a.UserId.Equals(ownerId)).ToListAsync();
+            return await FindByCondition(a => a.UserId.Equals(userId)).ToListAsync();
         }
 
         public Task<Password?> GetByIdAsync(Guid passwordId)

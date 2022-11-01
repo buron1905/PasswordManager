@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models;
-using Services.Abstraction;
+using Services.Abstraction.Data.Persistance;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +34,7 @@ namespace Persistance.Repositories
             return _dataContext.Set<T>().SingleOrDefaultAsync(expression); //.AsNoTracking();
         }
         
-        public async Task<bool> CheckIfExistsAnyByCondition(Expression<Func<T, bool>> expression)
+        public async Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
         {
             return await _dataContext.Set<T>().AnyAsync(expression);
         }
@@ -52,6 +52,12 @@ namespace Persistance.Repositories
         public void Delete(T entity)
         {
             _dataContext.Set<T>().Remove(entity);
+        }
+
+        public void DeleteAll(Expression<Func<T, bool>> expression)
+        {
+            var entities = _dataContext.Set<T>().Where(expression);
+            _dataContext.Set<T>().RemoveRange(entities);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using PasswordManager.WebAPI.Helpers;
-using Services.Abstraction;
+using Services.Abstraction.Auth;
 using Services.TMP;
 using System.Security.Cryptography;
 

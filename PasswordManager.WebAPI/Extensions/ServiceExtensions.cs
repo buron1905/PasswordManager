@@ -9,6 +9,10 @@ using Services.Data;
 using Services.Auth;
 using PasswordManager.WebAPI.Middleware;
 using Services.TMP;
+using Services.Abstraction.Auth;
+using Services.Abstraction.Data;
+using Services.Abstraction.Data.Persistance;
+using Models;
 
 namespace PasswordManager.WebAPI.Extensions
 {

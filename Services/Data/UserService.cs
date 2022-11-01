@@ -1,7 +1,9 @@
 ﻿using Mapster;
 using Models;
 using Models.DTOs;
-using Services.Abstraction;
+using Persistance;
+using Services.Abstraction.Data;
+using Services.Abstraction.Data.Persistance;
 using Services.Abstraction.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -11,12 +13,12 @@ using System.Threading.Tasks;
 
 namespace Services.Data
 {
-    public class UserService : IUserService
+    public class UserService : DataServiceBase<User>, IUserService
     {
-
-        private readonly IRepositoryWrapper _repositoryWrapper;
-
-        public UserService(IRepositoryWrapper repositoryWrapper) => _repositoryWrapper = repositoryWrapper;
+        public UserService(IRepositoryWrapper repositoryWrapper)
+            : base(repositoryWrapper)
+        {
+        }
 
         public async Task<IEnumerable<UserDTO>> GetAllAsync()
         {
@@ -47,6 +49,18 @@ namespace Services.Data
             
             if (user is null)
                 throw new UserNotFoundException(email);
+
+            var userDTO = user.Adapt<UserDTO>();
+            return userDTO;
+        }
+
+        public async Task<UserDTO> GetByRefreshTokenAsync(string token)
+        {
+            var user = await _repositoryWrapper.UserRepository.FindSingleOrDefaultByCondition(u => u.RefreshTokens.Any(t => t.Token == token));
+
+            if (user is null)
+                throw new AppException("Invalid token");
+                //throw new UserNotFoundException();
 
             var userDTO = user.Adapt<UserDTO>();
             return userDTO;
