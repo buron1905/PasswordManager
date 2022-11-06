@@ -11,7 +11,6 @@ namespace Services.Abstraction.Data.Persistance
         IUserRepository UserRepository { get; }
         IPasswordRepository PasswordRepository { get; }
         ISettingsRepository SettingsRepository { get; }
-        IRefreshTokenRepository RefreshTokenRepository { get; }
         IRepositoryBase<T>? GetRepository<T>() where T : class;
         Task<int> SaveChangesAsync();
     }

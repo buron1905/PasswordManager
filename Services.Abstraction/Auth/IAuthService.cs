@@ -11,8 +11,6 @@ namespace Services.Abstraction.Auth
     {
         Task<AuthResponseDTO?> LoginAsync(LoginRequestDTO requestDTO);
         Task<AuthResponseDTO?> RegisterAsync(RegisterRequestDTO requestDTO);
-        Task<AuthResponseDTO?> RefreshToken(string token, string password);
-        Task<bool> RevokeToken(string token);
         bool TokenIsValid(string token);
     }
 }

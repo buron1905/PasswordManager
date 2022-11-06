@@ -18,10 +18,8 @@ namespace Models
         [Required]
         public string? PasswordHASH { get; set; }
 
-
         public Settings? Settings { get; set; }
         public ICollection<Password>? Passwords { get; set; }
-        public ICollection<RefreshToken>? RefreshTokens { get; set; }
 
     }
 }

@@ -11,6 +11,5 @@ namespace Services.Abstraction.Data
         IUserService UserService { get; }
         IPasswordService PasswordService { get; }
         ISettingsService SettingsService { get; }
-        IRefreshTokenService RefreshTokenService { get; }
     }
 }

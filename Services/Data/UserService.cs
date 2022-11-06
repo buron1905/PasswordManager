@@ -46,21 +46,9 @@ namespace Services.Data
         public async Task<UserDTO> GetByEmailAsync(string email)
         {
             var user = await _repositoryWrapper.UserRepository.FindSingleOrDefaultByCondition(user => user.Email.Equals(email));
-            
+
             if (user is null)
                 throw new UserNotFoundException(email);
-
-            var userDTO = user.Adapt<UserDTO>();
-            return userDTO;
-        }
-
-        public async Task<UserDTO> GetByRefreshTokenAsync(string token)
-        {
-            var user = await _repositoryWrapper.UserRepository.FindSingleOrDefaultByCondition(u => u.RefreshTokens.Any(t => t.Token == token));
-
-            if (user is null)
-                throw new AppException("Invalid token");
-                //throw new UserNotFoundException();
 
             var userDTO = user.Adapt<UserDTO>();
             return userDTO;
@@ -104,6 +92,6 @@ namespace Services.Data
             _repositoryWrapper.UserRepository.Delete(user);
 
             await _repositoryWrapper.SaveChangesAsync();
-        }
+        } 
     }
 }

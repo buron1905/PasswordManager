@@ -14,7 +14,6 @@ namespace Persistance.Repositories
         private readonly Lazy<IUserRepository> _lazyUserRepository;
         private readonly Lazy<IPasswordRepository> _lazyPasswordRepository;
         private readonly Lazy<ISettingsRepository> _lazySettingsRepository;
-        private readonly Lazy<IRefreshTokenRepository> _lazyRefreshTokenRepository;
 
         public RepositoryWrapper(DataContext dataContext)
         {
@@ -22,13 +21,11 @@ namespace Persistance.Repositories
             _lazyUserRepository = new Lazy<IUserRepository>(() => new UserRepository(dataContext));
             _lazyPasswordRepository = new Lazy<IPasswordRepository>(() => new PasswordRepository(dataContext));
             _lazySettingsRepository = new Lazy<ISettingsRepository>(() => new SettingsRepository(dataContext));
-            _lazyRefreshTokenRepository = new Lazy<IRefreshTokenRepository>(() => new RefreshTokenRepository(dataContext));
         }
 
         public IUserRepository UserRepository => _lazyUserRepository.Value;
         public IPasswordRepository PasswordRepository => _lazyPasswordRepository.Value;
         public ISettingsRepository SettingsRepository => _lazySettingsRepository.Value;
-        public IRefreshTokenRepository RefreshTokenRepository => _lazyRefreshTokenRepository.Value;
         public IRepositoryBase<T>? GetRepository<T>() where T : class
         {
             switch (typeof(T))
@@ -39,8 +36,6 @@ namespace Persistance.Repositories
                     return PasswordRepository as IRepositoryBase<T>;
                 case Type t when t == typeof(Settings):
                     return SettingsRepository as IRepositoryBase<T>;
-                case Type t when t == typeof(RefreshToken):
-                    return RefreshTokenRepository as IRepositoryBase<T>;
                 default:
                     break;
             }

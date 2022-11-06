@@ -12,7 +12,5 @@ namespace Models.DTOs
         public string? JweToken { get; set; }
         public DateTime ExpirationDateTime { get; set; }
         
-        [JsonIgnore]
-        public string? RefreshToken { get; set; }
     }
 }

@@ -97,20 +97,5 @@ namespace Services.Auth
             return tokenString;
         }
 
-        /// <summary>
-        /// Generates a refresh token
-        /// </summary>
-        /// <param name="token">Token string to be used. If null: Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)) is used.</param>
-        /// <param name="created">If null, DateTime.UtcNow is used</param>
-        /// <returns></returns>
-        public RefreshToken GenerateRefreshToken(string token, DateTime expires, DateTime? created = null)
-        {
-            return new RefreshToken
-            {
-                Token = token ?? Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                Expires = expires,
-                Created = created ?? DateTime.UtcNow,
-            };
-        }
     }
 }
