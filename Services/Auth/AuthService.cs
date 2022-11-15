@@ -45,7 +45,10 @@ namespace Services.Auth
             if(!await AuthUser(requestDTO.EmailAddress!, requestDTO.Password!))
                 return null;
 
-            return GetAuthResponse(requestDTO.EmailAddress!, requestDTO.Password!);
+            //get user guid
+            var userDTO = await _dataServiceWrapper.UserService.GetByEmailAsync(requestDTO.EmailAddress!);
+
+            return GetAuthResponse(userDTO.Id, requestDTO.EmailAddress!, requestDTO.Password!);
         }
 
         public async Task<AuthResponseDTO?> RegisterAsync(RegisterRequestDTO requestDTO)
@@ -58,15 +61,15 @@ namespace Services.Auth
             if (await _repositoryWrapper.UserRepository.AnyAsync(user => user.EmailAddress.Equals(requestDTO.EmailAddress!)))
                 throw new AppException("Email is already used by another user.");
 
-            await _dataServiceWrapper.UserService.CreateAsync(requestDTO);
+            var userDTO = await _dataServiceWrapper.UserService.CreateAsync(requestDTO);
 
-            return GetAuthResponse(requestDTO.EmailAddress!, requestDTO.Password!);
+            return GetAuthResponse(userDTO.Id, requestDTO.EmailAddress!, requestDTO.Password!);
         }
 
-        private AuthResponseDTO GetAuthResponse(string emailAddress, string password)
+        private AuthResponseDTO GetAuthResponse(Guid userId, string emailAddress, string password)
         {
             var expires = DateTime.UtcNow.AddMinutes(_appSettings.JweTokenMinutesTTL);
-            var claims = _jwtService.GetClaims(emailAddress, password, expires);
+            var claims = _jwtService.GetClaims(userId, emailAddress, password, expires);
             var tokenString = _jwtService.GenerateJweToken(claims, JWTKeys._privateSigningKey, JWTKeys._publicEncryptionKey, expires);
 
             return new AuthResponseDTO
@@ -83,10 +86,14 @@ namespace Services.Auth
             if (claims is null)
                 return null;
 
-            if (!await AuthUser(claims.First(c => c.Type.Equals(ClaimTypes.Email)).Value, claims.First(c => c.Type.Equals("password")).Value))
+            var userId = claims.First(c => c.Type.Equals(ClaimTypes.NameIdentifier))?.Value;
+            var emailAddress = claims.First(c => c.Type.Equals(ClaimTypes.Email))?.Value;
+            var password = claims.FirstOrDefault(claim => claim.Type.Equals("password"))?.Value;
+
+            if (!await AuthUser(emailAddress!, password!))
                 return null;
 
-            var response = GetAuthResponse(claims.First(c => c.Type.Equals(ClaimTypes.Email)).Value, claims.First(c => c.Type.Equals("password")).Value);
+            var response = GetAuthResponse(new Guid(userId!), emailAddress!, password!);
 
             return response;
         }
@@ -118,8 +125,18 @@ namespace Services.Auth
                 return false;
             //throw new PasswordNotFoundException();
 
-
             return true;
+        }
+
+        public Guid? GetUserGuid(string token)
+        {
+            var claims = _jwtService.ValidateJweToken(token, JWTKeys._publicSigningKey, JWTKeys._privateEncryptionKey);
+            if (claims is null)
+                return null;
+
+            var guid = claims.First(c => c.Type.Equals(ClaimTypes.NameIdentifier)).Value;
+            
+            return new Guid(guid);
         }
     }
 }

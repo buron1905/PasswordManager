@@ -26,6 +26,8 @@ namespace Services.Data
 
             var passwordsDTO = passwords.Adapt<IEnumerable<PasswordDTO>>();
 
+            //TODO: PasswordEncrypted to PasswordDecrypted
+
             return passwordsDTO;
         }
 
@@ -68,6 +70,9 @@ namespace Services.Data
             var password = passwordDTO.Adapt<Password>();
 
             password.UserId = user.Id;
+            password.User = user;
+            //TODO: use encryption service
+            password.PasswordEncrypted = password.PasswordDecrypted;
 
             _repositoryWrapper.PasswordRepository.Create(password);
 

@@ -1,9 +1,6 @@
 export interface PasswordModel {
-    id: number;
-    Passwordname: string;
-    Username: string;
-    Password: string;
+    PasswordName: string;
+    UserName: string;
+    PasswordDecrypted: string;
     Description: string;
-    // Url: string | null;
-    // Created: string;
 }

@@ -19,11 +19,11 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router, private jwtHelper: JwtHelperService) { }
 
 
-  authenticate(data : AbstractControl<any, any>) : Observable<any> {
+  authenticate(data: AbstractControl<any, any>): Observable<AuthResponseModel> {
     return this.http.post<AuthResponseModel>(this.loginPath, data);
   }
 
-  register(data : AbstractControl<any, any>) : Observable<any> {
+  register(data: AbstractControl<any, any>): Observable<AuthResponseModel> {
     return this.http.post<AuthResponseModel>(this.registerPath, data);
   }
 

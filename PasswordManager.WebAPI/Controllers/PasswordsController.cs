@@ -1,25 +1,62 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Models;
-using System.Data;
-using PasswordManager.WebAPI.Helpers;
+using Microsoft.IdentityModel.Tokens;
+using Models.DTOs;
 using PasswordManager.WebAPI.Helpers.Attributes;
+using Services.Abstraction.Auth;
+using Services.Abstraction.Data;
+using Services.Auth;
 
 namespace PasswordManager.WebAPI.Controllers
 {
+    [Authorize]
     public class PasswordsController : ApiControllerBase
     {
-        public PasswordsController()
+        private readonly IAuthService _authService;
+        private readonly IPasswordService _passwordService;
+
+        public PasswordsController(IAuthService authService, IPasswordService passwordService)
         {
+            _authService = authService;
+            _passwordService = passwordService;
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            string userIdString = HttpContext.Items["userId"].ToString();
+
+            var guid = new Guid(userIdString);
+
+            var passwords = await _passwordService.GetAllByUserIdAsync(guid);
+
+            return Ok(passwords);
         }
 
-        [HttpGet, Authorize]
-        public async Task<IEnumerable<string>> Get()
+        [HttpGet("{guid}")]
+        public async Task<IActionResult> Get(string guid)
         {
-            //var passwordsResult = _mapper.Map<IEnumerable<PasswordDTO>>(passwords);
-
-            return new string[] { "pass1", "pass2" };
+            throw new NotImplementedException();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] PasswordDTO passwordDTO)
+        {
+            //var password = await _passwordService.CreateAsync();
 
+            
+            throw new NotImplementedException();
+        }
+
+        [HttpPut("{guid}")]
+        public async Task<IActionResult> Put(string guid, [FromBody] PasswordDTO passwordDTO)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpDelete("{guid}")]
+        public async Task<IActionResult> Delete(string guid)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

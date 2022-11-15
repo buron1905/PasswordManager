@@ -87,11 +87,11 @@ namespace Services.Auth
                 return null;
         }
 
-        public IEnumerable<Claim> GetClaims(string emailAddress, string password, DateTime expirationUTCDateTime)
+        public IEnumerable<Claim> GetClaims(Guid userId, string emailAddress, string password, DateTime expirationUTCDateTime)
         {
             var claims = new List<Claim>
                 {
-                    //new Claim(ClaimTypes.NameIdentifier, userId),
+                    new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
                     new Claim(ClaimTypes.Email, emailAddress),
                     new Claim("password", password),
                     new Claim(ClaimTypes.Expiration, expirationUTCDateTime.ToString())

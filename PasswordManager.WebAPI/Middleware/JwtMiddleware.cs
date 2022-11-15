@@ -30,12 +30,19 @@ namespace PasswordManager.WebAPI.Middleware
                 if (claims != null)
                 {
                     // attach user to context on successful jwt validation
-                    context.Items["emailAddress"] = claims.First(c => c.Type.Equals(ClaimTypes.Email)).Value;
+                    var userId = claims.First(c => c.Type.Equals(ClaimTypes.NameIdentifier)).Value;
+                    context.Items["userId"] = userId;
+                    var emailAddress = claims.First(c => c.Type.Equals(ClaimTypes.Email)).Value;
+                    context.Items["emailAddress"] = emailAddress;
+                    var password = claims.First(c => c.Type.Equals("password")).Value;
+                    context.Items["password"] = password;
 
+
+                    // set Cookies
                     if (context.Request.Cookies["token"] is not null)
                     {
                         var expires = DateTime.UtcNow.AddMinutes(appSettings.Value.JweTokenMinutesTTL);
-                        var newClaims = jwtService.GetClaims(claims.First(c => c.Type.Equals(ClaimTypes.Email)).Value, claims.First(c => c.Type.Equals("password")).Value, expires);
+                        var newClaims = jwtService.GetClaims(new Guid(userId), emailAddress, password, expires);
                         var newToken = jwtService.GenerateJweToken(newClaims, JWTKeys._publicSigningKey, JWTKeys._privateEncryptionKey, expires);
                     
                         var cookieOptions = new CookieOptions

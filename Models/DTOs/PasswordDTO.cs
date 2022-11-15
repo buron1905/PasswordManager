@@ -21,5 +21,7 @@ namespace Models.DTOs
 
         [MaxLength(MaxPasswordDescriptionLength, ErrorMessage = MaxPasswordDescriptionLengthErrorMessage)]
         public string? Description { get; set; }
+
+        // public DateTime Updated { get; set; }
     }
 }

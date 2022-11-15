@@ -14,6 +14,6 @@ namespace Services.Abstraction.Auth
         string GenerateJweToken(IEnumerable<Claim> claims, SecurityKey signingKey, SecurityKey encryptionKey, DateTime expires);
         string GenerateJwtToken(IEnumerable<Claim> claims, string secret, DateTime expires);
         IEnumerable<Claim>? ValidateJweToken(string token, SecurityKey signingKey, SecurityKey encryptionKey, bool validateLifetime = true);
-        IEnumerable<Claim> GetClaims(string emailAddress, string password, DateTime expirationDateTime);
+        IEnumerable<Claim> GetClaims(Guid userId, string emailAddress, string password, DateTime expirationDateTime);
     }
 }

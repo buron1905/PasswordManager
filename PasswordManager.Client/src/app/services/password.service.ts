@@ -14,6 +14,10 @@ export class PasswordService {
   
   constructor(private http: HttpClient) { }
 
+  get(): Observable<PasswordModel[]> {
+    return this.http.get<PasswordModel[]>(this.passwordsPath);
+  }
+
   create(data : AbstractControl<any, any>) : Observable<PasswordModel> {
     return this.http.post<PasswordModel>(this.passwordsPath, data);
   }
