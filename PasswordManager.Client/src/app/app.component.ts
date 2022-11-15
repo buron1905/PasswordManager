@@ -15,13 +15,13 @@ export class AppComponent {
   }
 
   ngOnInit(): void {
-    // every 5 minutes of inactivity
-    this.bnIdle.startWatching(300).subscribe(async () => {
-      if (this.authService.isAuthenticated()) {
-        if (!(await this.authService.getTokenIsValid())) {
-          this.authService.logout();
-        }
-      }
-    });
+    //// every 5 minutes of inactivity
+    //this.bnIdle.startWatching(300).subscribe(async () => {
+    //  if (this.authService.isAuthenticated()) {
+    //    if (!(await this.authService.getTokenIsValid())) {
+    //      this.authService.logout();
+    //    }
+    //  }
+    //});
   }
 }

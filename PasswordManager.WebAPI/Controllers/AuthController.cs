@@ -55,13 +55,22 @@ namespace PasswordManager.WebAPI.Controllers
             return Ok(response);
         }
 
-        [Authorize]
-        [HttpGet("token-is-valid")]
-        public IActionResult TokenIsValid(string token)
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken(/*[FromBody]*/ RefreshAccessTokenRequestDTO refreshAccessTokenRequestDTO)
         {
-            bool response = _authService.TokenIsValid(token);
+            var token = refreshAccessTokenRequestDTO.Token ?? Request.Cookies["refreshToken"];
 
-            return Ok(new { isValid = response });
+            if (string.IsNullOrEmpty(token))
+                return BadRequest(new { message = "Token is required" });
+
+            var response = await _authService.RefreshTokenAsync(token);
+
+            if (response == null)
+                return Unauthorized();
+
+            setTokenCookie(response.JweToken!);
+
+            return Ok(response);
         }
 
         // helper methods
@@ -72,9 +81,9 @@ namespace PasswordManager.WebAPI.Controllers
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Expires = DateTime.UtcNow.AddDays(_appSettings.RefreshTokenDaysTTL)
+                Expires = DateTime.UtcNow.AddMinutes(_appSettings.JweTokenMinutesTTL)
             };
-            Response.Cookies.Append("refreshToken", token, cookieOptions);
+            Response.Cookies.Append("token", token, cookieOptions);
         } 
 
     }

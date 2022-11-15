@@ -4,6 +4,7 @@ using static Models.Validation.ModelsValidation;
 
 namespace Models
 {
+    [Table("AppUsers")]
     public class User
     {
         [Key]
@@ -13,7 +14,7 @@ namespace Models
         [Required]
         [EmailAddress]
         [MaxLength(MaxEmailLength, ErrorMessage = MaxEmailLengthErrorMessage)]
-        public string? Email { get; set; }
+        public string? EmailAddress { get; set; }
 
         [Required]
         public string? PasswordHASH { get; set; }

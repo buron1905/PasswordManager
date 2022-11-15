@@ -10,16 +10,16 @@ namespace Persistance.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "AppUsers",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    EmailAddress = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     PasswordHASH = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_AppUsers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -37,9 +37,9 @@ namespace Persistance.Migrations
                 {
                     table.PrimaryKey("PK_Passwords", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Passwords_Users_UserId",
+                        name: "FK_Passwords_AppUsers_UserId",
                         column: x => x.UserId,
-                        principalTable: "Users",
+                        principalTable: "AppUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -56,9 +56,9 @@ namespace Persistance.Migrations
                 {
                     table.PrimaryKey("PK_Settings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Settings_Users_UserId",
+                        name: "FK_Settings_AppUsers_UserId",
                         column: x => x.UserId,
-                        principalTable: "Users",
+                        principalTable: "AppUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -84,7 +84,7 @@ namespace Persistance.Migrations
                 name: "Settings");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "AppUsers");
         }
     }
 }

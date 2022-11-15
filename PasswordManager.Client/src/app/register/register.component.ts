@@ -40,7 +40,7 @@ export class RegisterComponent implements OnInit {
     this.authService.register(this.registerForm.value).subscribe(
       data => {
         console.log(data);
-
+        this.authService.login(data);
         this.toastrService.success('Registration successful');
         this.router.navigate(['/passwords']);
 

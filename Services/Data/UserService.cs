@@ -45,7 +45,7 @@ namespace Services.Data
 
         public async Task<UserDTO> GetByEmailAsync(string email)
         {
-            var user = await _repositoryWrapper.UserRepository.FindSingleOrDefaultByCondition(user => user.Email.Equals(email));
+            var user = await _repositoryWrapper.UserRepository.FindSingleOrDefaultByCondition(user => user.EmailAddress.Equals(email));
 
             if (user is null)
                 throw new UserNotFoundException(email);
@@ -75,7 +75,7 @@ namespace Services.Data
             }
 
             // TODO: Add update logic
-            user.Email = updateUserDTO.Email;
+            user.EmailAddress = updateUserDTO.Email;
 
             await _repositoryWrapper.SaveChangesAsync();
         }

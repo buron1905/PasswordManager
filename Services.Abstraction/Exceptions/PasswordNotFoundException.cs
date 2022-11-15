@@ -12,5 +12,10 @@ namespace Services.Abstraction.Exceptions
             : base($"The password with the identifier {passwordId} was not found.")
         {
         }
+
+        public PasswordNotFoundException()
+            : base($"Password not found.")
+        {
+        }
     }
 }

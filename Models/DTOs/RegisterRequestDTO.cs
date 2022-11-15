@@ -12,7 +12,7 @@ namespace Models.DTOs
     {
         [Required]
         [Compare(nameof(Password), ErrorMessage = PasswordsDoNotMatchErrorMessage)]
-        public string? PasswordAgain { get; set; }
+        public string? ConfirmPassword { get; set; }
         
         public string? PasswordHASH { get; set; }
     }

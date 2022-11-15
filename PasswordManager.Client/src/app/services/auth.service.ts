@@ -15,7 +15,6 @@ export class AuthService {
   
   private loginPath = `${environment.apiUrl}/auth/login`;
   private registerPath = `${environment.apiUrl}/auth/register`;
-  private tokenIsValidPath = `${environment.apiUrl}/auth/token-is-valid`;
   
   constructor(private http: HttpClient, private router: Router, private jwtHelper: JwtHelperService) { }
 
@@ -24,44 +23,36 @@ export class AuthService {
     return this.http.post<AuthResponseModel>(this.loginPath, data);
   }
 
-  login(data: AuthResponseModel) : void {
-    localStorage.setItem('token', data.Token);
-    localStorage.setItem('refreshToken', data.RefreshToken);
-    localStorage.setItem('expirationDateTime', data.ExpirationDateTime.toString());
+  register(data : AbstractControl<any, any>) : Observable<any> {
+    return this.http.post<AuthResponseModel>(this.registerPath, data);
   }
 
-  register(data : AbstractControl<any, any>) : Observable<any> {
-    return this.http.post(this.registerPath, data);
+  login(data: AuthResponseModel) : void {
+    localStorage.setItem('expirationDateTime', data.ExpirationDateTime);
   }
 
   logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
     localStorage.removeItem('expirationDateTime');
     this.router.navigate(['login']);
   }
 
-  saveToken(token: string) : void {
-    localStorage.setItem('token', token);
-  }
-
-  getToken(): string | null {
-    return localStorage.getItem('token');
+  getExpirationDateTime(): string | null {
+    return localStorage.getItem('expirationDateTime');
   }
 
   isAuthenticated() : boolean {
-    const token = this.getToken();
-    if (token)
+    const expirationDateTime = this.getExpirationDateTime();
+    if (expirationDateTime)
       return true;
     else
       return false;
   }
 
   async getTokenIsValid(): Promise<boolean> {
-    const token = this.getToken();
-    if (token) {
-      return (await lastValueFrom(this.http.post<{ isValid: boolean }>(this.tokenIsValidPath, token))).isValid;
-    }
+    //const token = this.getToken();
+    //if (token) {
+    //  return (await lastValueFrom(this.http.post<{ isValid: boolean }>(this.tokenIsValidPath, token))).isValid;
+    //}
     return false;
   }
   

@@ -12,6 +12,7 @@ using Services.TMP;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,15 +42,10 @@ namespace Services.Auth
             if (!IsRequestValid(requestDTO))
                 return null;
 
-            //var user = await _dataServiceWrapper.UserService.GetByEmailAsync(requestDTO.Email!);
-            var user = await _repositoryWrapper.UserRepository.FindSingleOrDefaultByCondition(user => user.Email.Equals(requestDTO.Email!));
-            if (user is null)
-                throw new UserNotFoundException(requestDTO.Email!);
-
-            if (!BCrypt.Net.BCrypt.Verify(requestDTO.Password, user.PasswordHASH))
+            if(!await AuthUser(requestDTO.EmailAddress!, requestDTO.Password!))
                 return null;
 
-            return GetAuthResponse(user, requestDTO.Password!);
+            return GetAuthResponse(requestDTO.EmailAddress!, requestDTO.Password!);
         }
 
         public async Task<AuthResponseDTO?> RegisterAsync(RegisterRequestDTO requestDTO)
@@ -59,27 +55,45 @@ namespace Services.Auth
 
             requestDTO.PasswordHASH = BCrypt.Net.BCrypt.HashPassword(requestDTO.Password);
 
-            var user = requestDTO.Adapt<User>();
-            _repositoryWrapper.UserRepository.Create(user);
-            await _repositoryWrapper.SaveChangesAsync();
+            if (await _repositoryWrapper.UserRepository.AnyAsync(user => user.EmailAddress.Equals(requestDTO.EmailAddress!)))
+                throw new AppException("Email is already used by another user.");
 
-            return GetAuthResponse(user, requestDTO.Password!);
+            await _dataServiceWrapper.UserService.CreateAsync(requestDTO);
+
+            return GetAuthResponse(requestDTO.EmailAddress!, requestDTO.Password!);
         }
 
-        private AuthResponseDTO GetAuthResponse(User user, string password)
+        private AuthResponseDTO GetAuthResponse(string emailAddress, string password)
         {
-            var tokenString = _jwtService.GenerateJweToken(password, JWTKeys._privateSigningKey, JWTKeys._publicEncryptionKey);
+            var expires = DateTime.UtcNow.AddMinutes(_appSettings.JweTokenMinutesTTL);
+            var claims = _jwtService.GetClaims(emailAddress, password, expires);
+            var tokenString = _jwtService.GenerateJweToken(claims, JWTKeys._privateSigningKey, JWTKeys._publicEncryptionKey, expires);
 
             return new AuthResponseDTO
             {
                 JweToken = tokenString,
-                ExpirationDateTime = DateTime.Now.AddMinutes(_appSettings.JweTokenMinutesTTL)
+                ExpirationDateTime = expires
             };
         }
-        
+
+        public async Task<AuthResponseDTO?> RefreshTokenAsync(string token)
+        {
+            IEnumerable<Claim>? claims = null;
+            claims = _jwtService.ValidateJweToken(token, JWTKeys._publicSigningKey, JWTKeys._privateEncryptionKey);
+            if (claims is null)
+                return null;
+
+            if (!await AuthUser(claims.First(c => c.Type.Equals(ClaimTypes.Email)).Value, claims.First(c => c.Type.Equals("password")).Value))
+                return null;
+
+            var response = GetAuthResponse(claims.First(c => c.Type.Equals(ClaimTypes.Email)).Value, claims.First(c => c.Type.Equals("password")).Value);
+
+            return response;
+        }
+
         public bool TokenIsValid(string token)
         {
-            var password = new JwtService().ValidateJweToken(token, JWTKeys._publicSigningKey, JWTKeys._privateEncryptionKey);
+            var password = _jwtService.ValidateJweToken(token, JWTKeys._publicSigningKey, JWTKeys._privateEncryptionKey);
 
             return password != null;
         }
@@ -90,8 +104,22 @@ namespace Services.Auth
         {
             if (requestDTO is null)
                 return false;
-            return requestDTO.Email is not null || requestDTO.Password is not null;
+            return requestDTO.EmailAddress is not null || requestDTO.Password is not null;
         }
+        
+        private async Task<bool> AuthUser(string emailAddress, string password)
+        {
+            var user = await _dataServiceWrapper.UserService.GetByEmailAsync(emailAddress);
+            if (user is null)
+                return false;
+                //throw new UserNotFoundException(emailAddress);
 
+            if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHASH))
+                return false;
+            //throw new PasswordNotFoundException();
+
+
+            return true;
+        }
     }
 }

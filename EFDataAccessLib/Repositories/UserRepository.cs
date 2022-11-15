@@ -20,7 +20,7 @@ namespace Persistance.Repositories
         public async Task<IEnumerable<User>> GetAllAsync()
         {
             return await FindAll()
-               .OrderBy(u => u.Email)
+               .OrderBy(u => u.EmailAddress)
                .ToListAsync();
         }
 
@@ -31,7 +31,7 @@ namespace Persistance.Repositories
 
         public Task<User?> GetByEmailAsync(string email)
         {
-            return FindSingleOrDefaultByCondition(user => user.Email.Equals(email));
+            return FindSingleOrDefaultByCondition(user => user.EmailAddress.Equals(email));
         }
 
         public Task<User?> GetUserWithPasswordsAndSettingsAsync(Guid userId)

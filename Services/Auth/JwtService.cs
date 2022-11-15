@@ -16,7 +16,7 @@ namespace Services.Auth
 {
     public class JwtService : IJwtService
     {
-        public string GenerateJweToken(string masterPassword, SecurityKey signingKey, SecurityKey encryptionKey)
+        public string GenerateJweToken(IEnumerable<Claim> claims, SecurityKey signingKey, SecurityKey encryptionKey, DateTime expires)
         {
             var handler = new JsonWebTokenHandler();
 
@@ -25,10 +25,7 @@ namespace Services.Auth
                 Audience = "https://localhost:5001",
                 Issuer = "https://localhost:5001",
                 Claims = new Dictionary<string, object> { { "sub", "811e790749a24d8a8f766e1a44dca28a" } },
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim("password", masterPassword)
-                }),
+                Subject = new ClaimsIdentity(claims),
 
                 // private key for signing
                 SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.EcdsaSha256),
@@ -41,8 +38,25 @@ namespace Services.Auth
 
             return handler.CreateToken(tokenDescriptor);
         }
+        
+        public string GenerateJwtToken(IEnumerable<Claim> claims, string secret, DateTime expires)
+        {
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
+            var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
-        public string? ValidateJweToken(string token, SecurityKey signingKey, SecurityKey encryptionKey, bool validateLifetime = true)
+            var tokeOptions = new JwtSecurityToken(
+                issuer: "https://localhost:5001",
+                audience: "https://localhost:5001",
+                claims: claims,
+                expires: expires,
+                signingCredentials: signinCredentials
+            );
+
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
+            return tokenString;
+        }
+
+        public IEnumerable<Claim>? ValidateJweToken(string token, SecurityKey signingKey, SecurityKey encryptionKey, bool validateLifetime = true)
         {
             var handler = new JsonWebTokenHandler();
 
@@ -68,33 +82,25 @@ namespace Services.Auth
                 });
 
             if (result.IsValid)
-                return result.ClaimsIdentity.Claims.First(x => x.Type == "password").Value.ToString();
-            //return result.Claims.First(x => x.Key == "password").Value.ToString();
+                return result.ClaimsIdentity.Claims;
             else
                 return null;
         }
 
-        public string GenerateJwtToken(string userId, string emailAddress, string secret)
+        public IEnumerable<Claim> GetClaims(string emailAddress, string password, DateTime expirationUTCDateTime)
         {
-            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
-            var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-
             var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.NameIdentifier, userId),
+                    //new Claim(ClaimTypes.NameIdentifier, userId),
                     new Claim(ClaimTypes.Email, emailAddress),
+                    new Claim("password", password),
+                    new Claim(ClaimTypes.Expiration, expirationUTCDateTime.ToString())
                 };
 
-            var tokeOptions = new JwtSecurityToken(
-                issuer: "https://localhost:5001",
-                audience: "https://localhost:5001",
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(5),
-                signingCredentials: signinCredentials
-            );
+            //if (expirationDateTime is not null)
+            //    claims.Add(new Claim(ClaimTypes.Expiration, expirationDateTime.ToString()));
 
-            var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
-            return tokenString;
+            return claims;
         }
 
     }

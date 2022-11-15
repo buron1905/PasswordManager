@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Models.DTOs
 {
-    public class RevokeTokenRequestDTO
+    public class RefreshAccessTokenRequestDTO
     {
         public string? Token { get; set; }
     }
