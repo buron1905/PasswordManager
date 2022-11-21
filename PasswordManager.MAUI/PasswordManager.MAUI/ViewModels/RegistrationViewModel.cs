@@ -1,13 +1,12 @@
-﻿using System;
-using Microsoft.Maui.Controls;
-using System.Windows.Input;
-using PasswordManager.Services;
+﻿using System.Windows.Input;
 using Models;
 using Command = MvvmHelpers.Commands.Command;
 using MvvmHelpers;
-using PasswordManager.Views;
+using PasswordManager.MAUI.Views;
+using PasswordManager.MAUI.Services;
+using Services.Cryptography;
 
-namespace PasswordManager.ViewModels
+namespace PasswordManager.MAUI.ViewModels
 {
     public class RegistrationViewModel : BaseViewModel
     {

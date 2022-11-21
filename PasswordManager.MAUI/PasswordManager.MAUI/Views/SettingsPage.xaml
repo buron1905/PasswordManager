@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:PasswordManager.MAUI.ViewModels"
+             x:Class="PasswordManager.MAUI.Views.SettingsPage"
+             xmlns:fontAwesome="clr-namespace:FontAwesome"
+             xmlns:converters="clr-namespace:PasswordManager.MAUI.Helpers"
+             x:DataType="viewmodels:SettingsViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{AppThemeBinding 
+                    Dark={StaticResource WindowBackgroundColorDark}, 
+                    Light={StaticResource WindowBackgroundColor}}">
+    <ContentPage.BindingContext>
+        <viewmodels:SettingsViewModel/>
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:IntEnumConverter x:Key="IntEnum"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout>
+                <TableView Intent="Settings">
+                    <TableRoot>
+                        
+                        <TableSection Title="General">
+                            <!--Theme-->
+                            <ViewCell>
+                                <ViewCell.View>
+                                    <StackLayout Orientation="Horizontal" Padding="16, 16">
+                                        <Label Text="Theme" VerticalOptions="Center" HorizontalOptions="StartAndExpand" />
+                                        <Picker ItemsSource="{Binding Themes}" SelectedIndex="{Binding SelectedTheme, Converter={StaticResource IntEnum}}"  VerticalOptions="Center" HorizontalOptions="End"/>
+                                    </StackLayout>
+                                </ViewCell.View>
+                            </ViewCell>
+                            <!--Synchronization-->
+                        </TableSection>
+                        <TableSection Title="Security">
+                            <!--Always ask for master password-->
+                            <SwitchCell Text="Always ask for master password?"/>
+                            <!--Vault time limit-->
+                            <!--Two-Factor Authentication (2FA)-->
+                        </TableSection>
+                        <TableSection Title="Account">
+                            <!--Change email-->
+                            <!--Change master password-->
+                            <!--Logout-->
+                        </TableSection>
+                        <TableSection Title="Other">
+                            <!--About application-->
+                            <!--AppInfo-->
+                            <!--Delete account-->
+                        </TableSection>
+                        
+                    </TableRoot>
+                </TableView>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>
+
+    
+    

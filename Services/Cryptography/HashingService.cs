@@ -1,13 +1,10 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace MAUICryptographyLib
+namespace Services.Cryptography
 {
-    public static class Hasher
+    public static class HashingService
     {
-        // dictionary with types for 512, 256...
-
-
         public static string HashSHA512ToString(string text)
         {
             byte[] data = Encoding.UTF8.GetBytes(text);
@@ -18,7 +15,7 @@ namespace MAUICryptographyLib
                 hash = sha.ComputeHash(data);
             }
 
-            return Parser.ByteArrayToString(hash);
+            return ParsingService.ByteArrayToString(hash);
         }
 
         public static string HashSHA256ToString(string text)
@@ -30,7 +27,7 @@ namespace MAUICryptographyLib
                 hash = sha.ComputeHash(data);
             }
 
-            return Parser.ByteArrayToString(hash);
+            return ParsingService.ByteArrayToString(hash);
         }
 
         public static string HashMD5ToString(string text)
@@ -42,7 +39,7 @@ namespace MAUICryptographyLib
                 hash = md5.ComputeHash(data);
             }
 
-            return Parser.ByteArrayToString(hash);
+            return ParsingService.ByteArrayToString(hash);
         }
 
 
@@ -82,6 +79,5 @@ namespace MAUICryptographyLib
 
             return hash;
         }
-
     }
 }

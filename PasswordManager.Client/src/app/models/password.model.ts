@@ -1,6 +1,6 @@
 export interface PasswordModel {
-    PasswordName: string;
-    UserName: string;
-    PasswordDecrypted: string;
-    Description: string;
+    passwordName: string;
+    userName: string;
+    passwordDecrypted: string;
+    description: string;
 }
