@@ -1,13 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using Models;
-using PasswordManager.WebAPI.Helpers;
 using Services.Abstraction.Auth;
-using Services.Auth;
 using Services.TMP;
-using System.Net.Mail;
 using System.Security.Claims;
-using System.Security.Cryptography;
 
 namespace PasswordManager.WebAPI.Middleware
 {
@@ -44,7 +39,7 @@ namespace PasswordManager.WebAPI.Middleware
                         var expires = DateTime.UtcNow.AddMinutes(appSettings.Value.JweTokenMinutesTTL);
                         var newClaims = jwtService.GetClaims(new Guid(userId), emailAddress, password, expires);
                         var newToken = jwtService.GenerateJweToken(newClaims, JWTKeys._publicSigningKey, JWTKeys._privateEncryptionKey, expires);
-                    
+
                         var cookieOptions = new CookieOptions
                         {
                             HttpOnly = true,

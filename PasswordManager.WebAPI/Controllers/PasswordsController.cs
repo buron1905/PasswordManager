@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Models.DTOs;
 using PasswordManager.WebAPI.Helpers.Attributes;
 using Services.Abstraction.Auth;
 using Services.Abstraction.Data;
-using Services.Auth;
 
 namespace PasswordManager.WebAPI.Controllers
 {
@@ -19,7 +17,7 @@ namespace PasswordManager.WebAPI.Controllers
             _authService = authService;
             _passwordService = passwordService;
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -43,7 +41,7 @@ namespace PasswordManager.WebAPI.Controllers
         {
             //var password = await _passwordService.CreateAsync();
 
-            
+
             throw new NotImplementedException();
         }
 

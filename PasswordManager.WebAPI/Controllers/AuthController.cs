@@ -3,14 +3,7 @@ using Microsoft.Extensions.Options;
 using Models;
 using Services.Abstraction;
 using Models.DTOs;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Cryptography;
-using PasswordManager.WebAPI.Helpers;
-using Services.Data;
-using PasswordManager.WebAPI.Helpers.Attributes;
 using Services.Abstraction.Auth;
-using Services.Auth;
-using Services.TMP;
 
 namespace PasswordManager.WebAPI.Controllers
 {
@@ -84,7 +77,7 @@ namespace PasswordManager.WebAPI.Controllers
                 Expires = DateTime.UtcNow.AddMinutes(_appSettings.JweTokenMinutesTTL)
             };
             Response.Cookies.Append("token", token, cookieOptions);
-        } 
+        }
 
     }
 }

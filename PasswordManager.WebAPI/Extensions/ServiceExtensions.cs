@@ -2,12 +2,10 @@
 using LoggerService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using PasswordManager.WebAPI.Helpers;
 using Services.Abstraction;
 using System.Text;
 using Services.Data;
 using Services.Auth;
-using PasswordManager.WebAPI.Middleware;
 using Services.TMP;
 using Services.Abstraction.Auth;
 using Services.Abstraction.Data;
@@ -22,7 +20,7 @@ namespace PasswordManager.WebAPI.Extensions
         {
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
             services.AddScoped<IDataServiceWrapper, DataServiceWrapper>();
-            
+
             services.AddTransient<IJwtService, JwtService>();
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IPasswordService, PasswordService>();
@@ -32,7 +30,8 @@ namespace PasswordManager.WebAPI.Extensions
 
         public static IServiceCollection ConfigureJwtAuthentication(this IServiceCollection services, AppSettings appSettings)
         {
-            services.AddAuthentication(opt => {
+            services.AddAuthentication(opt =>
+            {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
@@ -54,7 +53,8 @@ namespace PasswordManager.WebAPI.Extensions
 
         public static IServiceCollection ConfigureJweAuthentication(this IServiceCollection services, AppSettings appSettings)
         {
-            services.AddAuthentication(opt => {
+            services.AddAuthentication(opt =>
+            {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
@@ -72,7 +72,7 @@ namespace PasswordManager.WebAPI.Extensions
 
                     // public key for signing
                     IssuerSigningKey = JWTKeys._publicSigningKey,
-                    
+
                     // private key for encryption
                     TokenDecryptionKey = JWTKeys._privateEncryptionKey,
 
