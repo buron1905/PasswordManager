@@ -1,31 +1,28 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Models.DTOs;
+using PasswordManager.WebAPI.Extensions;
 using PasswordManager.WebAPI.Helpers.Attributes;
-using Services.Abstraction.Auth;
 using Services.Abstraction.Data;
+using Services.Auth;
 
 namespace PasswordManager.WebAPI.Controllers
 {
     [Authorize]
     public class PasswordsController : ApiControllerBase
     {
-        private readonly IAuthService _authService;
         private readonly IPasswordService _passwordService;
 
-        public PasswordsController(IAuthService authService, IPasswordService passwordService)
+        public PasswordsController(IPasswordService passwordService)
         {
-            _authService = authService;
             _passwordService = passwordService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            string userIdString = HttpContext.Items["userId"].ToString();
+            var userGuid = JwtService.GetUserGuidFromClaims(HttpContext.GetUserClaims());
 
-            var guid = new Guid(userIdString);
-
-            var passwords = await _passwordService.GetAllByUserIdAsync(guid);
+            var passwords = await _passwordService.GetAllByUserIdAsync(userGuid);
 
             return Ok(passwords);
         }
@@ -40,7 +37,6 @@ namespace PasswordManager.WebAPI.Controllers
         public async Task<IActionResult> Post([FromBody] PasswordDTO passwordDTO)
         {
             //var password = await _passwordService.CreateAsync();
-
 
             throw new NotImplementedException();
         }

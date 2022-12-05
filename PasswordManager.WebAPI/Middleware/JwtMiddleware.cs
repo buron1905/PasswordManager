@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 using Models;
+using PasswordManager.WebAPI.Extensions;
 using Services.Abstraction.Auth;
+using Services.Auth;
 using Services.TMP;
-using System.Security.Claims;
 
 namespace PasswordManager.WebAPI.Middleware
 {
@@ -15,29 +16,28 @@ namespace PasswordManager.WebAPI.Middleware
             _next = next;
         }
 
-        public async Task Invoke(HttpContext context, IJwtService jwtService, IOptions<AppSettings> appSettings)
+        public async Task Invoke(HttpContext httpContext, IJwtService jwtService, IOptions<AppSettings> appSettings)
         {
-            //var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-            var token = context.Request.Cookies["token"] ?? context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var token = httpContext.Request.Cookies["token"] ?? httpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             if (token != null)
             {
                 var claims = jwtService.ValidateJweToken(token, JWTKeys._publicSigningKey, JWTKeys._privateEncryptionKey);
                 if (claims != null)
                 {
-                    // attach user to context on successful jwt validation
-                    var userId = claims.First(c => c.Type.Equals(ClaimTypes.NameIdentifier)).Value;
-                    context.Items["userId"] = userId;
-                    var emailAddress = claims.First(c => c.Type.Equals(ClaimTypes.Email)).Value;
-                    context.Items["emailAddress"] = emailAddress;
-                    var password = claims.First(c => c.Type.Equals("password")).Value;
-                    context.Items["password"] = password;
+                    httpContext.SetUser(claims);
 
+                    var userId = JwtService.GetUserGuidFromClaims(claims);
+                    var emailAddress = JwtService.GetUserEmailFromClaims(claims);
+                    var password = JwtService.GetUserPasswordFromClaims(claims);
+
+                    if (userId == Guid.Empty || emailAddress is null || password is null)
+                        throw new Exception("Some of necessary claims were empty.");
 
                     // set Cookies
-                    if (context.Request.Cookies["token"] is not null)
+                    if (httpContext.Request.Cookies["token"] is not null)
                     {
                         var expires = DateTime.UtcNow.AddMinutes(appSettings.Value.JweTokenMinutesTTL);
-                        var newClaims = jwtService.GetClaims(new Guid(userId), emailAddress, password, expires);
+                        var newClaims = jwtService.GetClaims(userId, emailAddress, password, expires);
                         var newToken = jwtService.GenerateJweToken(newClaims, JWTKeys._publicSigningKey, JWTKeys._privateEncryptionKey, expires);
 
                         var cookieOptions = new CookieOptions
@@ -45,12 +45,12 @@ namespace PasswordManager.WebAPI.Middleware
                             HttpOnly = true,
                             Expires = expires
                         };
-                        context.Response.Cookies.Append("token", newToken, cookieOptions);
+                        httpContext.Response.Cookies.Append("token", newToken, cookieOptions);
                     }
                 }
             }
 
-            await _next(context);
+            await _next(httpContext);
         }
     }
 }

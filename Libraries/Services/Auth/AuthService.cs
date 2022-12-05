@@ -1,21 +1,12 @@
-﻿using Mapster;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Models;
 using Models.DTOs;
-using Services.Abstraction;
 using Services.Abstraction.Auth;
 using Services.Abstraction.Data;
 using Services.Abstraction.Data.Persistance;
 using Services.Abstraction.Exceptions;
 using Services.TMP;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Auth
 {
@@ -42,7 +33,7 @@ namespace Services.Auth
             if (!IsRequestValid(requestDTO))
                 return null;
 
-            if(!await AuthUser(requestDTO.EmailAddress!, requestDTO.Password!))
+            if (!await AuthUser(requestDTO.EmailAddress!, requestDTO.Password!))
                 return null;
 
             //get user guid
@@ -106,20 +97,20 @@ namespace Services.Auth
         }
 
         // helper methods
-        
+
         private bool IsRequestValid(LoginRequestDTO requestDTO)
         {
             if (requestDTO is null)
                 return false;
             return requestDTO.EmailAddress is not null || requestDTO.Password is not null;
         }
-        
+
         private async Task<bool> AuthUser(string emailAddress, string password)
         {
             var user = await _dataServiceWrapper.UserService.GetByEmailAsync(emailAddress);
             if (user is null)
                 return false;
-                //throw new UserNotFoundException(emailAddress);
+            //throw new UserNotFoundException(emailAddress);
 
             if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHASH))
                 return false;
@@ -128,15 +119,5 @@ namespace Services.Auth
             return true;
         }
 
-        public Guid? GetUserGuid(string token)
-        {
-            var claims = _jwtService.ValidateJweToken(token, JWTKeys._publicSigningKey, JWTKeys._privateEncryptionKey);
-            if (claims is null)
-                return null;
-
-            var guid = claims.First(c => c.Type.Equals(ClaimTypes.NameIdentifier)).Value;
-            
-            return new Guid(guid);
-        }
     }
 }

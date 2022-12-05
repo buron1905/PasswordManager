@@ -30,7 +30,7 @@ namespace PasswordManager.WebAPI.Controllers
             if (response == null)
                 return Unauthorized();
 
-            setTokenCookie(response.JweToken!);
+            SetTokenCookie(response.JweToken!);
 
             return Ok(response);
         }
@@ -43,7 +43,7 @@ namespace PasswordManager.WebAPI.Controllers
             if (response == null)
                 return Unauthorized();
 
-            setTokenCookie(response.JweToken!);
+            SetTokenCookie(response.JweToken!);
 
             return Ok(response);
         }
@@ -61,14 +61,14 @@ namespace PasswordManager.WebAPI.Controllers
             if (response == null)
                 return Unauthorized();
 
-            setTokenCookie(response.JweToken!);
+            SetTokenCookie(response.JweToken!);
 
             return Ok(response);
         }
 
         // helper methods
 
-        private void setTokenCookie(string token)
+        private void SetTokenCookie(string token)
         {
             // append cookie with refresh token to the http response
             var cookieOptions = new CookieOptions

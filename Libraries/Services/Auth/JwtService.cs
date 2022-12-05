@@ -1,16 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.JsonWebTokens;
+﻿using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-using Models;
 using Services.Abstraction.Auth;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Auth
 {
@@ -38,7 +31,7 @@ namespace Services.Auth
 
             return handler.CreateToken(tokenDescriptor);
         }
-        
+
         public string GenerateJwtToken(IEnumerable<Claim> claims, string secret, DateTime expires)
         {
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
@@ -97,11 +90,34 @@ namespace Services.Auth
                     new Claim(ClaimTypes.Expiration, expirationUTCDateTime.ToString())
                 };
 
-            //if (expirationDateTime is not null)
-            //    claims.Add(new Claim(ClaimTypes.Expiration, expirationDateTime.ToString()));
-
             return claims;
         }
 
+        public static Guid GetUserGuidFromClaims(IEnumerable<Claim> claims)
+        {
+            var userId = claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier))?.Value;
+
+            if (userId is null)
+                return Guid.Empty;
+
+            return new Guid(userId);
+        }
+
+        public static string? GetUserEmailFromClaims(IEnumerable<Claim> claims)
+        {
+            return claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Email))?.Value;
+        }
+
+        public static string? GetUserPasswordFromClaims(IEnumerable<Claim> claims)
+        {
+            return claims.FirstOrDefault(c => c.Type.Equals("password"))?.Value;
+        }
+
+        public static DateTime? GetTokenExpirationFromClaims(IEnumerable<Claim> claims)
+        {
+            var dateTimeString = claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Expiration))?.Value;
+
+            return DateTime.TryParse(dateTimeString, out DateTime dateTime) ? dateTime : null;
+        }
     }
 }

@@ -7,7 +7,6 @@ namespace Services.Abstraction.Auth
         Task<AuthResponseDTO?> LoginAsync(LoginRequestDTO requestDTO);
         Task<AuthResponseDTO?> RegisterAsync(RegisterRequestDTO requestDTO);
         Task<AuthResponseDTO?> RefreshTokenAsync(string token);
-        Guid? GetUserGuid(string token);
         bool TokenIsValid(string token);
     }
 }
