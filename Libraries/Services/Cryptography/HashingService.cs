@@ -5,6 +5,18 @@ namespace Services.Cryptography
 {
     public static class HashingService
     {
+        // password hasher
+        // https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.identity.passwordhasher-1?view=aspnetcore-6.0
+        public static string HashPassword(string text)
+        {
+            return BCrypt.Net.BCrypt.HashPassword(text);
+        }
+
+        public static bool Verify(string text, string hash)
+        {
+            return BCrypt.Net.BCrypt.Verify(text, hash);
+        }
+
         public static string HashSHA512ToString(string text)
         {
             byte[] data = Encoding.UTF8.GetBytes(text);

@@ -26,6 +26,7 @@ export class LoginComponent implements OnInit {
 
   login() : void {
     this.submitted = true;
+    this.wrongCredentials = false;
     if (this.loginForm.invalid) {
       return;
     }
@@ -35,9 +36,9 @@ export class LoginComponent implements OnInit {
         this.authService.login(data);
         this.toastrService.success('Login successful');
         this.router.navigate(['/passwords']);
-      }
+      },
+      (err) => { this.wrongCredentials = true; }
     );
-    console.log(this.loginForm.value);
   }
 
   get f(): { [key: string]: AbstractControl } {

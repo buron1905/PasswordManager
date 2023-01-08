@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { PasswordService } from '../services/password.service';
+
 
 @Component({
   selector: 'app-create-password',
@@ -9,26 +12,33 @@ import { PasswordService } from '../services/password.service';
 })
 export class CreatePasswordComponent implements OnInit {
   passwordForm: FormGroup;
+  submitted = false;
 
-  constructor(private fb: FormBuilder, private passwordService: PasswordService) {
+  constructor(private fb: FormBuilder, private passwordService: PasswordService, private router: Router, private toastrService: ToastrService) {
     this.passwordForm = this.fb.group({
-      PasswordName: ['', [Validators.required]],
-      Username: ['', [Validators.required]],
-      Password: ['', [Validators.required]],
-      Description: ['']
+      passwordName: ['', [Validators.required]],
+      userName: ['', [Validators.required]],
+      passwordDecrypted: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(255)]],
+      description: ['', [Validators.maxLength(255)]]
     });
   }
 
   ngOnInit(): void {
   }
 
-  create() : void {
+  create(): void {
+    this.submitted = true;
+    if (this.passwordForm.invalid) {
+      return;
+    }
+
     console.log(this.passwordForm.value);
+
     this.passwordService.create(this.passwordForm.value).subscribe(
       data => {
-        console.log("Saving...");
-        console.log("Data: (returned from server)");
-        console.log(data);
+        this.toastrService.success('Saved');
+        // open detail of password. Detail can be opened will be opened without calling of API, just by passing data
+        this.router.navigate(['/passwords/details']);
       }
     );
   }
@@ -37,20 +47,20 @@ export class CreatePasswordComponent implements OnInit {
     return this.passwordForm.controls;
   }
 
-  get PasswordName() {
-    return this.passwordForm.get('PasswordName');
+  get passwordName() {
+    return this.passwordForm.get('passwordName');
   }
   
-  get UserName() {
-    return this.passwordForm.get('UserName');
+  get userName() {
+    return this.passwordForm.get('userName');
   }
 
-  get Password() {
-    return this.passwordForm.get('Password');
+  get passwordDecrypted() {
+    return this.passwordForm.get('passwordDecrypted');
   }
 
-  get Description() {
-    return this.passwordForm.get('Description');
+  get description() {
+    return this.passwordForm.get('description');
   }
 
 }

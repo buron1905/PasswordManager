@@ -28,29 +28,43 @@ namespace PasswordManager.WebAPI.Controllers
         }
 
         [HttpGet("{guid}")]
-        public async Task<IActionResult> Get(string guid)
+        public async Task<IActionResult> Get(Guid guid)
         {
-            throw new NotImplementedException();
+            var userGuid = JwtService.GetUserGuidFromClaims(HttpContext.GetUserClaims());
+
+            var password = await _passwordService.GetByIdAsync(userGuid, guid);
+
+            return Ok(password);
         }
 
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] PasswordDTO passwordDTO)
         {
-            //var password = await _passwordService.CreateAsync();
+            var userGuid = JwtService.GetUserGuidFromClaims(HttpContext.GetUserClaims());
 
-            throw new NotImplementedException();
+            var password = await _passwordService.CreateAsync(userGuid, passwordDTO);
+
+            return Ok(password);
         }
 
         [HttpPut("{guid}")]
-        public async Task<IActionResult> Put(string guid, [FromBody] PasswordDTO passwordDTO)
+        public async Task<IActionResult> Put(Guid guid, [FromBody] PasswordDTO passwordDTO)
         {
-            throw new NotImplementedException();
+            var userGuid = JwtService.GetUserGuidFromClaims(HttpContext.GetUserClaims());
+
+            var password = await _passwordService.UpdateAsync(userGuid, passwordDTO);
+
+            return Ok(password);
         }
 
         [HttpDelete("{guid}")]
-        public async Task<IActionResult> Delete(string guid)
+        public async Task<IActionResult> Delete(Guid guid)
         {
-            throw new NotImplementedException();
+            var userGuid = JwtService.GetUserGuidFromClaims(HttpContext.GetUserClaims());
+
+            await _passwordService.DeleteAsync(userGuid, guid);
+
+            return Ok();
         }
     }
 }

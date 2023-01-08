@@ -8,7 +8,7 @@ namespace Services.Abstraction.Data
         Task<SettingsDTO> GetSettingsByUser(Guid userId);
         Task<SettingsDTO> GetByIdAsync(Guid userId, Guid settingsId);
         Task<SettingsDTO> CreateAsync(Guid userId, SettingsDTO settingsDTO);
-        Task UpdateAsync(Guid userId, SettingsDTO settingsDTO);
+        Task<SettingsDTO> UpdateAsync(Guid userId, SettingsDTO settingsDTO);
         Task DeleteAsync(Guid userId, Guid settingsId);
     }
 }

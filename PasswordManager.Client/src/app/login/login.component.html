@@ -17,7 +17,7 @@
                   <label for="password" class="form-label">Password</label>
                   <input type="password" class="form-control" id="password" formControlName="password" aria-describedby="passwordHelpBlock" required
                     [ngClass]="{ 'is-invalid': submitted && password?.errors }">
-                    <div *ngIf="submitted && emailAddress?.errors" class="invalid-feedback">
+                    <div *ngIf="submitted && password?.errors" class="invalid-feedback">
                       <div *ngIf="password?.errors?.['required']">This field is required.</div>
                     </div>
                   </div>

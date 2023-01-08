@@ -20,6 +20,7 @@ import { HomeComponent } from './home/home.component';
 import { PasswordsComponent } from './passwords/passwords.component';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { DetailsPasswordComponent } from './details-password/details-password.component';
 
 export function tokenGetter() { 
   return localStorage.getItem("token"); 
@@ -34,7 +35,8 @@ export function tokenGetter() {
     HomeComponent,
     PasswordsComponent,
     NavigationBarComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    DetailsPasswordComponent
   ],
   imports: [
     BrowserModule,

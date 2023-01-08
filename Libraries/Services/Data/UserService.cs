@@ -1,15 +1,9 @@
 ﻿using Mapster;
 using Models;
 using Models.DTOs;
-using Persistance;
 using Services.Abstraction.Data;
 using Services.Abstraction.Data.Persistance;
 using Services.Abstraction.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Data
 {
@@ -65,7 +59,7 @@ namespace Services.Data
             return user.Adapt<UserDTO>();
         }
 
-        public async Task UpdateAsync(Guid userId, UpdateUserDTO updateUserDTO)
+        public async Task<UserDTO> UpdateAsync(Guid userId, UpdateUserDTO updateUserDTO)
         {
             var user = await _repositoryWrapper.UserRepository.GetByIdAsync(userId);
 
@@ -78,6 +72,8 @@ namespace Services.Data
             user.EmailAddress = updateUserDTO.Email;
 
             await _repositoryWrapper.SaveChangesAsync();
+
+            return user.Adapt<UserDTO>();
         }
 
         public async Task DeleteAsync(Guid userId)
@@ -92,6 +88,6 @@ namespace Services.Data
             _repositoryWrapper.UserRepository.Delete(user);
 
             await _repositoryWrapper.SaveChangesAsync();
-        } 
+        }
     }
 }

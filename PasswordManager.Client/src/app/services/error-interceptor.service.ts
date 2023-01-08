@@ -5,27 +5,35 @@ import { catchError, retry } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 
+export const maxRetries = 1;
+export const delayMs = 2000;
+
+
 @Injectable({
   providedIn: 'root'
 })
 export class ErrorInterceptorService implements HttpInterceptor {
 
+
   constructor(private toastrService: ToastrService, private router: Router) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
-      retry(1),
+      retry(maxRetries),
       catchError((err) => {
         let errorMessage = '';
 
         if (err.status === 401) {
           // refresh token or navigate to login
           errorMessage = 'Unauthorized';
-          this.router.navigate(['/login']);
 
-          // auto logout if 401 response returned from api
-          // this.authenticationService.logout();
-          // location.reload(true);
+          if (this.router.url !== '/login') {
+            this.router.navigate(['/login']);
+
+            // auto logout if 401 response returned from api
+            //this.authenticationService.logout();
+            // location.reload(true);
+          }
         }
         else if(err.status === 403) {
           errorMessage = 'Forbidden';

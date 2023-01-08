@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Models;
-using Services.Abstraction;
 using Models.DTOs;
 using Services.Abstraction.Auth;
 
@@ -9,14 +8,12 @@ namespace PasswordManager.WebAPI.Controllers
 {
     public class AuthController : ApiControllerBase
     {
-        private readonly ILoggerManager _logger;
         private readonly AppSettings _appSettings;
         private readonly IAuthService _authService;
         private readonly IJwtService _jwtService;
 
-        public AuthController(ILoggerManager loggerManager, IOptions<AppSettings> appSettings, IAuthService authService, IJwtService jwtService)
+        public AuthController(IOptions<AppSettings> appSettings, IAuthService authService, IJwtService jwtService)
         {
-            _logger = loggerManager;
             _appSettings = appSettings.Value;
             _authService = authService;
             _jwtService = jwtService;
@@ -49,7 +46,7 @@ namespace PasswordManager.WebAPI.Controllers
         }
 
         [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken(/*[FromBody]*/ RefreshAccessTokenRequestDTO refreshAccessTokenRequestDTO)
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshAccessTokenRequestDTO refreshAccessTokenRequestDTO)
         {
             var token = refreshAccessTokenRequestDTO.Token ?? Request.Cookies["refreshToken"];
 
@@ -70,7 +67,7 @@ namespace PasswordManager.WebAPI.Controllers
 
         private void SetTokenCookie(string token)
         {
-            // append cookie with refresh token to the http response
+            // append cookie with token to the http response
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,

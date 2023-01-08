@@ -4,12 +4,6 @@ using Models.DTOs;
 using Services.Abstraction.Data;
 using Services.Abstraction.Data.Persistance;
 using Services.Abstraction.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Data
 {
@@ -19,7 +13,7 @@ namespace Services.Data
             : base(repositoryWrapper)
         {
         }
-        
+
         public async Task<IEnumerable<PasswordDTO>> GetAllByUserIdAsync(Guid userId)
         {
             var passwords = await _repositoryWrapper.PasswordRepository.GetAllByUserIdAsync(userId);
@@ -81,7 +75,7 @@ namespace Services.Data
             return password.Adapt<PasswordDTO>();
         }
 
-        public async Task UpdateAsync(Guid userId, PasswordDTO passwordDTO)
+        public async Task<PasswordDTO> UpdateAsync(Guid userId, PasswordDTO passwordDTO)
         {
             var user = await _repositoryWrapper.UserRepository.GetByIdAsync(userId);
 
@@ -106,6 +100,8 @@ namespace Services.Data
 
 
             await _repositoryWrapper.SaveChangesAsync();
+
+            return password.Adapt<PasswordDTO>();
         }
 
         public async Task DeleteAsync(Guid userId, Guid passwordId)

@@ -4,11 +4,6 @@ using Models.DTOs;
 using Services.Abstraction.Data;
 using Services.Abstraction.Data.Persistance;
 using Services.Abstraction.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Data
 {
@@ -40,9 +35,7 @@ namespace Services.Data
                 throw new SettingsDoesNotBelongToUserException(user.Id, settings.Id);
             }
 
-            var settingsDTO = settings.Adapt<SettingsDTO>();
-
-            return settingsDTO;
+            return settings.Adapt<SettingsDTO>();
         }
 
         // Maybe use FindByCondition
@@ -67,9 +60,7 @@ namespace Services.Data
                 throw new SettingsDoesNotBelongToUserException(user.Id, settings.Id);
             }
 
-            var settingsDTO = settings.Adapt<SettingsDTO>();
-
-            return settingsDTO;
+            return settings.Adapt<SettingsDTO>(); ;
         }
 
         public async Task<SettingsDTO> CreateAsync(Guid userId, SettingsDTO settingsDTO)
@@ -92,7 +83,7 @@ namespace Services.Data
             return settings.Adapt<SettingsDTO>();
         }
 
-        public async Task UpdateAsync(Guid userId, SettingsDTO settingsDTO)
+        public async Task<SettingsDTO> UpdateAsync(Guid userId, SettingsDTO settingsDTO)
         {
             var user = await _repositoryWrapper.UserRepository.GetByIdAsync(userId);
 
@@ -118,6 +109,9 @@ namespace Services.Data
 
 
             await _repositoryWrapper.SaveChangesAsync();
+
+
+            return settings.Adapt<SettingsDTO>();
         }
 
         public async Task DeleteAsync(Guid userId, Guid settingsId)

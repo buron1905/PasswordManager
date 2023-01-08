@@ -5,6 +5,7 @@ using Services.Abstraction.Auth;
 using Services.Abstraction.Data;
 using Services.Abstraction.Data.Persistance;
 using Services.Abstraction.Exceptions;
+using Services.Cryptography;
 using Services.TMP;
 using System.Security.Claims;
 
@@ -47,7 +48,7 @@ namespace Services.Auth
             if (!IsRequestValid(requestDTO))
                 return null;
 
-            requestDTO.PasswordHASH = BCrypt.Net.BCrypt.HashPassword(requestDTO.Password);
+            requestDTO.PasswordHASH = HashingService.HashPassword(requestDTO.Password);
 
             if (await _repositoryWrapper.UserRepository.AnyAsync(user => user.EmailAddress.Equals(requestDTO.EmailAddress!)))
                 throw new AppException("Email is already used by another user.");
@@ -112,7 +113,7 @@ namespace Services.Auth
                 return false;
             //throw new UserNotFoundException(emailAddress);
 
-            if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHASH))
+            if (!HashingService.Verify(password, user.PasswordHASH))
                 return false;
             //throw new PasswordNotFoundException();
 

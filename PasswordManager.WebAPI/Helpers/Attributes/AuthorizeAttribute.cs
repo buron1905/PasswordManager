@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
-using Models;
+using Services.Auth;
+using PasswordManager.WebAPI.Extensions;
 
 namespace PasswordManager.WebAPI.Helpers.Attributes
 {
@@ -16,7 +16,8 @@ namespace PasswordManager.WebAPI.Helpers.Attributes
                 return;
 
             // authorization
-            string password = context.HttpContext.Items["password"]?.ToString();
+            string? password = JwtService.GetUserPasswordFromClaims(context.HttpContext.GetUserClaims());
+
             //var user = (User)context.HttpContext.Items["User"];
             if (password == null)
                 context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };

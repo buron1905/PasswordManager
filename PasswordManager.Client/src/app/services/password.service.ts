@@ -18,6 +18,10 @@ export class PasswordService {
     return this.http.get<PasswordModel[]>(this.passwordsPath);
   }
 
+  //get(id : string): Observable<PasswordModel> {
+  //  return this.http.get<PasswordModel>(this.passwordsPath);
+  //}
+
   create(data : AbstractControl<any, any>) : Observable<PasswordModel> {
     return this.http.post<PasswordModel>(this.passwordsPath, data);
   }
