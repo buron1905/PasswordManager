@@ -8,16 +8,18 @@ import { PasswordsComponent } from './passwords/passwords.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { AuthGuardService } from './services/auth-guard.service';
 import { DetailsPasswordComponent } from './details-password/details-password.component';
+import { UpdatePasswordComponent } from './update-password/update-password.component';
 
 const routes: Routes = [
-  { path: 'home', component: HomeComponent, canActivate: [AuthGuardService] },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'passwords', component: PasswordsComponent, canActivate: [AuthGuardService] },
-  { path: 'passwords/new', component: CreatePasswordComponent, canActivate: [AuthGuardService] },
-  { path: 'passwords/details/:id', component: DetailsPasswordComponent, canActivate: [AuthGuardService] },
+  { path: 'home', component: HomeComponent, title: 'Home', canActivate: [AuthGuardService] },
+  { path: 'login', component: LoginComponent, title: 'Login' },
+  { path: 'register', component: RegisterComponent, title: 'Register' },
+  { path: 'passwords', component: PasswordsComponent, title: 'Passwords', canActivate: [AuthGuardService] },
+  { path: 'passwords/new', component: CreatePasswordComponent, title: 'New', canActivate: [AuthGuardService] },
+  { path: 'passwords/details/:id', component: DetailsPasswordComponent, title: 'Details', canActivate: [AuthGuardService] },
+  { path: 'passwords/update/:id', component: UpdatePasswordComponent, title: 'Edit',canActivate: [AuthGuardService] },
   { path: '',   redirectTo: 'home', pathMatch: 'full' },
-  { path: '**', component: PageNotFoundComponent },
+  { path: '**', component: PageNotFoundComponent, title: 'Page not found - 404' },
 ];
 
 @NgModule({

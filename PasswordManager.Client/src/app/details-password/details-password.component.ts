@@ -15,12 +15,12 @@ export class DetailsPasswordComponent implements OnInit {
   constructor(private passwordService: PasswordService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
+    this.route.params.subscribe(params => {
       this.id = params['id'];
+      this.passwordService.getPassword(this.id).subscribe(data => {
+        this.password = data;
+      });
     });
-    //this.passwordService.get(this.id).subscribe({
-      
-    //})
   }
 
 }

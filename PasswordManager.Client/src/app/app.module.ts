@@ -21,6 +21,9 @@ import { PasswordsComponent } from './passwords/passwords.component';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { DetailsPasswordComponent } from './details-password/details-password.component';
+import { UpdatePasswordComponent } from './update-password/update-password.component';
+import { TitleStrategy } from '@angular/router';
+import { AppTitleSuffixService } from './services/app-title-suffix-service';
 
 export function tokenGetter() { 
   return localStorage.getItem("token"); 
@@ -36,7 +39,8 @@ export function tokenGetter() {
     PasswordsComponent,
     NavigationBarComponent,
     PageNotFoundComponent,
-    DetailsPasswordComponent
+    DetailsPasswordComponent,
+    UpdatePasswordComponent
   ],
   imports: [
     BrowserModule,
@@ -61,6 +65,10 @@ export function tokenGetter() {
       provide: HTTP_INTERCEPTORS ,
       useClass: ErrorInterceptorService,
       multi: true
+    },
+    {
+      provide: TitleStrategy,
+      useClass: AppTitleSuffixService
     }
   ],
   bootstrap: [AppComponent]

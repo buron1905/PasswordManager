@@ -4,6 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { AuthService } from './auth.service';
 
 export const maxRetries = 1;
 export const delayMs = 2000;
@@ -15,7 +16,7 @@ export const delayMs = 2000;
 export class ErrorInterceptorService implements HttpInterceptor {
 
 
-  constructor(private toastrService: ToastrService, private router: Router) { }
+  constructor(private toastrService: ToastrService, private router: Router, private authenticationService: AuthService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
@@ -30,9 +31,10 @@ export class ErrorInterceptorService implements HttpInterceptor {
           if (this.router.url !== '/login') {
             this.router.navigate(['/login']);
 
-            // auto logout if 401 response returned from api
-            //this.authenticationService.logout();
-            // location.reload(true);
+            this.authenticationService.logout(false);
+          }
+          else {
+            this.authenticationService.logout(true);
           }
         }
         else if(err.status === 403) {

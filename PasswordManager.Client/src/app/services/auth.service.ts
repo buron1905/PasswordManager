@@ -31,9 +31,10 @@ export class AuthService {
     localStorage.setItem('expirationDateTime', data.ExpirationDateTime);
   }
 
-  logout(): void {
+  logout(redirect: boolean = true): void {
     localStorage.removeItem('expirationDateTime');
-    this.router.navigate(['login']);
+    if (redirect)
+      this.router.navigate(['login']);
   }
 
   getExpirationDateTime(): string | null {

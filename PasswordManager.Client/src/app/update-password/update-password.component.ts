@@ -1,32 +1,47 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { map, mergeMap } from 'rxjs/operators';
+import { PasswordModel } from '../models/password.model';
 import { PasswordService } from '../services/password.service';
 
-
 @Component({
-  selector: 'app-create-password',
-  templateUrl: './create-password.component.html',
-  styleUrls: ['./create-password.component.css']
+  selector: 'app-update-password',
+  templateUrl: './update-password.component.html',
+  styleUrls: ['./update-password.component.css']
 })
-export class CreatePasswordComponent implements OnInit {
+export class UpdatePasswordComponent implements OnInit {
+  id: string;
+  password: PasswordModel;
   passwordForm: FormGroup;
   submitted = false;
 
-  constructor(private fb: FormBuilder, private passwordService: PasswordService, private router: Router, private toastrService: ToastrService) {
+  constructor(private fb: FormBuilder, private passwordService: PasswordService, private router: Router, private toastrService: ToastrService,
+    private route: ActivatedRoute) {
     this.passwordForm = this.fb.group({
       passwordName: ['', [Validators.required]],
       userName: ['', [Validators.required]],
       passwordDecrypted: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(255)]],
       description: ['', [Validators.maxLength(255)]]
     });
-  }
+}
 
   ngOnInit(): void {
+    this.fetchData();
   }
 
-  create(): void {
+  // TODO: Duplicate in details
+  fetchData() {
+    this.route.params.pipe(map(params => {
+      this.id = params['id'];
+      return this.id;
+    }), mergeMap(id => this.passwordService.getPassword(id))).subscribe(data => {
+      this.password = data;
+    })
+  }
+
+  update(): void {
     this.submitted = true;
     if (this.passwordForm.invalid) {
       return;
@@ -34,7 +49,7 @@ export class CreatePasswordComponent implements OnInit {
 
     console.log(this.passwordForm.value);
 
-    this.passwordService.create(this.passwordForm.value).subscribe(
+    this.passwordService.update(this.id, this.passwordForm.value).subscribe(
       data => {
         this.toastrService.success('Saved');
         // TODO:
@@ -51,7 +66,7 @@ export class CreatePasswordComponent implements OnInit {
   get passwordName() {
     return this.passwordForm.get('passwordName');
   }
-  
+
   get userName() {
     return this.passwordForm.get('userName');
   }

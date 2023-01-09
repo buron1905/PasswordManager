@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { AbstractControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { PasswordModel } from '../models/password.model';
+import { ActivatedRoute } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -12,18 +13,22 @@ export class PasswordService {
 
   private passwordsPath = `${environment.apiUrl}/passwords`;
   
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private route: ActivatedRoute) { }
 
   get(): Observable<PasswordModel[]> {
     return this.http.get<PasswordModel[]>(this.passwordsPath);
   }
 
-  //get(id : string): Observable<PasswordModel> {
-  //  return this.http.get<PasswordModel>(this.passwordsPath);
-  //}
+  getPassword(id : string): Observable<PasswordModel> {
+    return this.http.get<PasswordModel>(`${this.passwordsPath}/${id}`);
+  }
 
   create(data : AbstractControl<any, any>) : Observable<PasswordModel> {
     return this.http.post<PasswordModel>(this.passwordsPath, data);
+  }
+
+  update(id:string, data: AbstractControl<any, any>): Observable<PasswordModel> {
+    return this.http.put<PasswordModel>(`${this.passwordsPath}/${id}`, data);
   }
 
 }
