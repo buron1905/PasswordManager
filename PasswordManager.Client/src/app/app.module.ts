@@ -14,14 +14,11 @@ import { ErrorInterceptorService } from './services/error-interceptor.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { PasswordService } from './services/password.service';
-import { CreatePasswordComponent } from './create-password/create-password.component';
 import { JwtModule } from '@auth0/angular-jwt';
 import { HomeComponent } from './home/home.component';
 import { PasswordsComponent } from './passwords/passwords.component';
 import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { DetailsPasswordComponent } from './details-password/details-password.component';
-import { UpdatePasswordComponent } from './update-password/update-password.component';
 import { TitleStrategy } from '@angular/router';
 import { AppTitleSuffixService } from './services/app-title-suffix-service';
 import { AddEditComponent } from './add-edit/add-edit.component';
@@ -35,13 +32,10 @@ export function tokenGetter() {
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    CreatePasswordComponent,
     HomeComponent,
     PasswordsComponent,
     NavigationBarComponent,
     PageNotFoundComponent,
-    DetailsPasswordComponent,
-    UpdatePasswordComponent,
     AddEditComponent
   ],
   imports: [
