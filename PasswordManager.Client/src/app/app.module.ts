@@ -24,6 +24,7 @@ import { DetailsPasswordComponent } from './details-password/details-password.co
 import { UpdatePasswordComponent } from './update-password/update-password.component';
 import { TitleStrategy } from '@angular/router';
 import { AppTitleSuffixService } from './services/app-title-suffix-service';
+import { AddEditComponent } from './add-edit/add-edit.component';
 
 export function tokenGetter() { 
   return localStorage.getItem("token"); 
@@ -40,7 +41,8 @@ export function tokenGetter() {
     NavigationBarComponent,
     PageNotFoundComponent,
     DetailsPasswordComponent,
-    UpdatePasswordComponent
+    UpdatePasswordComponent,
+    AddEditComponent
   ],
   imports: [
     BrowserModule,
