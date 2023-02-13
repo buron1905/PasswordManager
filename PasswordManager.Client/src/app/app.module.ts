@@ -22,6 +22,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { TitleStrategy } from '@angular/router';
 import { AppTitleSuffixService } from './services/app-title-suffix-service';
 import { AddEditComponent } from './add-edit/add-edit.component';
+import { NgxLoadingModule } from 'ngx-loading';
 
 export function tokenGetter() { 
   return localStorage.getItem("token"); 
@@ -45,6 +46,7 @@ export function tokenGetter() {
     HttpClientModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
+    NgxLoadingModule.forRoot({}),
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
