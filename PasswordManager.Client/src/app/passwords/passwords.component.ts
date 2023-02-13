@@ -8,13 +8,14 @@ import { PasswordModel } from '../models/password.model';
   styleUrls: ['./passwords.component.css']
 })
 export class PasswordsComponent implements OnInit {
-
   passwords: PasswordModel[];
+  loading = false;
 
   constructor(private passwordService: PasswordService) {
   }
 
   ngOnInit(): void {
+    this.loading = true;
     this.getAllPasswords();
   }
 
@@ -22,6 +23,10 @@ export class PasswordsComponent implements OnInit {
     this.passwordService.get().subscribe(
       data => {
         this.passwords = data;
+        this.loading = false;
+      },
+      error => {
+        this.loading = false;
       });
   }
 }

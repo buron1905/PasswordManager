@@ -11,6 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
+  loading = false;
   submitted = false;
   wrongCredentials = false;
 
@@ -24,12 +25,13 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  login() : void {
+  login(): void {
     this.submitted = true;
     this.wrongCredentials = false;
     if (this.loginForm.invalid) {
       return;
     }
+    this.loading = true;
 
     this.authService.authenticate(this.loginForm.value).subscribe(
       data => {
@@ -37,7 +39,10 @@ export class LoginComponent implements OnInit {
         this.toastrService.success('Login successful');
         this.router.navigate(['/passwords']);
       },
-      (err) => { this.wrongCredentials = true; }
+      error => {
+        this.wrongCredentials = true;
+        this.loading = false;
+      }
     );
   }
 

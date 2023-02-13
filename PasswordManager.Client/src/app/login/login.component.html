@@ -1,33 +1,41 @@
-<div class="d-flex align-items-center justify-content-center vh-100">
-  <div class="container">
-    <div class="row ">
-      <div class="col-lg-4"></div>
-      <div class="col-lg-4">
-        <form [formGroup]="loginForm" (ngSubmit)="login()">
-          <div class="mb-3">
-                  <label for="emailAddress" class="form-label">Email address</label>
-                  <input type="email" class="form-control" id="emailAddress" formControlName="emailAddress" aria-describedby="emailAddressHelpBlock" required
-                  [ngClass]="{ 'is-invalid': submitted && emailAddress?.errors }">
-                  <div *ngIf="submitted && emailAddress?.errors" class="invalid-feedback">
-                    <div *ngIf="emailAddress?.errors?.['required']">This field is required.</div>
-                      <div *ngIf="emailAddress?.errors?.['email']">Email is not in valid format.</div>
-                    </div>
-                  </div>
-                <div class="mb-3">
-                  <label for="password" class="form-label">Password</label>
-                  <input type="password" class="form-control" id="password" formControlName="password" aria-describedby="passwordHelpBlock" required
-                    [ngClass]="{ 'is-invalid': submitted && password?.errors }">
-                    <div *ngIf="submitted && password?.errors" class="invalid-feedback">
-                      <div *ngIf="password?.errors?.['required']">This field is required.</div>
-                    </div>
-                  </div>
-                  <button type="submit" class="btn btn-primary"aria-describedby="submitHelpBlock">Login</button>
-                  <div *ngIf="submitted && wrongCredentials" id="submitHelpBlock" class="form-text alert alert-danger">
-                    <b>Error: </b>Wrong credentials.
-                  </div>
-              </form>
+<div class="container navbarMargin">
+  <div class="row">
+    <h1 class="h1 fw-bold text-center">Login</h1>
+  </div>
+  <div class="row ">
+    <div class="col-lg-4"></div>
+    <div class="col-lg-4">
+      <form [formGroup]="loginForm" (ngSubmit)="login()">
+        <div class="mb-3">
+          <label for="emailAddress" class="form-label">Email address</label>
+          <input type="email" class="form-control" id="emailAddress" formControlName="emailAddress" aria-describedby="emailAddressHelpBlock" required
+                 [ngClass]="{ 'is-invalid': submitted && emailAddress?.errors }">
+          <div *ngIf="submitted && emailAddress?.errors" class="invalid-feedback">
+            <div *ngIf="emailAddress?.errors?.['required']">This field is required.</div>
+            <div *ngIf="emailAddress?.errors?.['email']">Email is not in valid format.</div>
+          </div>
         </div>
-        <div class="col-lg-4"></div>
-      </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" class="form-control" id="password" formControlName="password" aria-describedby="passwordHelpBlock" required
+                 [ngClass]="{ 'is-invalid': submitted && password?.errors }">
+          <div *ngIf="submitted && password?.errors" class="invalid-feedback">
+            <div *ngIf="password?.errors?.['required']">This field is required.</div>
+          </div>
+        </div>
+        <div class="form-group text-center">
+          <button type="submit" [disabled]="loading" class="btn btn-primary" aria-describedby="submitHelpBlock">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            Login
+          </button>
+          <br />
+          <a routerLink="/register" class="btn btn-link">Create account</a>
+        </div>
+        <div *ngIf="submitted && wrongCredentials" id="submitHelpBlock" class="form-text alert alert-danger">
+          <b>Error: </b>Wrong credentials.
+        </div>
+      </form>
+    </div>
+    <div class="col-lg-4"></div>
   </div>
 </div>

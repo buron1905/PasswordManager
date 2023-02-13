@@ -12,6 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class RegisterComponent implements OnInit {
   registerForm : FormGroup;
+  loading = false;
   submitted = false;
   emailIsAlreadyUsed = false;
 
@@ -33,9 +34,11 @@ export class RegisterComponent implements OnInit {
 
   register(): void {
     this.submitted = true;
+    this.emailIsAlreadyUsed = false;
     if (this.registerForm.invalid) {
       return;
     }
+    this.loading = true;
 
     this.authService.register(this.registerForm.value).subscribe(
       data => {
@@ -47,6 +50,11 @@ export class RegisterComponent implements OnInit {
         // if(!data.success) {
         //   this.emailIsAlreadyUsed = true;
         // }
+      },
+      error => {
+        this.loading = false;
+        if (error.error.message == 'Email is already used by another user.')
+          this.emailIsAlreadyUsed = true;
       }
     );
     console.log(this.registerForm.value);
