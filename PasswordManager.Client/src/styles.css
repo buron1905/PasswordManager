@@ -2,3 +2,6 @@ div.navbarMargin {
   margin-top: 4.5rem !important;
 }
 
+.pointer {
+  cursor: pointer;
+}
