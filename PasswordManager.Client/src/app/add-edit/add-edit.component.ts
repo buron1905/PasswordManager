@@ -1,118 +1,108 @@
-//import { Component, OnInit } from '@angular/core';
-
-//@Component({
-//  selector: 'app-add-edit',
-//  templateUrl: './add-edit.component.html',
-//  styleUrls: ['./add-edit.component.scss']
-//})
-//export class AddEditComponent implements OnInit {
-
-//  constructor() { }
-
-//  ngOnInit(): void {
-//  }
-
-//}
-
-
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
-import Validation from '../utils/validation';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { PasswordModel } from '../models/password.model';
+import { PasswordService } from '../services/password.service';
 
-@Component({ templateUrl: 'add-edit.component.html' })
+@Component({
+  selector: 'app-add-edit',
+  templateUrl: './add-edit.component.html',
+  styleUrls: ['./add-edit.component.css']
+})
 export class AddEditComponent implements OnInit {
-  form: FormGroup;
   id: string;
-  isAddMode: boolean;
+  password: PasswordModel;
+  passwordForm: FormGroup;
   loading = false;
   submitted = false;
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
-  ) { }
+  isAddMode: boolean;
 
-  ngOnInit() {
+  constructor(private fb: FormBuilder, private passwordService: PasswordService, private router: Router, private toastrService: ToastrService,
+    private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
     this.id = this.route.snapshot.params['id'];
     this.isAddMode = !this.id;
 
-    // password not required in edit mode
-    const passwordValidators = [Validators.minLength(6)];
-    if (this.isAddMode) {
-      passwordValidators.push(Validators.required);
-    }
-
-    this.form = this.formBuilder.group({
-      title: ['', Validators.required],
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      role: ['', Validators.required],
-      password: ['', [Validators.minLength(6), this.isAddMode ? Validators.required : Validators.nullValidator]],
-      confirmPassword: ['', this.isAddMode ? Validators.required : Validators.nullValidator]
-    }, {
-      validator: Validation.match('password', 'confirmPassword')
+    this.passwordForm = this.fb.group({
+      id: ['00000000-0000-0000-0000-000000000000', [this.isAddMode ? Validators.nullValidator : Validators.required]],
+      passwordName: ['', [Validators.required]],
+      userName: ['', [Validators.required]],
+      passwordDecrypted: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(255)]],
+      description: ['', [Validators.maxLength(255)]]
     });
 
     if (!this.isAddMode) {
-      //this.userService.getById(this.id)
-      //  .pipe(first())
-      //  .subscribe(x => this.form.patchValue(x));
+      this.fetchData();
     }
   }
 
-  // convenience getter for easy access to form fields
-  get f() { return this.form.controls; }
+  fetchData() {
+    this.passwordService.getPassword(this.id).subscribe(data => {
+      this.password = data;
+      this.passwordForm.patchValue(this.password);
+    })
+  }
 
-  onSubmit() {
+  onSubmit(): void {
     this.submitted = true;
-
-    // reset alerts on submit
-    //this.alertService.clear();
-
-    // stop here if form is invalid
-    if (this.form.invalid) {
+    if (this.passwordForm.invalid) {
       return;
     }
 
     this.loading = true;
-    if (this.isAddMode) {
-      //this.createUser();
-    } else {
-      //this.updateUser();
-    }
+
+    if (this.isAddMode)
+      this.createPassword();
+    else
+      this.updatePassword();
   }
 
-  //private createUser() {
-  //  this.userService.create(this.form.value)
-  //    .pipe(first())
-  //    .subscribe({
-  //      next: () => {
-  //        this.alertService.success('User added', { keepAfterRouteChange: true });
-  //        this.router.navigate(['../'], { relativeTo: this.route });
-  //      },
-  //      error: error => {
-  //        this.alertService.error(error);
-  //        this.loading = false;
-  //      }
-  //    });
-  //}
+  createPassword(): void {
+    this.passwordService.create(this.passwordForm.value).subscribe(
+      data => {
+        this.toastrService.success('Created');
+        this.router.navigate(['/passwords']);
+      },
+      error => {
+        this.loading = false;
+      }
+    );
+  }
 
-  //private updateUser() {
-  //  this.userService.update(this.id, this.form.value)
-  //    .pipe(first())
-  //    .subscribe({
-  //      next: () => {
-  //        this.alertService.success('User updated', { keepAfterRouteChange: true });
-  //        this.router.navigate(['../../'], { relativeTo: this.route });
-  //      },
-  //      error: error => {
-  //        this.alertService.error(error);
-  //        this.loading = false;
-  //      }
-  //    });
-  //}
+  updatePassword(): void {
+    this.passwordService.update(this.id, this.passwordForm.value).subscribe(
+      data => {
+        this.toastrService.success('Saved');
+        this.router.navigate(['/passwords']);
+      },
+      error => {
+        this.loading = false;
+      }
+    );
+  }
+
+  get f(): { [key: string]: AbstractControl } {
+    return this.passwordForm.controls;
+  }
+
+  get passwordName() {
+    return this.passwordForm.get('passwordName');
+  }
+
+  get userName() {
+    return this.passwordForm.get('userName');
+  }
+
+  get passwordDecrypted() {
+    return this.passwordForm.get('passwordDecrypted');
+  }
+
+  get description() {
+    return this.passwordForm.get('description');
+  }
+
 }
+
