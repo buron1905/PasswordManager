@@ -4,6 +4,8 @@ using PasswordManager.WebAPI.Extensions;
 using PasswordManager.WebAPI.Helpers.Attributes;
 using Services.Abstraction.Data;
 using Services.Auth;
+using Services.Cryptography;
+using System.Text;
 
 namespace PasswordManager.WebAPI.Controllers
 {
@@ -24,12 +26,13 @@ namespace PasswordManager.WebAPI.Controllers
 
             var passwords = await _passwordService.GetAllByUserIdAsync(userGuid);
 
-            foreach (var password in passwords)
-            {
-                password.PasswordDecrypted = password.PasswordEncrypted;
-                //password.PasswordDecrypted = EncryptionService.DecryptStringFromBytes_Aes(Encoding.UTF8.GetBytes(password.PasswordEncrypted),
-                //    JwtService.GetUserPasswordFromClaims(HttpContext.GetUserClaims()));
-            }
+            // TODO: unnecessary for that page, or change, because in passwords value is not changed 
+            //foreach (var password in passwords)
+            //{
+            //    //password.PasswordDecrypted = password.PasswordEncrypted;
+            //    password.PasswordDecrypted = await EncryptionService.DecryptAsync(Encoding.Unicode.GetBytes(password.PasswordEncrypted),
+            //        JwtService.GetUserPasswordFromClaims(HttpContext.GetUserClaims()));
+            //}
 
             return Ok(passwords);
         }
@@ -41,10 +44,10 @@ namespace PasswordManager.WebAPI.Controllers
 
             var password = await _passwordService.GetByIdAsync(userGuid, guid);
 
-            password.PasswordDecrypted = password.PasswordEncrypted;
+            //password.PasswordDecrypted = password.PasswordEncrypted;
 
-            //password.PasswordDecrypted = EncryptionService.DecryptStringFromBytes_Aes(Encoding.UTF8.GetBytes(password.PasswordEncrypted),
-            //    JwtService.GetUserPasswordFromClaims(HttpContext.GetUserClaims()));
+            password.PasswordDecrypted = await EncryptionService.DecryptAsync(Encoding.Unicode.GetBytes(password.PasswordEncrypted),
+                JwtService.GetUserPasswordFromClaims(HttpContext.GetUserClaims()));
 
             return Ok(password);
         }
@@ -54,10 +57,10 @@ namespace PasswordManager.WebAPI.Controllers
         {
             var userGuid = JwtService.GetUserGuidFromClaims(HttpContext.GetUserClaims());
 
-            passwordDTO.PasswordEncrypted = passwordDTO.PasswordDecrypted;
+            //passwordDTO.PasswordEncrypted = passwordDTO.PasswordDecrypted;
 
-            //passwordDTO.PasswordEncrypted = Encoding.UTF8.GetString(EncryptionService.EncryptStringToBytes_Aes(passwordDTO.PasswordDecrypted,
-            //    JwtService.GetUserPasswordFromClaims(HttpContext.GetUserClaims())));
+            passwordDTO.PasswordEncrypted = Encoding.Unicode.GetString(await EncryptionService.EncryptAsync(passwordDTO.PasswordDecrypted,
+                JwtService.GetUserPasswordFromClaims(HttpContext.GetUserClaims())));
 
             var password = await _passwordService.CreateAsync(userGuid, passwordDTO);
 
@@ -69,10 +72,10 @@ namespace PasswordManager.WebAPI.Controllers
         {
             var userGuid = JwtService.GetUserGuidFromClaims(HttpContext.GetUserClaims());
 
-            passwordDTO.PasswordEncrypted = passwordDTO.PasswordDecrypted;
+            //passwordDTO.PasswordEncrypted = passwordDTO.PasswordDecrypted;
 
-            //passwordDTO.PasswordEncrypted = Encoding.UTF8.GetString(EncryptionService.EncryptStringToBytes_Aes(passwordDTO.PasswordDecrypted,
-            //    JwtService.GetUserPasswordFromClaims(HttpContext.GetUserClaims())));
+            passwordDTO.PasswordEncrypted = Encoding.Unicode.GetString(await EncryptionService.EncryptAsync(passwordDTO.PasswordDecrypted,
+                JwtService.GetUserPasswordFromClaims(HttpContext.GetUserClaims())));
 
             var password = await _passwordService.UpdateAsync(userGuid, passwordDTO);
 
