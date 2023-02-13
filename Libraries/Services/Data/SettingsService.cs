@@ -104,12 +104,9 @@ namespace Services.Data
                 throw new SettingsDoesNotBelongToUserException(user.Id, settings.Id);
             }
 
-            // TODO: Does this work or setting.Value = settingsDTO.Value
             settings = settingsDTO.Adapt<Settings>();
 
-
             await _repositoryWrapper.SaveChangesAsync();
-
 
             return settings.Adapt<SettingsDTO>();
         }

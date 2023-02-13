@@ -7,7 +7,7 @@ namespace Models.DTOs
     public class PasswordDTO
     {
         public Guid Id { get; set; }
-        
+
         [Required]
         [MaxLength(MaxPasswordNameLength, ErrorMessage = MaxPasswordNameLengthErrorMessage)]
         public string? PasswordName { get; set; }
@@ -15,6 +15,9 @@ namespace Models.DTOs
         [Required]
         [MaxLength(MaxUserNameLength, ErrorMessage = MaxUserNameLengthErrorMessage)]
         public string? UserName { get; set; }
+
+        //[Required]
+        public string? PasswordEncrypted { get; set; }
 
         [NotMapped]
         public string? PasswordDecrypted { get; set; }

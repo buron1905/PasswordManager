@@ -20,6 +20,7 @@ export class UpdatePasswordComponent implements OnInit {
   constructor(private fb: FormBuilder, private passwordService: PasswordService, private router: Router, private toastrService: ToastrService,
     private route: ActivatedRoute) {
     this.passwordForm = this.fb.group({
+      id: ['', [Validators.required]],
       passwordName: ['', [Validators.required]],
       userName: ['', [Validators.required]],
       passwordDecrypted: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(255)]],
@@ -38,6 +39,7 @@ export class UpdatePasswordComponent implements OnInit {
       return this.id;
     }), mergeMap(id => this.passwordService.getPassword(id))).subscribe(data => {
       this.password = data;
+      this.passwordForm.patchValue(this.password);
     })
   }
 

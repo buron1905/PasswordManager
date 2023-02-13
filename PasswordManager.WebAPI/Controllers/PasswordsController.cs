@@ -24,6 +24,13 @@ namespace PasswordManager.WebAPI.Controllers
 
             var passwords = await _passwordService.GetAllByUserIdAsync(userGuid);
 
+            foreach (var password in passwords)
+            {
+                password.PasswordDecrypted = password.PasswordEncrypted;
+                //password.PasswordDecrypted = EncryptionService.DecryptStringFromBytes_Aes(Encoding.UTF8.GetBytes(password.PasswordEncrypted),
+                //    JwtService.GetUserPasswordFromClaims(HttpContext.GetUserClaims()));
+            }
+
             return Ok(passwords);
         }
 
@@ -34,6 +41,11 @@ namespace PasswordManager.WebAPI.Controllers
 
             var password = await _passwordService.GetByIdAsync(userGuid, guid);
 
+            password.PasswordDecrypted = password.PasswordEncrypted;
+
+            //password.PasswordDecrypted = EncryptionService.DecryptStringFromBytes_Aes(Encoding.UTF8.GetBytes(password.PasswordEncrypted),
+            //    JwtService.GetUserPasswordFromClaims(HttpContext.GetUserClaims()));
+
             return Ok(password);
         }
 
@@ -41,6 +53,11 @@ namespace PasswordManager.WebAPI.Controllers
         public async Task<IActionResult> Post([FromBody] PasswordDTO passwordDTO)
         {
             var userGuid = JwtService.GetUserGuidFromClaims(HttpContext.GetUserClaims());
+
+            passwordDTO.PasswordEncrypted = passwordDTO.PasswordDecrypted;
+
+            //passwordDTO.PasswordEncrypted = Encoding.UTF8.GetString(EncryptionService.EncryptStringToBytes_Aes(passwordDTO.PasswordDecrypted,
+            //    JwtService.GetUserPasswordFromClaims(HttpContext.GetUserClaims())));
 
             var password = await _passwordService.CreateAsync(userGuid, passwordDTO);
 
@@ -51,6 +68,11 @@ namespace PasswordManager.WebAPI.Controllers
         public async Task<IActionResult> Put(Guid guid, [FromBody] PasswordDTO passwordDTO)
         {
             var userGuid = JwtService.GetUserGuidFromClaims(HttpContext.GetUserClaims());
+
+            passwordDTO.PasswordEncrypted = passwordDTO.PasswordDecrypted;
+
+            //passwordDTO.PasswordEncrypted = Encoding.UTF8.GetString(EncryptionService.EncryptStringToBytes_Aes(passwordDTO.PasswordDecrypted,
+            //    JwtService.GetUserPasswordFromClaims(HttpContext.GetUserClaims())));
 
             var password = await _passwordService.UpdateAsync(userGuid, passwordDTO);
 

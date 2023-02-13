@@ -37,8 +37,7 @@ export class CreatePasswordComponent implements OnInit {
     this.passwordService.create(this.passwordForm.value).subscribe(
       data => {
         this.toastrService.success('Saved');
-        // TODO:
-        // open detail of password. Detail can be opened will be opened without calling of API, just by passing data
+        // TODO: open detail of password by just by passing data
         this.router.navigate([`/passwords/details/${data.id}`]);
       }
     );

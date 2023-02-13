@@ -18,9 +18,9 @@ namespace Services.Data
         {
             var passwords = await _repositoryWrapper.PasswordRepository.GetAllByUserIdAsync(userId);
 
-            var passwordsDTO = passwords.Adapt<IEnumerable<PasswordDTO>>();
+            //TODO: PasswordEncrypted to PasswordDecrypted - now in Controller
 
-            //TODO: PasswordEncrypted to PasswordDecrypted
+            var passwordsDTO = passwords.Adapt<IEnumerable<PasswordDTO>>();
 
             return passwordsDTO;
         }
@@ -65,8 +65,8 @@ namespace Services.Data
 
             password.UserId = user.Id;
             password.User = user;
-            //TODO: use encryption service
-            password.PasswordEncrypted = password.PasswordDecrypted;
+            //TODO: use encryption service - now in controller
+            //password.PasswordEncrypted = password.PasswordDecrypted;
 
             _repositoryWrapper.PasswordRepository.Create(password);
 
@@ -97,6 +97,7 @@ namespace Services.Data
             }
 
             // TODO: Add update logic
+            password = passwordDTO.Adapt<Password>();
 
 
             await _repositoryWrapper.SaveChangesAsync();
