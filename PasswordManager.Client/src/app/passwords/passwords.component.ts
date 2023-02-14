@@ -29,4 +29,17 @@ export class PasswordsComponent implements OnInit {
         this.loading = false;
       });
   }
+
+  selectAll(): void {
+    (document.querySelectorAll('.rowCheckbox') as NodeListOf<HTMLInputElement>).forEach((checkbox) => {
+      checkbox.checked = true;
+    });
+  }
+
+  unselectAll(): void {
+    (document.querySelectorAll('.rowCheckbox') as NodeListOf<HTMLInputElement>).forEach((checkbox) => {
+      checkbox.checked = false;
+    });
+  }
+
 }

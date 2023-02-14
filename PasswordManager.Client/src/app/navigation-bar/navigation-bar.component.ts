@@ -18,7 +18,7 @@ export class NavigationBarComponent implements OnInit {
   }
 
   logout(): void {
-    return this.authService.logout();
+    this.authService.logout();
   }
 
 }
