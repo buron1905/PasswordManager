@@ -31,4 +31,12 @@ export class PasswordService {
     return this.http.put<PasswordModel>(`${this.passwordsPath}/${id}`, data);
   }
 
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.passwordsPath}/${id}`);
+  }
+
+  deleteMany(guids: Array<string>): Observable<void> {
+    return this.http.delete<void>(`${this.passwordsPath}`, { params: {guids} });
+  }
+
 }

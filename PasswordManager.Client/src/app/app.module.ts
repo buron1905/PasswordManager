@@ -1,9 +1,8 @@
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
@@ -23,6 +22,8 @@ import { TitleStrategy } from '@angular/router';
 import { AppTitleSuffixService } from './services/app-title-suffix-service';
 import { AddEditComponent } from './add-edit/add-edit.component';
 import { NgxLoadingModule } from 'ngx-loading';
+import { ClipboardModule } from 'ngx-clipboard';
+import { CallbackPipe } from './utils/callback.pipe';
 
 export function tokenGetter() { 
   return localStorage.getItem("token"); 
@@ -37,14 +38,17 @@ export function tokenGetter() {
     PasswordsComponent,
     NavigationBarComponent,
     PageNotFoundComponent,
-    AddEditComponent
+    AddEditComponent,
+    CallbackPipe,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
+    FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    ClipboardModule,
     ToastrModule.forRoot(),
     NgxLoadingModule.forRoot({}),
     JwtModule.forRoot({

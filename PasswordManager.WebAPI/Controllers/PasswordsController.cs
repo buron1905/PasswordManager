@@ -24,15 +24,13 @@ namespace PasswordManager.WebAPI.Controllers
         {
             var userGuid = JwtService.GetUserGuidFromClaims(HttpContext.GetUserClaims());
 
-            var passwords = await _passwordService.GetAllByUserIdAsync(userGuid);
+            var passwords = (await _passwordService.GetAllByUserIdAsync(userGuid)).ToArray() ?? Array.Empty<PasswordDTO>();
 
-            // TODO: unnecessary for that page, or change, because in passwords value is not changed 
-            //foreach (var password in passwords)
-            //{
-            //    //password.PasswordDecrypted = password.PasswordEncrypted;
-            //    password.PasswordDecrypted = await EncryptionService.DecryptAsync(Encoding.Unicode.GetBytes(password.PasswordEncrypted),
-            //        JwtService.GetUserPasswordFromClaims(HttpContext.GetUserClaims()));
-            //}
+            foreach (var password in passwords)
+            {
+                password.PasswordDecrypted = await EncryptionService.DecryptAsync(Encoding.Unicode.GetBytes(password.PasswordEncrypted),
+                    JwtService.GetUserPasswordFromClaims(HttpContext.GetUserClaims()));
+            }
 
             return Ok(passwords);
         }
@@ -56,8 +54,6 @@ namespace PasswordManager.WebAPI.Controllers
         public async Task<IActionResult> Post([FromBody] PasswordDTO passwordDTO)
         {
             var userGuid = JwtService.GetUserGuidFromClaims(HttpContext.GetUserClaims());
-
-            //passwordDTO.PasswordEncrypted = passwordDTO.PasswordDecrypted;
 
             passwordDTO.PasswordEncrypted = Encoding.Unicode.GetString(await EncryptionService.EncryptAsync(passwordDTO.PasswordDecrypted,
                 JwtService.GetUserPasswordFromClaims(HttpContext.GetUserClaims())));
@@ -88,6 +84,19 @@ namespace PasswordManager.WebAPI.Controllers
             var userGuid = JwtService.GetUserGuidFromClaims(HttpContext.GetUserClaims());
 
             await _passwordService.DeleteAsync(userGuid, guid);
+
+            return Ok();
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromQuery] Guid[] guids)
+        {
+            var userGuid = JwtService.GetUserGuidFromClaims(HttpContext.GetUserClaims());
+
+            foreach (var guid in guids)
+            {
+                await _passwordService.DeleteAsync(userGuid, guid);
+            }
 
             return Ok();
         }

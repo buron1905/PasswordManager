@@ -36,6 +36,10 @@ export class AddEditComponent implements OnInit {
 
     if (!this.isAddMode) {
       this.fetchData();
+    } else if (history.state.password) {
+      this.password = history.state.password;
+      this.password.id = '00000000-0000-0000-0000-000000000000';
+      this.passwordForm.patchValue(this.password);
     }
   }
 

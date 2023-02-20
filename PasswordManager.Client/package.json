@@ -27,6 +27,7 @@
     "jest-editor-support": "*",
     "jquery": "^3.6.1",
     "loader-utils": "^3.2.1",
+    "ngx-clipboard": "^15.1.0",
     "ngx-loading": "^14.0.0",
     "ngx-toastr": "^15.0.0",
     "popper.js": "^1.16.1",
