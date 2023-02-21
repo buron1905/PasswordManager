@@ -3,5 +3,9 @@ export interface PasswordModel {
     passwordName: string;
     userName: string;
     passwordDecrypted: string;
-    description?: string;
+    url: string;
+    notes: string;
+    favorite: boolean;
+    udt: string;
+    idt: string;
 }

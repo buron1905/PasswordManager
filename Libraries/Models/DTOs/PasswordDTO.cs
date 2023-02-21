@@ -22,9 +22,20 @@ namespace Models.DTOs
         [NotMapped]
         public string? PasswordDecrypted { get; set; }
 
-        [MaxLength(MaxPasswordDescriptionLength, ErrorMessage = MaxPasswordDescriptionLengthErrorMessage)]
-        public string? Description { get; set; }
+        [MaxLength(MaxURLLength, ErrorMessage = MaxURLLengthErrorMessage)]
+        public string? URL { get; set; }
 
-        // public DateTime Updated { get; set; }
+
+        [MaxLength(MaxNotesLength, ErrorMessage = MaxNotesLengthErrorMessage)]
+        public string? Notes { get; set; }
+
+        public bool Favorite { get; set; } = false;
+
+        [Required]
+        public DateTime UDT { get; set; }
+
+        [Required]
+        public DateTime IDT { get; set; }
+
     }
 }

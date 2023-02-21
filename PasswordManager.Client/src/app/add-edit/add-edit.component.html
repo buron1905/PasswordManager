@@ -9,7 +9,7 @@
     <div class="col-lg-4">
       <form [formGroup]="passwordForm" (ngSubmit)="onSubmit()">
         <div class="mb-3">
-          <label for="passwordName" class="form-label">Password name</label>
+          <label for="passwordName" class="form-label">Name</label>
           <input type="text" class="form-control" id="passwordName" formControlName="passwordName" aria-describedby="passwordNameHelpBlock" required
                  [ngClass]="{ 'is-invalid': submitted && passwordName?.errors }">
           <div *ngIf="submitted && passwordName?.errors" class="invalid-feedback">
@@ -17,9 +17,10 @@
           </div>
         </div>
         <div class="mb-3">
-          <label for="userName" class="form-label">User name</label>
+          <label for="userName" class="form-label">Username</label>
           <input type="text" class="form-control" id="userName" formControlName="userName" aria-describedby="userNameHelpBlock" required
                  [ngClass]="{ 'is-invalid': submitted && userName?.errors }">
+          <!--<button (click)="copyToClipboard(password.userName)" title="Copy username"><i class="bi bi-files"/></button>-->
           <div *ngIf="submitted && userName?.errors" class="invalid-feedback">
             <div *ngIf="userName?.errors?.['required']">This field is required.</div>
           </div>
@@ -28,6 +29,7 @@
           <label for="passwordDecrypted" class="form-label">Password</label>
           <input type="password" class="form-control" id="password" formControlName="passwordDecrypted" aria-describedby="passwordDecryptedHelpBlock" required
                  [ngClass]="{ 'is-invalid': submitted && passwordDecrypted?.errors }">
+          <!--<a (click)="copyToClipboard(password.passwordDecrypted)" title="Copy password"><i class="bi bi-files"></a>-->
           <div *ngIf="submitted && passwordDecrypted?.errors" class="invalid-feedback">
             <div *ngIf="passwordDecrypted?.errors?.['required']">This field is required.</div>
             <div *ngIf="passwordDecrypted?.errors?.['minlength']">Password must be at least 6 characters long.</div>
@@ -35,12 +37,27 @@
           </div>
         </div>
         <div class="mb-3">
-          <label for="description" class="form-label">Description</label>
-          <textarea maxlength="255" type="" class="form-control" id="description" formControlName="description" aria-describedby="descriptionHelpBlock"
-                    [ngClass]="{ 'is-invalid': submitted && description?.errors }"></textarea>
-          <div *ngIf="submitted && description?.errors" class="invalid-feedback">
-            <div *ngIf="description?.errors?.['maxlength']">Description must not exceed 255 characters.</div>
+          <label for="url" class="form-label">URL</label>
+          <input type="url" class="form-control" id="url" formControlName="url" aria-describedby="urlHelpBlock" placeholder="e.g. https://google.com"
+                 [ngClass]="{ 'is-invalid': submitted && url?.errors }">
+          <!--<a (click)="copyToClipboard(password.url)" title="Copy password"><i class="bi bi-files"></a>-->
+          <div *ngIf="submitted && url?.errors" class="invalid-feedback">
+            <div *ngIf="url?.errors?.['maxlength']">URL length must not exceed 2048 characters.</div>
           </div>
+        </div>
+        <div class="mb-3">
+          <label for="notes" class="form-label">Notes</label>
+          <textarea maxlength="255" type="" class="form-control" id="notes" formControlName="notes" aria-describedby="notesHelpBlock"
+                    [ngClass]="{ 'is-invalid': submitted && notes?.errors }"></textarea>
+          <div *ngIf="submitted && notes?.errors" class="invalid-feedback">
+            <div *ngIf="notes?.errors?.['maxlength']">Notes length must not exceed 10000 characters.</div>
+          </div>
+        </div>
+        <div class="input-group">
+          <input type="password" id="password" class="form-control rounded-right" required>
+          <button id="toggle-password" type="button" class="d-none"
+                  aria-label="Show password as plain text. Warning: this will display your password on the screen.">
+          </button>
         </div>
         <div class="form-group text-center">
           <button type="submit" [disabled]="loading" class="btn btn-primary" aria-describedby="submitHelpBlock">
@@ -48,6 +65,7 @@
             Save
           </button>
           <a routerLink="/passwords" class="btn btn-link">Cancel</a>
+          <a *ngIf="!isAddMode" class="text-danger" (click)="delete(password.id)"><i class="bi bi-trash3"></i>&nbsp;&nbsp;Delete</a>
         </div>
       </form>
     </div>

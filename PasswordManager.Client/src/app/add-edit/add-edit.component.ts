@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ClipboardService } from 'ngx-clipboard';
 import { ToastrService } from 'ngx-toastr';
 import { PasswordModel } from '../models/password.model';
 import { PasswordService } from '../services/password.service';
@@ -20,7 +21,7 @@ export class AddEditComponent implements OnInit {
   isAddMode: boolean;
 
   constructor(private fb: FormBuilder, private passwordService: PasswordService, private router: Router, private toastrService: ToastrService,
-    private route: ActivatedRoute) {}
+    private route: ActivatedRoute, private clipboardService: ClipboardService) { }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.params['id'];
@@ -31,7 +32,8 @@ export class AddEditComponent implements OnInit {
       passwordName: ['', [Validators.required]],
       userName: ['', [Validators.required]],
       passwordDecrypted: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(255)]],
-      description: ['', [Validators.maxLength(255)]]
+      url: ['', [Validators.maxLength(2048)]],
+      notes: ['', [Validators.maxLength(10000)]]
     });
 
     if (!this.isAddMode) {
@@ -65,24 +67,33 @@ export class AddEditComponent implements OnInit {
   }
 
   createPassword(): void {
+    this.password.udt = Date.now().toString();
+    this.password.idt = this.password.udt;
+
     this.passwordService.create(this.passwordForm.value).subscribe(
       data => {
         this.toastrService.success('Created');
+        this.loading = false;
         this.router.navigate(['/passwords']);
       },
       error => {
+        this.toastrService.error(error);
         this.loading = false;
       }
     );
   }
 
   updatePassword(): void {
+    this.password.udt = Date.now().toString();
+
     this.passwordService.update(this.id, this.passwordForm.value).subscribe(
       data => {
         this.toastrService.success('Saved');
+        this.loading = false;
         this.router.navigate(['/passwords']);
       },
       error => {
+        this.toastrService.error(error);
         this.loading = false;
       }
     );
@@ -104,8 +115,35 @@ export class AddEditComponent implements OnInit {
     return this.passwordForm.get('passwordDecrypted');
   }
 
-  get description() {
-    return this.passwordForm.get('description');
+  get url() {
+    return this.passwordForm.get('url');
+  }
+
+  get notes() {
+    return this.passwordForm.get('notes');
+  }
+
+  delete(guid: any): void {
+    if (confirm(`Do you really want to delete selected password?`)) {
+      this.loading = true;
+
+      this.passwordService.delete(guid).subscribe(
+        data => {
+          this.toastrService.success('Password deleted');
+          this.loading = false;
+          this.router.navigate(['/passwords']);
+        },
+        error => {
+          this.toastrService.error(error);
+          this.loading = false;
+        }
+      );
+    }
+  }
+
+  copyToClipboard(text: string): void {
+    this.clipboardService.copyFromContent(text);
+    this.toastrService.success('Copied to clipboard');
   }
 
 }

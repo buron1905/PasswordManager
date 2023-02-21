@@ -74,7 +74,7 @@ namespace PasswordManager.MAUI.ViewModels
                 PasswordName = PasswordName,
                 UserName = UserName,
                 PasswordDecrypted = Password,
-                Description = Description
+                Notes = Description
             };
 
             await DatabaseService.AddPassword(newPassword);

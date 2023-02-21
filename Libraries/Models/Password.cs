@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using static Models.Validation.ModelsValidation;
 
 namespace Models
@@ -9,7 +9,7 @@ namespace Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        
+
         [Required]
         [MaxLength(MaxPasswordNameLength, ErrorMessage = MaxPasswordNameLengthErrorMessage)]
         public string? PasswordName { get; set; }
@@ -20,14 +20,25 @@ namespace Models
 
         [Required]
         public string? PasswordEncrypted { get; set; }
-        
+
         [NotMapped]
         [MaxLength(MaxPasswordLength, ErrorMessage = MaxPasswordLengthErrorMessage)]
         public string? PasswordDecrypted { get; set; }
 
-        [MaxLength(MaxPasswordDescriptionLength, ErrorMessage = MaxPasswordDescriptionLengthErrorMessage)]
-        public string? Description { get; set; }
-        
+        [MaxLength(MaxURLLength, ErrorMessage = MaxURLLengthErrorMessage)]
+        public string? URL { get; set; }
+
+        [MaxLength(MaxNotesLength, ErrorMessage = MaxNotesLengthErrorMessage)]
+        public string? Notes { get; set; }
+
+        public bool Favorite { get; set; } = false;
+
+        [Required]
+        public DateTime UDT { get; set; }
+
+        [Required]
+        public DateTime IDT { get; set; }
+
 
         [ForeignKey(nameof(User))]
         public Guid UserId { get; set; }

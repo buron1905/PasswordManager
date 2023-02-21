@@ -94,23 +94,21 @@ export class PasswordsComponent implements OnInit {
     this.toastrService.success('Copied to clipboard');
   }
 
-  findByPasswordNameAndUsername(password: PasswordModel, filterText): any {
-    filterText = filterText.trim().toLowerCase();
-    let passwordName: string = password.passwordName.trim().toLowerCase();
-    let userName: string = password.userName.trim().toLowerCase();
-    let description: string = password.description.trim().toLowerCase();
+  findByPasswordNameAndUsername(password: PasswordModel, filterText: string): any {
+    filterText = filterText?.trim().toLowerCase() ?? '';
+    let passwordName: string = password.passwordName?.trim().toLowerCase() ?? '';
+    let userName: string = password.userName?.trim().toLowerCase() ?? '';
+    let notes: string = password.notes?.trim().toLowerCase() ?? '';
 
     let startsWith: boolean = passwordName.startsWith(filterText) ||
       userName.startsWith(filterText) ||
-      description.startsWith(filterText);
+      notes.startsWith(filterText);
 
     let includes: boolean = passwordName.includes(filterText) ||
       userName.includes(filterText) ||
-      description.includes(filterText);
+      notes.includes(filterText);
 
     return startsWith || includes;
   }
-
-
 
 }

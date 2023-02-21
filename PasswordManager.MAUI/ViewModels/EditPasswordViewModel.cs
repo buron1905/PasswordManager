@@ -78,7 +78,7 @@ namespace PasswordManager.MAUI.ViewModels
             PasswordName = PasswordOriginal.PasswordName;
             UserName = PasswordOriginal.UserName;
             Password = PasswordOriginal.PasswordDecrypted;
-            Description = PasswordOriginal.Description;
+            Description = PasswordOriginal.Notes;
         }
 
         private async Task Save()
@@ -92,7 +92,7 @@ namespace PasswordManager.MAUI.ViewModels
             PasswordOriginal.PasswordName = PasswordName;
             PasswordOriginal.UserName = UserName;
             PasswordOriginal.PasswordDecrypted = Password;
-            PasswordOriginal.Description = Description;
+            PasswordOriginal.Notes = Description;
             await DatabaseService.UpdatePassword(PasswordOriginal);
             await Shell.Current.GoToAsync($"//{nameof(PasswordsListPage)}");
         }
