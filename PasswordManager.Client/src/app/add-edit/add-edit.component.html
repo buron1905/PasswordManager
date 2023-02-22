@@ -77,18 +77,16 @@
             <div *ngIf="notes?.errors?.['maxlength']">Notes length must not exceed 10000 characters.</div>
           </div>
         </div>
-        <div class="mb-3 text-center">
-          <button type="submit" [disabled]="loading" class="btn btn-primary" aria-describedby="submitHelpBlock">
+        <div class="d-flex bd-highlight mb-3">
+          <button type="submit" [disabled]="loading" class="btn btn-primary p-2" aria-describedby="submitHelpBlock">
             <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
             Save
           </button>
-          <a routerLink="/passwords" class="btn btn-link">Cancel</a>
-        </div>
-        <div class="text-center">
-          <a (click)="toggleFavorite()" class="btn btn-lg btn-link" [title]="favorite.value ? 'Remove from favorites' : 'Add to favorites'" aria-label="Favorite">
+          <a routerLink="/passwords" class="btn btn-link p-2 me-auto">Cancel</a>
+          <a (click)="toggleFavorite()" class="btn btn-link me-1 p-2" [title]="favorite.value ? 'Remove from favorites' : 'Add to favorites'" aria-label="Favorite">
             <i class="bi" [class.bi-star]="!favorite.value" [class.bi-star-fill]="favorite.value"></i>
           </a>
-          <a *ngIf="!isAddMode" class="btn btn-danger" title="Delete" (click)="delete(password.id)">
+          <a *ngIf="!isAddMode" class="btn btn-danger p-2" title="Delete" (click)="delete(password.id)">
             <i class="bi bi-trash3"></i>
           </a>
         </div>
