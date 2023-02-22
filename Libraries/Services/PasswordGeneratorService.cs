@@ -1,6 +1,7 @@
-﻿using System.Security.Cryptography;
-using System.Text.RegularExpressions;
+﻿using Models.DTOs;
+using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Services
 {
@@ -9,6 +10,11 @@ namespace Services
         private const string _letters = "abcdefghijklmnopqrstuvwxyz";
         private const string _numbers = "0123456789";
         private const string _specialChars = "!@#$%^&*";
+
+        public static string GeneratePassword(PasswordGeneratorSettingsDTO settings)
+        {
+            return "examplePassword";
+        }
 
         public static string GeneratePassword(int length = 8, bool useNumbers = true, bool useSpecialCharacters = true, bool useUppercase = true, bool useLowercase = true)
         {

@@ -2,6 +2,7 @@
 using Models.DTOs;
 using PasswordManager.WebAPI.Extensions;
 using PasswordManager.WebAPI.Helpers.Attributes;
+using Services;
 using Services.Abstraction.Data;
 using Services.Auth;
 using Services.Cryptography;
@@ -99,6 +100,15 @@ namespace PasswordManager.WebAPI.Controllers
             }
 
             return Ok();
+        }
+
+        [HttpPost("generator")]
+        public IActionResult Generate(PasswordGeneratorSettingsDTO generatorSettings)
+        {
+            var response = new PasswordGeneratorSettingsResponseDTO();
+            response.Password = PasswordGeneratorService.GeneratePassword(generatorSettings);
+
+            return Ok(response);
         }
     }
 }

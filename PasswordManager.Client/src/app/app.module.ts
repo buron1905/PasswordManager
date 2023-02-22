@@ -24,6 +24,7 @@ import { AddEditComponent } from './add-edit/add-edit.component';
 import { NgxLoadingModule } from 'ngx-loading';
 import { ClipboardModule } from 'ngx-clipboard';
 import { CallbackPipe } from './utils/callback.pipe';
+import { PasswordGeneratorComponent } from './password-generator/password-generator.component';
 
 export function tokenGetter() { 
   return localStorage.getItem("token"); 
@@ -40,6 +41,7 @@ export function tokenGetter() {
     PageNotFoundComponent,
     AddEditComponent,
     CallbackPipe,
+    PasswordGeneratorComponent,
   ],
   imports: [
     BrowserModule,
