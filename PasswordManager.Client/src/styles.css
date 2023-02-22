@@ -5,3 +5,17 @@ div.navbarMargin {
 .pointer {
   cursor: pointer;
 }
+
+.noBorderRadius {
+  border-radius: 0 !important;
+}
+
+.noBorderLeftRadius {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+.noBorderRightRadius {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}

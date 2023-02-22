@@ -17,6 +17,7 @@ export class AddEditComponent implements OnInit {
   passwordForm: FormGroup;
   loading = false;
   submitted = false;
+  toggledPassword = false;
 
   isAddMode: boolean;
 
@@ -33,7 +34,8 @@ export class AddEditComponent implements OnInit {
       userName: ['', [Validators.required]],
       passwordDecrypted: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(255)]],
       url: ['', [Validators.maxLength(2048)]],
-      notes: ['', [Validators.maxLength(10000)]]
+      notes: ['', [Validators.maxLength(10000)]],
+      favorite: [false, Validators.nullValidator]
     });
 
     if (!this.isAddMode) {
@@ -67,9 +69,6 @@ export class AddEditComponent implements OnInit {
   }
 
   createPassword(): void {
-    this.password.udt = Date.now().toString();
-    this.password.idt = this.password.udt;
-
     this.passwordService.create(this.passwordForm.value).subscribe(
       data => {
         this.toastrService.success('Created');
@@ -84,8 +83,6 @@ export class AddEditComponent implements OnInit {
   }
 
   updatePassword(): void {
-    this.password.udt = Date.now().toString();
-
     this.passwordService.update(this.id, this.passwordForm.value).subscribe(
       data => {
         this.toastrService.success('Saved');
@@ -123,6 +120,15 @@ export class AddEditComponent implements OnInit {
     return this.passwordForm.get('notes');
   }
 
+  get favorite() {
+    console.log(this.passwordForm.get('favorite'));
+    return this.passwordForm.get('favorite');
+  }
+
+  set favorite(value: any) {
+    this.favorite.setValue(value);
+  }
+
   delete(guid: any): void {
     if (confirm(`Do you really want to delete selected password?`)) {
       this.loading = true;
@@ -144,6 +150,24 @@ export class AddEditComponent implements OnInit {
   copyToClipboard(text: string): void {
     this.clipboardService.copyFromContent(text);
     this.toastrService.success('Copied to clipboard');
+  }
+
+  togglePassword(): void {
+    this.toggledPassword = !this.toggledPassword; 
+  }
+
+  toggleFavorite(): void {
+    this.favorite.value = !this.favorite.value;
+  }
+
+  goToUrl(url: string): void {
+    url = url.trim();
+    if (url != '') {
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'http://' + url;
+      }
+      window.open(url, '_blank').focus();
+    }
   }
 
 }

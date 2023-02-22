@@ -3,6 +3,7 @@ import { PasswordService } from '../services/password.service';
 import { PasswordModel } from '../models/password.model';
 import { ToastrService } from 'ngx-toastr';
 import { ClipboardService } from 'ngx-clipboard';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-passwords',
@@ -15,7 +16,7 @@ export class PasswordsComponent implements OnInit {
   searchText: string = "";
   loading = false;
 
-  constructor(private passwordService: PasswordService, private toastrService: ToastrService, private clipboardService: ClipboardService) { }
+  constructor(private passwordService: PasswordService, private toastrService: ToastrService, private clipboardService: ClipboardService, private router: Router) { }
 
   ngOnInit(): void {
     this.loading = true;
@@ -109,6 +110,10 @@ export class PasswordsComponent implements OnInit {
       notes.includes(filterText);
 
     return startsWith || includes;
+  }
+
+  openDetail(passwordId: string) {
+    this.router.navigate(['/passwords/edit', passwordId]);
   }
 
 }
