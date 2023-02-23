@@ -1,7 +1,7 @@
 export interface PasswordGeneratorSettings {
   passwordLength: number;
-  useNumbers: number;
-  useSpecialChars: number;
+  useNumbers: boolean;
+  useSpecialChars: boolean;
   useUppercase: boolean;
   useLowercase: boolean;
 }

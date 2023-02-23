@@ -85,7 +85,6 @@ export class PasswordsComponent implements OnInit {
     });
 
     if (passwordsArray.length > 0) {
-
       const modalDeletePassword = this.modalService.open(ModalDeletePasswordComponent);
       modalDeletePassword.componentInstance.passwordsGuids = passwordsArray;
       modalDeletePassword.result.then((result) => {
