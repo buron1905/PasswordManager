@@ -13,10 +13,10 @@ namespace Services
 
         public static string GeneratePassword(PasswordGeneratorSettingsDTO settings)
         {
-            return "examplePassword";
+            return PasswordGeneratorService.GeneratePassword(settings.PasswordLength, settings.UseNumbers, settings.UseSpecialChars, settings.UseUppercase, settings.UseLowercase);
         }
 
-        public static string GeneratePassword(int length = 8, bool useNumbers = true, bool useSpecialCharacters = true, bool useUppercase = true, bool useLowercase = true)
+        public static string GeneratePassword(int length = 8, bool useNumbers = true, bool useSpecialChars = true, bool useUppercase = true, bool useLowercase = true)
         {
             if (length < 1)
                 return string.Empty;
@@ -24,7 +24,7 @@ namespace Services
             StringBuilder sb = new StringBuilder();
 
             if (useNumbers) sb.Append(_numbers);
-            if (useSpecialCharacters) sb.Append(_specialChars);
+            if (useSpecialChars) sb.Append(_specialChars);
             if (useUppercase) sb.Append(_letters.ToUpperInvariant());
             if (useLowercase) sb.Append(_letters);
 
@@ -42,13 +42,18 @@ namespace Services
                     sb.Append(alphabet[next]);
                 }
                 password = sb.ToString();
-            } while (!CheckConstraints(password, useNumbers, useSpecialCharacters, useUppercase, useLowercase));
+            } while (!CheckConstraints(password, useNumbers, useSpecialChars, useUppercase, useLowercase));
 
 
             return password;
         }
 
-        private static bool CheckConstraints(string text, bool useNumbers = true, bool useSpecialCharacters = true, bool useUppercase = true, bool useLowercase = true)
+        private static bool CheckConstraints(string text, PasswordGeneratorSettingsDTO settings)
+        {
+            return PasswordGeneratorService.CheckConstraints(text, settings.UseNumbers, settings.UseSpecialChars, settings.UseUppercase, settings.UseLowercase);
+        }
+
+        private static bool CheckConstraints(string text, bool useNumbers = true, bool useSpecialChars = true, bool useUppercase = true, bool useLowercase = true)
         {
             if (useNumbers && !text.Any(char.IsDigit))
                 return false;
@@ -69,12 +74,12 @@ namespace Services
 
             Regex re = new Regex(strRegex);
 
-            if (useSpecialCharacters)
+            if (useSpecialChars)
             {
                 if (!re.IsMatch(text))
                     return false;
             }
-            else if (!useSpecialCharacters)
+            else if (!useSpecialChars)
             {
                 if (re.IsMatch(text))
                     return false;

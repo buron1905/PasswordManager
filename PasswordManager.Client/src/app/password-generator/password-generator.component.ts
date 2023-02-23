@@ -18,7 +18,11 @@ export class PasswordGeneratorComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private toastrService: ToastrService, private passwordGeneratorService: PasswordGeneratorService) {
     this.generatorForm = this.fb.group({
-      passwordLength: [12, [Validators.required, Validators.min(5), Validators.max(256)]]
+      passwordLength: [12, [Validators.required, Validators.min(5), Validators.max(256)]],
+      useNumbers: [true, [Validators.nullValidator]],
+      useSpecialChars: [true, [Validators.nullValidator]],
+      useUppercase: [true, [Validators.nullValidator]],
+      useLowercase: [true, [Validators.nullValidator]],
     });
   }
 
@@ -50,6 +54,22 @@ export class PasswordGeneratorComponent implements OnInit {
 
   get passwordLength() {
     return this.generatorForm.get('passwordLength');
+  }
+
+  get useNumbers() {
+    return this.generatorForm.get('useNumbers');
+  }
+
+  get useSpecialChars() {
+    return this.generatorForm.get('useSpecialChars');
+  }
+
+  get useUppercase() {
+    return this.generatorForm.get('useUppercase');
+  }
+
+  get useLowercase() {
+    return this.generatorForm.get('useLowercase');
   }
 
 }
