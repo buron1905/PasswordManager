@@ -26,6 +26,7 @@ import { ClipboardModule } from 'ngx-clipboard';
 import { CallbackPipe } from './utils/callback.pipe';
 import { PasswordGeneratorComponent } from './password-generator/password-generator.component';
 import { ModalDeletePasswordComponent } from './modal-delete-password/modal-delete-password.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 export function tokenGetter() { 
   return localStorage.getItem("token"); 
@@ -62,6 +63,7 @@ export function tokenGetter() {
         disallowedRoutes: []
       }
     }),
+    NgbModule,
   ],
   providers: [
     AuthService,
@@ -77,6 +79,8 @@ export function tokenGetter() {
       useClass: AppTitleSuffixService
     }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ModalDeletePasswordComponent]
+
 })
 export class AppModule { }

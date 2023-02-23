@@ -104,7 +104,9 @@ namespace Services.Data
                 throw new SettingsDoesNotBelongToUserException(user.Id, settings.Id);
             }
 
-            settings = settingsDTO.Adapt<Settings>();
+            // TODO: check update logic
+            settings.UserId = user.Id;
+            settings.SavePassword = settingsDTO.SavePassword;
 
             await _repositoryWrapper.SaveChangesAsync();
 

@@ -29,7 +29,7 @@ namespace Models.DTOs
         [MaxLength(MaxNotesLength, ErrorMessage = MaxNotesLengthErrorMessage)]
         public string? Notes { get; set; }
 
-        public bool Favorite { get; set; } = false;
+        public bool Favorite { get; set; }
 
         [Required]
         public DateTime UDT { get; set; }

@@ -9,7 +9,7 @@ namespace Services.Abstraction.Data
         Task<UserDTO> GetByIdAsync(Guid userId);
         Task<UserDTO> GetByEmailAsync(string email);
         Task<UserDTO> CreateAsync(RegisterRequestDTO registerDTO);
-        Task<UserDTO> UpdateAsync(Guid userId, UpdateUserDTO updateUserDTO);
+        Task<UserDTO> UpdateAsync(Guid userId, UserDTO userDTO);
         Task DeleteAsync(Guid userId);
     }
 }

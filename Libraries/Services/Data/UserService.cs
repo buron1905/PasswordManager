@@ -59,7 +59,7 @@ namespace Services.Data
             return user.Adapt<UserDTO>();
         }
 
-        public async Task<UserDTO> UpdateAsync(Guid userId, UpdateUserDTO updateUserDTO)
+        public async Task<UserDTO> UpdateAsync(Guid userId, UserDTO userDTO)
         {
             var user = await _repositoryWrapper.UserRepository.GetByIdAsync(userId);
 
@@ -68,8 +68,9 @@ namespace Services.Data
                 throw new UserNotFoundException(userId);
             }
 
-            // TODO: Add update logic
-            user.EmailAddress = updateUserDTO.Email;
+            // TODO: Check update logic
+            user.EmailAddress = userDTO.Email;
+            user.PasswordHASH = userDTO.PasswordHASH;
 
             await _repositoryWrapper.SaveChangesAsync();
 

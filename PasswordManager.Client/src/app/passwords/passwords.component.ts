@@ -4,6 +4,8 @@ import { PasswordModel } from '../models/password.model';
 import { ToastrService } from 'ngx-toastr';
 import { ClipboardService } from 'ngx-clipboard';
 import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalDeletePasswordComponent } from '../modal-delete-password/modal-delete-password.component';
 
 @Component({
   selector: 'app-passwords',
@@ -16,7 +18,8 @@ export class PasswordsComponent implements OnInit {
   searchText: string = "";
   loading = false;
 
-  constructor(private passwordService: PasswordService, private toastrService: ToastrService, private clipboardService: ClipboardService, private router: Router) { }
+  constructor(private passwordService: PasswordService, private toastrService: ToastrService, private clipboardService: ClipboardService, private router: Router,
+    private modalService: NgbModal  ) { }
 
   ngOnInit(): void {
     this.loading = true;
@@ -46,22 +49,29 @@ export class PasswordsComponent implements OnInit {
     });
   }
 
-  delete(guid: any): void {
-    if (confirm(`Do you really want to delete selected password?`)) {
-      this.loading = true;
+  delete(guid: string): void {
 
-      this.passwordService.delete(guid).subscribe(
-        data => {
-          this.toastrService.success('Password deleted');
-          this.getAllPasswords();
-          this.loading = false;
-        },
-        error => {
-          this.toastrService.error(error);
-          this.loading = false;
-        }
-      );
-    }
+    const modalDeletePassword = this.modalService.open(ModalDeletePasswordComponent);
+    modalDeletePassword.componentInstance.passwordsGuids = new Array<string>(guid);
+    modalDeletePassword.result.then((result) => {
+
+      if (result) {
+        this.loading = true;
+
+        this.passwordService.delete(guid).subscribe(
+          data => {
+            this.toastrService.success('Password deleted');
+            this.getAllPasswords();
+            this.loading = false;
+          },
+          error => {
+            this.toastrService.error("Error occured during saving");
+            this.loading = false;
+          }
+        );
+      }
+    });
+
   }
 
   deleteSelected(): void {
@@ -75,20 +85,27 @@ export class PasswordsComponent implements OnInit {
     });
 
     if (passwordsArray.length > 0) {
-      if (confirm(`Do you really want to delete selected passwords?\n${passwordsArray.length} passwords will be deleted.`)) {
-        this.loading = true;
-        this.passwordService.deleteMany(passwordsArray).subscribe(
-          data => {
-            this.toastrService.success('Passwords deleted');
-            this.getAllPasswords();
-            this.loading = false;
-          },
-          error => {
-            this.toastrService.error(error);
-            this.loading = false;
-          }
-        );
-      }
+
+      const modalDeletePassword = this.modalService.open(ModalDeletePasswordComponent);
+      modalDeletePassword.componentInstance.passwordsGuids = passwordsArray;
+      modalDeletePassword.result.then((result) => {
+
+        if (result) {
+          this.loading = true;
+          this.passwordService.deleteMany(passwordsArray).subscribe(
+            data => {
+              this.toastrService.success('Passwords deleted');
+              this.getAllPasswords();
+              this.loading = false;
+            },
+            error => {
+              this.toastrService.error(error);
+              this.loading = false;
+            }
+          );
+        }
+      });
+
     }
   }
 

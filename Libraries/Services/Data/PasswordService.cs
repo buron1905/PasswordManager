@@ -96,9 +96,16 @@ namespace Services.Data
                 throw new PasswordDoesNotBelongToUserException(user.Id, password.Id);
             }
 
-            // TODO: Add update logic
-            password = passwordDTO.Adapt<Password>();
-
+            // TODO: Check update logic
+            password.PasswordName = passwordDTO.PasswordName;
+            password.UserName = passwordDTO.UserName;
+            password.PasswordEncrypted = passwordDTO.PasswordEncrypted;
+            password.PasswordDecrypted = passwordDTO.PasswordDecrypted;
+            password.URL = passwordDTO.URL;
+            password.Notes = passwordDTO.Notes;
+            password.Favorite = passwordDTO.Favorite;
+            password.UDT = passwordDTO.UDT;
+            password.IDT = passwordDTO.IDT;
 
             await _repositoryWrapper.SaveChangesAsync();
 

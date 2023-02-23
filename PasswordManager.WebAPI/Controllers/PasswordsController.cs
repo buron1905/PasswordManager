@@ -69,8 +69,6 @@ namespace PasswordManager.WebAPI.Controllers
         {
             var userGuid = JwtService.GetUserGuidFromClaims(HttpContext.GetUserClaims());
 
-            //passwordDTO.PasswordEncrypted = passwordDTO.PasswordDecrypted;
-
             passwordDTO.PasswordEncrypted = Encoding.Unicode.GetString(await EncryptionService.EncryptAsync(passwordDTO.PasswordDecrypted,
                 JwtService.GetUserPasswordFromClaims(HttpContext.GetUserClaims())));
 
