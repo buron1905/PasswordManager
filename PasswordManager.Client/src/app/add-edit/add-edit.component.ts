@@ -121,7 +121,6 @@ export class AddEditComponent implements OnInit {
   }
 
   get favorite() {
-    console.log(this.passwordForm.get('favorite'));
     return this.passwordForm.get('favorite');
   }
 

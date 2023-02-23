@@ -74,19 +74,21 @@ export class PasswordsComponent implements OnInit {
       }
     });
 
-    if (confirm(`Do you really want to delete selected passwords?\n${passwordsArray.length} passwords will be deleted.`)) {
-      this.loading = true;
-      this.passwordService.deleteMany(passwordsArray).subscribe(
-        data => {
-          this.toastrService.success('Passwords deleted');
-          this.getAllPasswords();
-          this.loading = false;
-        },
-        error => {
-          this.toastrService.error(error);
-          this.loading = false;
-        }
-      );
+    if (passwordsArray.length > 0) {
+      if (confirm(`Do you really want to delete selected passwords?\n${passwordsArray.length} passwords will be deleted.`)) {
+        this.loading = true;
+        this.passwordService.deleteMany(passwordsArray).subscribe(
+          data => {
+            this.toastrService.success('Passwords deleted');
+            this.getAllPasswords();
+            this.loading = false;
+          },
+          error => {
+            this.toastrService.error(error);
+            this.loading = false;
+          }
+        );
+      }
     }
   }
 
