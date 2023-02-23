@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ClipboardService } from 'ngx-clipboard';
 import { ToastrService } from 'ngx-toastr';
@@ -11,6 +11,8 @@ import { PasswordGeneratorService } from '../services/password-generator.service
   styleUrls: ['./password-generator.component.css']
 })
 export class PasswordGeneratorComponent implements OnInit {
+  @Output() newPasswordEvent = new EventEmitter<string>();
+
   generatorForm: FormGroup;
   submitted = false;
   loading = false;
@@ -29,6 +31,7 @@ export class PasswordGeneratorComponent implements OnInit {
 
   ngOnInit(): void {
     this.onChanges();
+    this.generate();
   }
 
   generate(): void {
@@ -39,6 +42,7 @@ export class PasswordGeneratorComponent implements OnInit {
     //this.loading = true;
 
     this.generatedPassword = this.passwordGeneratorService.generatePasswordFromModel(this.generatorForm.value);
+    this.newPasswordEvent.emit(this.generatedPassword);
 
     //this.passwordGeneratorService.generatePassword(this.generatorForm.value).subscribe(
     //  data => {

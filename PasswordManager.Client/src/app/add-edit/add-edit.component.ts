@@ -5,7 +5,9 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ClipboardService } from 'ngx-clipboard';
 import { ToastrService } from 'ngx-toastr';
 import { ModalDeletePasswordComponent } from '../modal-delete-password/modal-delete-password.component';
+import { ModalGeneratePasswordComponent } from '../modal-generate-password/modal-generate-password.component';
 import { PasswordModel } from '../models/password.model';
+import { PasswordGeneratorComponent } from '../password-generator/password-generator.component';
 import { PasswordService } from '../services/password.service';
 
 @Component({
@@ -176,6 +178,18 @@ export class AddEditComponent implements OnInit {
       }
       window.open(url, '_blank').focus();
     }
+  }
+
+  generatePassword(): void {
+
+    const modalGeneratePassword = this.modalService.open(ModalGeneratePasswordComponent);
+    modalGeneratePassword.result.then((result) => {
+      if (result) {
+        this.toastrService.success('Password generated');
+        this.passwordForm.patchValue({ passwordDecrypted: result });
+      }
+    });
+
   }
 
 }

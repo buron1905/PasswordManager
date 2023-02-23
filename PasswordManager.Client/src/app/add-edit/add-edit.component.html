@@ -34,12 +34,15 @@
           <div class="input-group">
             <input [type]="toggledPassword ? 'text' : 'password'" class="form-control" id="password" formControlName="passwordDecrypted" aria-describedby="passwordDecryptedHelpBlock" required
                    [ngClass]="{ 'is-invalid': submitted && passwordDecrypted?.errors }">
-              <button type="button" (click)="togglePassword()" class="btn btn-outline-secondary" title="Toggle visibility" aria-label="Toggle visibility">
-                <i class="bi" [class.bi-eye]="!toggledPassword" [class.bi-eye-slash]="toggledPassword"></i>
-              </button>
-              <button type="button" (click)="copyToClipboard(passwordDecrypted.value)" class="btn btn-outline-secondary" title="Copy password" aria-label="Copy password">
-                <i class="bi bi-files"></i>
-              </button>
+            <button type="button" (click)="togglePassword()" class="btn btn-outline-secondary" title="Toggle visibility" aria-label="Toggle visibility">
+              <i class="bi" [class.bi-eye]="!toggledPassword" [class.bi-eye-slash]="toggledPassword"></i>
+            </button>
+            <button type="button" (click)="generatePassword()" class="btn btn-outline-secondary" title="Generate password" aria-label="Generate password">
+              <i class="bi bi-arrow-clockwise"></i>
+            </button>
+            <button type="button" (click)="copyToClipboard(passwordDecrypted.value)" class="btn btn-outline-secondary" title="Copy password" aria-label="Copy password">
+              <i class="bi bi-files"></i>
+            </button>
           </div>
           <div *ngIf="submitted && passwordDecrypted?.errors" class="invalid-feedback">
             <div *ngIf="passwordDecrypted?.errors?.['required']">This field is required.</div>

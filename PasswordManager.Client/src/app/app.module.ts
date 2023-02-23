@@ -27,6 +27,7 @@ import { CallbackPipe } from './utils/callback.pipe';
 import { PasswordGeneratorComponent } from './password-generator/password-generator.component';
 import { ModalDeletePasswordComponent } from './modal-delete-password/modal-delete-password.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ModalGeneratePasswordComponent } from './modal-generate-password/modal-generate-password.component';
 
 export function tokenGetter() { 
   return localStorage.getItem("token"); 
@@ -45,6 +46,7 @@ export function tokenGetter() {
     CallbackPipe,
     PasswordGeneratorComponent,
     ModalDeletePasswordComponent,
+    ModalGeneratePasswordComponent,
   ],
   imports: [
     BrowserModule,
