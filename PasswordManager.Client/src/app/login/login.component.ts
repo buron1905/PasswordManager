@@ -14,6 +14,7 @@ export class LoginComponent implements OnInit {
   loading = false;
   submitted = false;
   wrongCredentials = false;
+  toggledPassword = false;
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private toastrService: ToastrService) {
     this.loginForm = this.fb.group({
@@ -57,5 +58,9 @@ export class LoginComponent implements OnInit {
   get password() {
     return this.loginForm.get('password');
   }
-  
+
+  togglePassword(): void {
+    this.toggledPassword = !this.toggledPassword;
+  }
+
 }

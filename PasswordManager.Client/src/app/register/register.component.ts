@@ -15,12 +15,14 @@ export class RegisterComponent implements OnInit {
   loading = false;
   submitted = false;
   emailIsAlreadyUsed = false;
+  toggledPassword = false;
+  toggledConfirmationPassword = false;
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private toastrService: ToastrService) {
     this.registerForm = this.fb.group({
       emailAddress: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(255)]],
-      confirmPassword: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', [Validators.required]],
       acceptTerms: [false, Validators.requiredTrue],
       },
       {
@@ -79,4 +81,13 @@ export class RegisterComponent implements OnInit {
   get acceptTerms() {
     return this.registerForm.get('acceptTerms');
   }
+
+  togglePassword(): void {
+    this.toggledPassword = !this.toggledPassword;
+  }
+
+  toggleConfirmationPassword(): void {
+    this.toggledConfirmationPassword = !this.toggledConfirmationPassword;
+  }
+
 }

@@ -10,7 +10,7 @@ import { AddEditComponent } from './add-edit/add-edit.component';
 import { PasswordGeneratorComponent } from './password-generator/password-generator.component';
 
 const routes: Routes = [
-  { path: 'home', component: HomeComponent, title: 'Home', canActivate: [AuthGuardService] },
+  { path: 'home', component: HomeComponent, title: 'Home' },
   { path: 'login', component: LoginComponent, title: 'Login' },
   { path: 'register', component: RegisterComponent, title: 'Register' },
   { path: 'passwords', component: PasswordsComponent, title: 'Passwords', canActivate: [AuthGuardService] },

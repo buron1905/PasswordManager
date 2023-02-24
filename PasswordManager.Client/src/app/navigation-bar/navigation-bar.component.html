@@ -6,13 +6,13 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarScroll">
       <ul class="navbar-nav me-auto my-2 my-lg-0">
-        <li class="nav-item">
+        <li *ngIf="!isAuthenticated()" class="nav-item">
           <a class="nav-link" routerLinkActive="active" routerLink="/home">Home</a>
         </li>
-        <li class="nav-item">
+        <li *ngIf="isAuthenticated()" class="nav-item">
           <a class="nav-link" routerLinkActive="active" routerLink="/passwords">Passwords</a>
         </li>
-        <li class="nav-item">
+        <li *ngIf="isAuthenticated()" class="nav-item">
           <a class="nav-link" routerLinkActive="active" routerLink="/generator">Generator</a>
         </li>
       </ul>

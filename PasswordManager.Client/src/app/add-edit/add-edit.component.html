@@ -24,15 +24,16 @@
               <button type="button" (click)="copyToClipboard(userName.value)" class="btn btn-outline-secondary" title="Copy username" aria-label="Copy username">
                 <i class="bi bi-files"></i>
               </button>
-          </div>
           <div *ngIf="submitted && userName?.errors" class="invalid-feedback">
             <div *ngIf="userName?.errors?.['required']">This field is required.</div>
+          </div>
           </div>
         </div>
         <div class="mb-3">
           <label for="passwordDecrypted" class="form-label">Password</label>
           <div class="input-group">
             <input [type]="toggledPassword ? 'text' : 'password'" class="form-control" id="password" formControlName="passwordDecrypted" aria-describedby="passwordDecryptedHelpBlock" required
+                   spellcheck="false" autocorrect="off" autocapitalize="off"
                    [ngClass]="{ 'is-invalid': submitted && passwordDecrypted?.errors }">
             <button type="button" (click)="togglePassword()" class="btn btn-outline-secondary" title="Toggle visibility" aria-label="Toggle visibility">
               <i class="bi" [class.bi-eye]="!toggledPassword" [class.bi-eye-slash]="toggledPassword"></i>
@@ -43,11 +44,11 @@
             <button type="button" (click)="copyToClipboard(passwordDecrypted.value)" class="btn btn-outline-secondary" title="Copy password" aria-label="Copy password">
               <i class="bi bi-files"></i>
             </button>
-          </div>
-          <div *ngIf="submitted && passwordDecrypted?.errors" class="invalid-feedback">
-            <div *ngIf="passwordDecrypted?.errors?.['required']">This field is required.</div>
-            <div *ngIf="passwordDecrypted?.errors?.['minlength']">Password must be at least 6 characters long.</div>
-            <div *ngIf="passwordDecrypted?.errors?.['maxlength']">Password must not exceed 255 characters.</div>
+            <div *ngIf="submitted && passwordDecrypted?.errors" class="invalid-feedback">
+              <div *ngIf="passwordDecrypted?.errors?.['required']">This field is required.</div>
+              <div *ngIf="passwordDecrypted?.errors?.['minlength']">Password must be at least 6 characters long.</div>
+              <div *ngIf="passwordDecrypted?.errors?.['maxlength']">Password must not exceed 255 characters.</div>
+            </div>
           </div>
         </div>
         <div class="mb-3">
@@ -55,15 +56,15 @@
           <div class="input-group">
             <input type="url" class="form-control" id="url" formControlName="url" aria-describedby="urlHelpBlock" placeholder="e.g. https://google.com/"
                    [ngClass]="{ 'is-invalid': submitted && url?.errors }">
-              <button type="button" (click)="goToUrl(url.value)" class="btn btn-outline-secondary" title="Go to URL" aria-label="Go to URL">
-                <i class="bi bi-box-arrow-up-right"></i>
-              </button>
-              <button type="button" (click)="copyToClipboard(url.value)" class="btn btn-outline-secondary" title="Copy URL" aria-label="Copy URL">
-                <i class="bi bi-files"></i>
-              </button>
-          </div>
-          <div *ngIf="submitted && url?.errors" class="invalid-feedback">
-            <div *ngIf="url?.errors?.['maxlength']">URL length must not exceed 2048 characters.</div>
+            <button type="button" (click)="goToUrl(url.value)" class="btn btn-outline-secondary" title="Go to URL" aria-label="Go to URL">
+              <i class="bi bi-box-arrow-up-right"></i>
+            </button>
+            <button type="button" (click)="copyToClipboard(url.value)" class="btn btn-outline-secondary" title="Copy URL" aria-label="Copy URL">
+              <i class="bi bi-files"></i>
+            </button>
+            <div *ngIf="submitted && url?.errors" class="invalid-feedback">
+              <div *ngIf="url?.errors?.['maxlength']">URL length must not exceed 2048 characters.</div>
+            </div>
           </div>
         </div>
         <div class="mb-3">

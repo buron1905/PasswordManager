@@ -9,7 +9,7 @@
       <form [formGroup]="loginForm" (ngSubmit)="login()">
         <div class="mb-3">
           <label for="emailAddress" class="form-label">Email address</label>
-          <input type="email" class="form-control" id="emailAddress" formControlName="emailAddress" aria-describedby="emailAddressHelpBlock" required
+          <input type="email" class="form-control" id="emailAddress" formControlName="emailAddress" aria-describedby="emailAddressHelpBlock" required autocomplete="username"
                  [ngClass]="{ 'is-invalid': submitted && emailAddress?.errors }">
           <div *ngIf="submitted && emailAddress?.errors" class="invalid-feedback">
             <div *ngIf="emailAddress?.errors?.['required']">This field is required.</div>
@@ -18,10 +18,16 @@
         </div>
         <div class="mb-3">
           <label for="password" class="form-label">Password</label>
-          <input type="password" class="form-control" id="password" formControlName="password" aria-describedby="passwordHelpBlock" required
-                 [ngClass]="{ 'is-invalid': submitted && password?.errors }">
-          <div *ngIf="submitted && password?.errors" class="invalid-feedback">
-            <div *ngIf="password?.errors?.['required']">This field is required.</div>
+          <div class="input-group">
+            <input [type]="toggledPassword ? 'text' : 'password'" class="form-control" id="password" formControlName="password" aria-describedby="passwordHelpBlock" required
+                   spellcheck="false" autocorrect="off" autocapitalize="off"
+                   [ngClass]="{ 'is-invalid': submitted && password?.errors }">
+            <button type="button" (click)="togglePassword()" class="btn btn-outline-secondary" title="Toggle visibility" aria-label="Toggle visibility">
+              <i class="bi" [class.bi-eye]="!toggledPassword" [class.bi-eye-slash]="toggledPassword"></i>
+            </button>
+            <div *ngIf="submitted && password?.errors" class="invalid-feedback">
+              <div *ngIf="password?.errors?.['required']">This field is required.</div>
+            </div>
           </div>
         </div>
         <div class="form-group text-center">
