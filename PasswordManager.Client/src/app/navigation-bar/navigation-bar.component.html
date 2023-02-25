@@ -1,25 +1,25 @@
 <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
-    <a class="navbar-brand" routerLink="">Password Manager</a>
+    <a class="navbar-brand" routerLink="" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">Password Manager</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarScroll">
       <ul class="navbar-nav me-auto my-2 my-lg-0">
         <li *ngIf="!isAuthenticated()" class="nav-item">
-          <a class="nav-link" routerLinkActive="active" routerLink="/home">Home</a>
+          <a class="nav-link" routerLinkActive="active" routerLink="/home" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">Home</a>
         </li>
         <li *ngIf="isAuthenticated()" class="nav-item">
-          <a class="nav-link" routerLinkActive="active" routerLink="/passwords">Passwords</a>
+          <a class="nav-link" routerLinkActive="active" routerLink="/passwords" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">Passwords</a>
         </li>
         <li *ngIf="isAuthenticated()" class="nav-item">
-          <a class="nav-link" routerLinkActive="active" routerLink="/generator">Generator</a>
+          <a class="nav-link" routerLinkActive="active" routerLink="/generator" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">Generator</a>
         </li>
       </ul>
       <form class="d-flex">
-        <a *ngIf="!isAuthenticated()" class="btn btn-outline-dark" routerLink="/login">Log In</a>
-        <a *ngIf="!isAuthenticated()" class="btn btn-primary ms-1" routerLink="/register">Register</a>
-        <a *ngIf="isAuthenticated()" class="btn btn-outline-dark" (click)="logout()">Logout</a>
+        <a *ngIf="!isAuthenticated()" class="btn btn-outline-dark" routerLink="/login" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">Log In</a>
+        <a *ngIf="!isAuthenticated()" class="btn btn-primary ms-1" routerLink="/register"data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">Register</a>
+        <a *ngIf="isAuthenticated()" class="btn btn-outline-dark" (click)="logout()" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">Logout</a>
       </form>
     </div>
   </div>
