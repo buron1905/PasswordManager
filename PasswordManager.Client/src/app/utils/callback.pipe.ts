@@ -6,11 +6,12 @@ import { PasswordModel } from '../models/password.model';
   pure: false
 })
 export class CallbackPipe implements PipeTransform {
-  transform(items: PasswordModel[], searchText: string, callback: (item: PasswordModel, filterText: string) => boolean): PasswordModel[] {
+  transform(items: PasswordModel[], searchText: string, searchFavorites: boolean,
+    callback: (item: PasswordModel, filterText: string, searchFavorites: boolean) => boolean): PasswordModel[] {
     if (!items || !callback) {
       return items;
     }
-    return items.filter(item => callback(item, searchText));
+    return items.filter(item => callback(item, searchText, searchFavorites));
   }
 
 }

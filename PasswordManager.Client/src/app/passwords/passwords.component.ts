@@ -6,6 +6,7 @@ import { ClipboardService } from 'ngx-clipboard';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalDeletePasswordComponent } from '../modal-delete-password/modal-delete-password.component';
+import { CallbackPipe } from '../utils/callback.pipe';
 
 @Component({
   selector: 'app-passwords',
@@ -16,6 +17,7 @@ export class PasswordsComponent implements OnInit {
   passwordsAll: PasswordModel[];
   passwords: PasswordModel[];
   searchText: string = "";
+  searchFavorites: boolean = false;
   loading = false;
 
   constructor(private passwordService: PasswordService, private toastrService: ToastrService, private clipboardService: ClipboardService, private router: Router,
@@ -26,7 +28,7 @@ export class PasswordsComponent implements OnInit {
     this.getAllPasswords();
   }
 
-  private getAllPasswords() {
+  getAllPasswords() {
     this.passwordService.get().subscribe(
       data => {
         this.passwords = data;
@@ -113,7 +115,15 @@ export class PasswordsComponent implements OnInit {
     this.toastrService.success('Copied to clipboard');
   }
 
-  findByPasswordNameAndUsername(password: PasswordModel, filterText: string): any {
+  toggleFavorite(): void {
+    this.searchFavorites = !this.searchFavorites;
+  }
+
+  findByPasswordNameAndUsername(password: PasswordModel, filterText: string, searchFavorites: boolean = false): any {
+    if (searchFavorites && !password.favorite) {
+      return false;
+    }
+
     filterText = filterText?.trim().toLowerCase() ?? '';
     let passwordName: string = password.passwordName?.trim().toLowerCase() ?? '';
     let userName: string = password.userName?.trim().toLowerCase() ?? '';
