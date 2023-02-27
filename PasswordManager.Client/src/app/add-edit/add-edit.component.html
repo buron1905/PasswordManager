@@ -8,33 +8,36 @@
     <div class="col-lg-4"></div>
     <div class="col-lg-4">
       <form [formGroup]="passwordForm" (ngSubmit)="onSubmit()">
-        <div class="mb-3">
-          <label for="passwordName" class="form-label">Name</label>
-          <input type="text" class="form-control" id="passwordName" formControlName="passwordName" aria-describedby="passwordNameHelpBlock" required
+        <div class="mb-3 form-floating">
+          <input type="text" class="form-control" id="passwordName" formControlName="passwordName" aria-describedby="passwordNameHelpBlock" required placeholder="Name"
                  [ngClass]="{ 'is-invalid': submitted && passwordName?.errors }">
+          <label for="passwordName" class="form-label">Name</label>
           <div *ngIf="submitted && passwordName?.errors" class="invalid-feedback">
             <div *ngIf="passwordName?.errors?.['required']">This field is required.</div>
           </div>
         </div>
         <div class="mb-3">
-          <label for="userName" class="form-label">Username</label>
-          <div class="input-group">
-            <input type="text" class="form-control" id="userName" formControlName="userName" aria-describedby="userNameHelpBlock" required
-                   [ngClass]="{ 'is-invalid': submitted && userName?.errors }">
-              <button type="button" (click)="copyToClipboard(userName.value)" class="btn btn-outline-secondary" title="Copy username" aria-label="Copy username">
-                <i class="bi bi-files"></i>
-              </button>
-          <div *ngIf="submitted && userName?.errors" class="invalid-feedback">
-            <div *ngIf="userName?.errors?.['required']">This field is required.</div>
-          </div>
+          <div class="input-group" [class.has-validation]="submitted && userName?.errors">
+            <div class="form-floating" [class.is-invalid]="submitted && userName?.errors">
+              <input type="text" class="form-control" [class.is-invalid]="submitted && userName?.errors" id="floatingInputGroup2" formControlName="userName" placeholder="Username" required autocomplete="username">
+              <label for="floatingInputGroup2">Username</label>
+            </div>
+            <button type="button" (click)="copyToClipboard(userName.value)" class="btn btn-outline-secondary" title="Copy username" aria-label="Copy username">
+              <i class="bi bi-files"></i>
+            </button>
+            <div class="invalid-feedback" *ngIf="submitted && userName?.errors">
+              <div *ngIf="userName?.errors?.['required']">This field is required.</div>
+            </div>
           </div>
         </div>
         <div class="mb-3">
-          <label for="passwordDecrypted" class="form-label">Password</label>
-          <div class="input-group">
-            <input [type]="toggledPassword ? 'text' : 'password'" class="form-control" id="password" formControlName="passwordDecrypted" aria-describedby="passwordDecryptedHelpBlock" required
-                   spellcheck="false" autocorrect="off" autocapitalize="off"
-                   [ngClass]="{ 'is-invalid': submitted && passwordDecrypted?.errors }">
+          <div class="input-group" [class.has-validation]="submitted && passwordDecrypted?.errors">
+            <div class="form-floating" [class.is-invalid]="submitted && passwordDecrypted?.errors">
+              <input [type]="toggledPassword ? 'text' : 'password'" class="form-control" [class.is-invalid]="submitted && passwordDecrypted?.errors" id="password" formControlName="passwordDecrypted" aria-describedby="passwordDecryptedHelpBlock" required autocomplete="new-password"
+                     spellcheck="false" autocorrect="off" autocapitalize="off" placeholder="Password"
+                     [ngClass]="{ 'is-invalid': submitted && passwordDecrypted?.errors }">
+              <label for="passwordDecrypted" class="form-label">Password</label>
+            </div>
             <button type="button" (click)="togglePassword()" class="btn btn-outline-secondary" title="Toggle visibility" aria-label="Toggle visibility">
               <i class="bi" [class.bi-eye]="!toggledPassword" [class.bi-eye-slash]="toggledPassword"></i>
             </button>
@@ -52,10 +55,12 @@
           </div>
         </div>
         <div class="mb-3">
-          <label for="url" class="form-label">URL</label>
           <div class="input-group">
-            <input type="url" class="form-control" id="url" formControlName="url" aria-describedby="urlHelpBlock" placeholder="e.g. https://google.com/"
-                   [ngClass]="{ 'is-invalid': submitted && url?.errors }">
+            <div class="form-floating">
+              <input type="url" class="form-control" id="url" formControlName="url" aria-describedby="urlHelpBlock" placeholder="URL (e.g. https://google.com/)"
+                     [ngClass]="{ 'is-invalid': submitted && url?.errors }">
+              <label for="url" class="form-label">URL</label>
+            </div>
             <button type="button" (click)="goToUrl(url.value)" class="btn btn-outline-secondary" title="Go to URL" aria-label="Go to URL">
               <i class="bi bi-box-arrow-up-right"></i>
             </button>
@@ -67,10 +72,10 @@
             </div>
           </div>
         </div>
-        <div class="mb-3">
-          <label for="notes" class="form-label">Notes</label>
-          <textarea maxlength="255" type="" class="form-control" id="notes" formControlName="notes" aria-describedby="notesHelpBlock"
+        <div class="mb-3 form-floating">
+          <textarea maxlength="255" type="" class="form-control" id="notes" formControlName="notes" aria-describedby="notesHelpBlock" placeholder="Notes"
                     [ngClass]="{ 'is-invalid': submitted && notes?.errors }"></textarea>
+          <label for="notes" class="form-label">Notes</label>
           <div *ngIf="submitted && notes?.errors" class="invalid-feedback">
             <div *ngIf="notes?.errors?.['maxlength']">Notes length must not exceed 10000 characters.</div>
           </div>
