@@ -2,10 +2,11 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:PasswordManager.MAUI.ViewModels"
+             xmlns:controls="clr-namespace:PasswordManager.MAUI.Views.Controls"
              x:Class="PasswordManager.MAUI.Views.LoginPage"
              x:DataType="viewmodels:LoginViewModel"
              Shell.FlyoutBehavior="Disabled"
-             Shell.NavBarIsVisible="True"
+             Shell.NavBarIsVisible="False"
              Title="{Binding Title}">
     <!--Style="{StaticResource BaseContentPage}">-->
              <!--xmlns:controls="clr-namespace:PasswordManager.MAUI.Views.Controls"-->
@@ -17,23 +18,23 @@
         <ScrollView>
             <StackLayout Padding="20">
                 <Label Text="Login" HorizontalOptions="Center" FontSize="50"/>
-                <!--<Label Text="{Binding Message}" 
-        IsVisible="False" TextColor="Red"/>-->
                 <Label Text="Email Address"/>
                 <Entry Text="{Binding Model.EmailAddress}"
                 Placeholder="Email Address" 
                 Keyboard="Email"/>
                 <Label x:Name="LoginRequestDTO_EmailAddressError" 
-        IsVisible="False" TextColor="Red" />
+        IsVisible="False" Style="{StaticResource LabelError}" />
                 <Label Text="Password" />
-                <Entry IsPassword="true" Text="{Binding Model.Password}"/>
+                <controls:TogglePasswordEntry Placeholder="Password"
+                                          Text="{Binding Model.Password}"
+                                          HidePassword="True" Style="{StaticResource TogglePasswordBase}"/>
                 <Label x:Name="LoginRequestDTO_PasswordError" 
-        IsVisible="False" TextColor="Red" />
+        IsVisible="False" Style="{StaticResource LabelError}" />
                 <Button 
                 Text="Login"
                 Command="{Binding LoginCommand}"
-                BackgroundColor="LightBlue" />
-                <Label Text="Registration">
+                />
+                <Label Text="Registration" Style="{StaticResource LabelLink}">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding RegistrationCommand}" />
                     </Label.GestureRecognizers>

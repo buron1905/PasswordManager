@@ -27,8 +27,9 @@
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Primary}}" />
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
-        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontSize" Value="Medium"/>
         <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Margin" Value="5" />
         <Setter Property="Padding" Value="14,10"/>
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
@@ -103,6 +104,7 @@
     <Style TargetType="Entry">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
+        <!--<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray500}}" />-->
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
         <Setter Property="FontSize" Value="14" />
         <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" />
@@ -380,5 +382,44 @@
         <Setter Property="UnselectedTabColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray950}}" />
         <Setter Property="SelectedTabColor" Value="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray200}}" />
     </Style>
+
+    <!--My styles-->
+    <Style TargetType="FontImageSource">
+        <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray200}}" />
+    </Style>
+
+    <Style x:Key="LabelBase" TargetType="Label">
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+    </Style>
+
+    <Style x:Key="LabelSmall" TargetType="Label" BasedOn="{StaticResource LabelBase}">
+        <Setter Property="FontSize" Value="Small"/>
+    </Style>
+
+    <Style x:Key="LabelMedium" TargetType="Label" BasedOn="{StaticResource LabelBase}">
+        <Setter Property="FontSize" Value="Medium"/>
+    </Style>
+
+    <Style x:Key="LabelLarge" TargetType="Label" BasedOn="{StaticResource LabelBase}">
+        <Setter Property="FontSize" Value="Large"/>
+    </Style>
+
+    <Style x:Key="LabelLink" TargetType="Label" BasedOn="{StaticResource LabelMedium}">
+        <Setter Property="HorizontalOptions" Value="Center"/>
+        <Setter Property="TextDecorations" Value="Underline" />
+        <Setter Property="Margin" Value="15, 0, 0, 0" />
+    </Style>
+
+    <Style x:Key="LabelHeading" TargetType="Label" BasedOn="{StaticResource LabelMedium}">
+        <Setter Property="SemanticProperties.HeadingLevel" Value="Level1" />
+        <Setter Property="HorizontalOptions" Value="Center"/>
+        <Setter Property="FontSize" Value="32"/>
+        <Setter Property="Padding" Value="0,5,0,20" />
+    </Style>
+
+    <Style x:Key="LabelError" TargetType="Label" BasedOn="{StaticResource LabelSmall}">
+        <Setter Property="TextColor" Value="Red" />
+    </Style>
+
 
 </ResourceDictionary>
