@@ -13,34 +13,32 @@
         <viewmodels:LoginViewModel/>
     </ContentPage.BindingContext>
 
-    <!--<ContentPage.Content>
+    <ContentPage.Content>
         <ScrollView>
-            <StackLayout>--><!--Style="{StaticResource StackLayoutCenterForm}"--><!--
-
-                <Label Text="Email:" /> --><!--Style="{StaticResource LabelSmall}"--><!--
-                <Entry
-                Text="{Binding Email}"
-                Placeholder="Email" 
-                Keyboard="Email"
-                /> --><!--Style="{StaticResource EntryBase}"--><!--
-
-                <Label Text="Password:" /> --><!--Style="{StaticResource LabelSmall}"-->
-                <!--<controls:TogglePasswordEntry Placeholder="Password"
-                                          Text="{Binding Password}"
-                                          HidePassword="True" Style="{StaticResource TogglePasswordBase}"/>--><!--
-
+            <StackLayout Padding="20">
+                <Label Text="Login" HorizontalOptions="Center" FontSize="50"/>
+                <!--<Label Text="{Binding Message}" 
+        IsVisible="False" TextColor="Red"/>-->
+                <Label Text="Email Address"/>
+                <Entry Text="{Binding Model.EmailAddress}"
+                Placeholder="Email Address" 
+                Keyboard="Email"/>
+                <Label x:Name="LoginRequestDTO_EmailAddressError" 
+        IsVisible="False" TextColor="Red" />
+                <Label Text="Password" />
+                <Entry IsPassword="true" Text="{Binding Model.Password}"/>
+                <Label x:Name="LoginRequestDTO_PasswordError" 
+        IsVisible="False" TextColor="Red" />
                 <Button 
                 Text="Login"
                 Command="{Binding LoginCommand}"
-                /> --><!--Style="{StaticResource ButtonBase}"--><!--
-
-                <Label Text="Registration">--><!--Style="{StaticResource LabelLink}"--><!--
+                BackgroundColor="LightBlue" />
+                <Label Text="Registration">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding RegistrationCommand}" />
                     </Label.GestureRecognizers>
                 </Label>
-
             </StackLayout>
         </ScrollView>
-    </ContentPage.Content>-->
+    </ContentPage.Content>
 </ContentPage>

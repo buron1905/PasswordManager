@@ -9,7 +9,9 @@ namespace PasswordManager.MAUI.Views
         public LoginPage()
         {
             InitializeComponent();
+
             ViewModel = BindingContext as LoginViewModel;
+            ViewModel.Page = this;
         }
     }
 }

@@ -5,8 +5,8 @@ namespace Models.DTOs
 {
     public class LoginRequestDTO
     {
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage = RequiredEmailAddressErrorMessage)]
+        [EmailAddress(ErrorMessage = InvalidEmailAddressFormatErrorMessage)]
         [MaxLength(MaxEmailLength, ErrorMessage = MaxEmailLengthErrorMessage)]
         public string? EmailAddress { get; set; }
 

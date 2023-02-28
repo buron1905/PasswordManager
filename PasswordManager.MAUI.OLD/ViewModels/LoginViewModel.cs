@@ -1,8 +1,8 @@
-﻿using PasswordManager.MAUI.Views;
-using System.Windows.Input;
-using MvvmHelpers;
+﻿using MvvmHelpers;
 using MvvmHelpers.Commands;
 using PasswordManager.MAUI.Services;
+using PasswordManager.MAUI.Views;
+using System.Windows.Input;
 
 namespace PasswordManager.MAUI.ViewModels
 {

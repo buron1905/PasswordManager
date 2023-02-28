@@ -8,7 +8,7 @@ namespace Models.DTOs
     {
         public Guid Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = RequiredPasswordNameErrorMessage)]
         [MaxLength(MaxPasswordNameLength, ErrorMessage = MaxPasswordNameLengthErrorMessage)]
         public string? PasswordName { get; set; }
 
@@ -31,10 +31,8 @@ namespace Models.DTOs
 
         public bool Favorite { get; set; }
 
-        [Required]
         public DateTime UDT { get; set; }
 
-        [Required]
         public DateTime IDT { get; set; }
 
     }
