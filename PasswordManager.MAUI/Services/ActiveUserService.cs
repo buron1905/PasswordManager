@@ -1,10 +1,10 @@
-﻿using Models;
+﻿using Models.DTOs;
 
 namespace PasswordManager.MAUI.Services
 {
     public class ActiveUserService
     {
-        public User User { get; set; }
+        public UserDTO UserDTO { get; set; }
         public string Password { get; set; }
 
         private static ActiveUserService instance;
@@ -30,19 +30,19 @@ namespace PasswordManager.MAUI.Services
         {
             get
             {
-                return User != null;
+                return UserDTO != null;
             }
         }
 
-        public void Login(User user, string password)
+        public void Login(UserDTO user, string password)
         {
-            User = user;
+            UserDTO = user;
             Password = password;
         }
 
         public void Logout()
         {
-            User = null;
+            UserDTO = null;
             Password = null;
         }
 

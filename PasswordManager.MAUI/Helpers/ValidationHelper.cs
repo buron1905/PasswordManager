@@ -64,7 +64,7 @@ namespace PasswordManager.MAUI.Helpers
         }
         private static List<PropertyInfo> GetValidatableProperties(object model)
         {
-            var properties = model.GetType().GetProperties().Where(prop => prop.CanRead
+            var properties = model.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(prop => prop.CanRead
                 && prop.GetCustomAttributes(typeof(ValidationAttribute), true).Any()
                 && prop.GetIndexParameters().Length == 0).ToList();
             return properties;

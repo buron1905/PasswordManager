@@ -1,6 +1,7 @@
 ﻿using Models.DTOs;
 using MvvmHelpers.Commands;
 using PasswordManager.MAUI.Services;
+using PasswordManager.MAUI.Views;
 using System.Windows.Input;
 
 namespace PasswordManager.MAUI.ViewModels
@@ -12,7 +13,7 @@ namespace PasswordManager.MAUI.ViewModels
 
         public LoginViewModel()
         {
-            Title = "Login";
+            Title = "Password Manager";
 
             LoginCommand = new AsyncCommand(Login);
             RegistrationCommand = new AsyncCommand(Registration);
@@ -22,7 +23,7 @@ namespace PasswordManager.MAUI.ViewModels
 
         private async Task Registration()
         {
-            //await Shell.Current.GoToAsync($"{nameof(RegistrationPage)}");
+            await Shell.Current.GoToAsync($"{nameof(RegistrationPage)}");
         }
 
         private async Task Login()

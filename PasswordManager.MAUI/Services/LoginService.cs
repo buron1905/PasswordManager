@@ -14,7 +14,7 @@ namespace PasswordManager.MAUI.Services
             {
                 if (passwordHASH == user.PasswordHASH)
                 {
-                    ActiveUserService.Instance.Login(user, password);
+                    //ActiveUserService.Instance.Login(user, password);
                     return true;
                 }
             }
