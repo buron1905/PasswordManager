@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static Models.Validation.ModelsValidation;
+using static Models.Validation.ModelsValidationProperties;
 
 namespace Models
 {

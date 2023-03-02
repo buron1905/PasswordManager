@@ -1,6 +1,6 @@
 ﻿namespace Models.Validation
 {
-    public class ModelsValidation
+    public class ModelsValidationProperties
     {
         public const int MaxEmailLength = 256;
         public const int MaxPasswordNameLength = 256;
