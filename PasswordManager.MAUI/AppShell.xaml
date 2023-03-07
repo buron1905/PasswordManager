@@ -17,23 +17,19 @@
         <ShellContent ContentTemplate="{DataTemplate local:LoginPage}"/>
     </ShellItem>
 
-    <!--<TabBar>
+    <TabBar>
         <Tab Title="Vault">
             <Tab.Icon>
                 <FontImageSource FontFamily="FAS"
-                             Color="{AppThemeBinding 
-                    Dark={StaticResource TextColor}, 
-                    Light={StaticResource TextColorDark}}"
+                             Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                              Glyph="{x:Static fontAwesome:FontAwesomeIcons.List}"/>
             </Tab.Icon>
             <ShellContent Title="Vault" ContentTemplate="{DataTemplate local:PasswordsListPage}" Route="PasswordsListPage" />
         </Tab>
-        <Tab Title="Generate">
+        <!--<Tab Title="Generate">
             <Tab.Icon>
                 <FontImageSource FontFamily="FAS"
-                             Color="{AppThemeBinding 
-                    Dark={StaticResource TextColor}, 
-                    Light={StaticResource TextColorDark}}"
+                             Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                              Glyph="{x:Static fontAwesome:FontAwesomeIcons.RedoAlt}"/>
             </Tab.Icon>
             <ShellContent Title="Generate" ContentTemplate="{DataTemplate local:GeneratePasswordPage}" Route="GeneratePasswordPage" />
@@ -41,14 +37,12 @@
         <Tab Title="Settings">
             <Tab.Icon>
                 <FontImageSource FontFamily="FAS"
-                             Color="{AppThemeBinding 
-                    Dark={StaticResource TextColor}, 
-                    Light={StaticResource TextColorDark}}"
+                             Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                              Glyph="{x:Static fontAwesome:FontAwesomeIcons.Cogs}"/>
             </Tab.Icon>
             <ShellContent Title="Settingsss" ContentTemplate="{DataTemplate local:SettingsPage}" Route="SettingsPage"/>
-        </Tab>
-    </TabBar>-->
+        </Tab>-->
+    </TabBar>
 
 
 </Shell>

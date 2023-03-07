@@ -2,7 +2,6 @@
 using MvvmHelpers;
 using MvvmHelpers.Commands;
 using PasswordManager.MAUI.Helpers;
-using PasswordManager.MAUI.Services;
 using PasswordManager.MAUI.Views;
 using System.Windows.Input;
 
@@ -40,14 +39,15 @@ namespace PasswordManager.MAUI.ViewModels
             if (!ValidationHelper.IsFormValid(Model, Shell.Current.CurrentPage))
                 return;
 
-            if (await LoginService.Login(Model.EmailAddress, Model.Password))
-            {
-                //await Shell.Current.GoToAsync($"//{nameof(PasswordsListPage)}");
-            }
-            else
-            {
-                await PopupService.ShowError("Error", "Wrong credentials.");
-            }
+            await Shell.Current.GoToAsync($"//{nameof(PasswordsListPage)}");
+            //if (await LoginService.Login(Model.EmailAddress, Model.Password))
+            //{
+            //    await Shell.Current.GoToAsync($"//{nameof(PasswordsListPage)}");
+            //}
+            //else
+            //{
+            //    await PopupService.ShowError("Error", "Wrong credentials.");
+            //}
         }
 
     }

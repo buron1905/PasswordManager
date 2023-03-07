@@ -3,6 +3,7 @@ using MvvmHelpers;
 using MvvmHelpers.Commands;
 using PasswordManager.MAUI.Helpers;
 using PasswordManager.MAUI.Services;
+using PasswordManager.MAUI.Views;
 using System.Windows.Input;
 
 namespace PasswordManager.MAUI.ViewModels
@@ -50,7 +51,7 @@ namespace PasswordManager.MAUI.ViewModels
                 return;
             }
 
-            //await Shell.Current.GoToAsync($"//{nameof(PasswordsListPage)}");
+            await Shell.Current.GoToAsync($"//{nameof(PasswordsListPage)}");
         }
     }
 }
