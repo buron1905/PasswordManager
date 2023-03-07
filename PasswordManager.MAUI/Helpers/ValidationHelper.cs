@@ -25,7 +25,7 @@ namespace PasswordManager.MAUI.Helpers
             foreach (var propertyName in properties)
             {
                 var errorControlName =
-                $"{propertyName.Replace(".", "_")}{validationLabelSuffix}";
+                $"{propertyName}{validationLabelSuffix}";
                 var control = page.FindByName<Label>(errorControlName);
                 if (control != null)
                 {
@@ -40,8 +40,7 @@ namespace PasswordManager.MAUI.Helpers
             if (model == null) { return; }
             foreach (var error in errors)
             {
-                var memberName = $"{model.GetType().Name}_{error.MemberNames.FirstOrDefault()}";
-                memberName = memberName.Replace(".", "_");
+                var memberName = $"{error.MemberNames.FirstOrDefault()}";
                 var errorControlName = $"{memberName}{validationLabelSuffix}";
                 var control = page.FindByName<Label>(errorControlName);
                 if (control != null)
@@ -57,7 +56,7 @@ namespace PasswordManager.MAUI.Helpers
             var properties = GetValidatableProperties(model);
             foreach (var propertyInfo in properties)
             {
-                var errorControlName = $"{propertyInfo.DeclaringType.Name}.{propertyInfo.Name}";
+                var errorControlName = $"{propertyInfo.Name}";
                 validatableProperties.Add(errorControlName);
             }
             return validatableProperties;

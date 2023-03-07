@@ -20,19 +20,19 @@
                 Text="{Binding Model.EmailAddress}"
                 Placeholder="Email Address" 
                 Keyboard="Email"/>
-                <Label x:Name="LoginRequestDTO_EmailAddressError" 
+                <Label x:Name="EmailAddressError" 
         IsVisible="False" Style="{StaticResource LabelError}" />
                 <Label Text="Password:"/>
                 <controls:TogglePasswordEntry Placeholder="Password"
                                           Text="{Binding Model.Password}"
                                           HidePassword="True" Style="{StaticResource TogglePasswordBase}"/>
-                <Label x:Name="LoginRequestDTO_PasswordError" 
+                <Label x:Name="PasswordError" 
         IsVisible="False" Style="{StaticResource LabelError}" />
                 <Label Text="Confirm Password:"/>
                 <controls:TogglePasswordEntry Placeholder="Confirm Password"
                                           Text="{Binding Model.ConfirmPassword}"
                                           HidePassword="True" Style="{StaticResource TogglePasswordBase}"/>
-                <Label x:Name="RegisterRequestDTO_ConfirmPasswordError" 
+                <Label x:Name="ConfirmPasswordError" 
         IsVisible="False" Style="{StaticResource LabelError}" />
                 <Button 
                 Text="Register"

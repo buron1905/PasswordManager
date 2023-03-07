@@ -1,12 +1,14 @@
 ﻿using Models.DTOs;
+using MvvmHelpers;
 using MvvmHelpers.Commands;
+using PasswordManager.MAUI.Helpers;
 using PasswordManager.MAUI.Services;
 using PasswordManager.MAUI.Views;
 using System.Windows.Input;
 
 namespace PasswordManager.MAUI.ViewModels
 {
-    public class LoginViewModel : BaseWithValidationViewModel<LoginRequestDTO>
+    public class LoginViewModel : BaseViewModel
     {
         public ICommand LoginCommand { get; }
         public ICommand RegistrationCommand { get; }
@@ -21,6 +23,13 @@ namespace PasswordManager.MAUI.ViewModels
             Model = new LoginRequestDTO();
         }
 
+        LoginRequestDTO _loginRequestDTO;
+        public LoginRequestDTO Model
+        {
+            get => _loginRequestDTO;
+            set => SetProperty(ref _loginRequestDTO, value);
+        }
+
         private async Task Registration()
         {
             await Shell.Current.GoToAsync($"{nameof(RegistrationPage)}");
@@ -28,7 +37,7 @@ namespace PasswordManager.MAUI.ViewModels
 
         private async Task Login()
         {
-            if (!IsFormValid())
+            if (!ValidationHelper.IsFormValid(Model, Shell.Current.CurrentPage))
                 return;
 
             if (await LoginService.Login(Model.EmailAddress, Model.Password))

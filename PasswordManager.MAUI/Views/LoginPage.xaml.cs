@@ -11,7 +11,6 @@ namespace PasswordManager.MAUI.Views
             InitializeComponent();
 
             ViewModel = BindingContext as LoginViewModel;
-            ViewModel.Page = this;
         }
     }
 }
