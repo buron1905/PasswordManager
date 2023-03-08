@@ -19,3 +19,14 @@ div.navbarMargin {
   border-top-right-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
 }
+
+.fs-2-nonimportant {
+  font-size: calc(1.325rem + .9vw);
+}
+
+.vertical-center {
+  min-height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
