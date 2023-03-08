@@ -54,12 +54,12 @@ export class PasswordGeneratorComponent implements OnInit, OnDestroy, AfterViewI
     let newFontSize = parseFloat(originalFontSize);
     
     //while (textHeight > (containerHeight / 100 * 90) || textHeight < (containerHeight / 100 * 60)) {
-      if (textHeight > (containerHeight / 100 * 95)) {
-        newFontSize -= 5;
+      if (textHeight > (containerHeight / 100 * 98)) {
+        newFontSize -= 1;
         generatedTextElement.style.fontSize = `${newFontSize}px`;
       }
       else if (textHeight < (containerHeight / 100 * 50)) {
-        newFontSize += 5;
+        newFontSize += 1;
         generatedTextElement.style.fontSize = `${newFontSize}px`;
       }
       //textHeight = generatedTextElement.offsetHeight;
