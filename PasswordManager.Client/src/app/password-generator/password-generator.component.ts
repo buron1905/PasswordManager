@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ClipboardService } from 'ngx-clipboard';
 import { ToastrService } from 'ngx-toastr';
@@ -10,7 +10,7 @@ import { PasswordGeneratorService } from '../services/password-generator.service
   templateUrl: './password-generator.component.html',
   styleUrls: ['./password-generator.component.css']
 })
-export class PasswordGeneratorComponent implements OnInit {
+export class PasswordGeneratorComponent implements OnInit, OnDestroy, AfterViewInit {
   @Output() newPasswordEvent = new EventEmitter<string>();
 
   generatorForm: FormGroup;
@@ -18,6 +18,8 @@ export class PasswordGeneratorComponent implements OnInit {
   loading = false;
 
   generatedPassword: string = "";
+
+  private resizeObserver: ResizeObserver;
 
   constructor(private fb: FormBuilder, private toastrService: ToastrService, private passwordGeneratorService: PasswordGeneratorService, private clipboardService: ClipboardService) {
     this.generatorForm = this.fb.group({
@@ -27,11 +29,41 @@ export class PasswordGeneratorComponent implements OnInit {
       useUppercase: [true, [Validators.nullValidator]],
       useLowercase: [true, [Validators.nullValidator]],
     });
+
+    this.resizeObserver = new ResizeObserver(this.scaleFont);
   }
 
   ngOnInit(): void {
     this.onChanges();
     this.generate();
+  }
+
+  ngAfterViewInit(): void {
+    this.resizeObserver.observe(document.getElementById("generatedText"));
+  }
+
+  ngOnDestroy(): void {
+    this.resizeObserver.unobserve(document.getElementById("generatedTextContainer"));
+  }
+
+  scaleFont(): void {
+    let generatedTextElement = document.getElementById("generatedText");
+    let originalFontSize = parseFloat(window.getComputedStyle(generatedTextElement).getPropertyValue("font-size")).toFixed(0);
+    let textHeight = generatedTextElement.offsetHeight;
+    let containerHeight = document.getElementById("generatedTextContainer").offsetHeight;
+    let newFontSize = parseFloat(originalFontSize);
+    
+    //while (textHeight > (containerHeight / 100 * 90) || textHeight < (containerHeight / 100 * 60)) {
+      if (textHeight > (containerHeight / 100 * 95)) {
+        newFontSize -= 5;
+        generatedTextElement.style.fontSize = `${newFontSize}px`;
+      }
+      else if (textHeight < (containerHeight / 100 * 50)) {
+        newFontSize += 5;
+        generatedTextElement.style.fontSize = `${newFontSize}px`;
+      }
+      //textHeight = generatedTextElement.offsetHeight;
+    //}
   }
 
   generate(): void {
