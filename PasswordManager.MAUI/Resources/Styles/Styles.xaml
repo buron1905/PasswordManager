@@ -392,6 +392,10 @@
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
     </Style>
 
+    <Style x:Key="LabelMicro" TargetType="Label" BasedOn="{StaticResource LabelBase}">
+        <Setter Property="FontSize" Value="Micro"/>
+    </Style>
+
     <Style x:Key="LabelSmall" TargetType="Label" BasedOn="{StaticResource LabelBase}">
         <Setter Property="FontSize" Value="Small"/>
     </Style>

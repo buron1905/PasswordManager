@@ -25,7 +25,7 @@
                 <Label Text="Password" />
                 <controls:TogglePasswordEntry Placeholder="Password"
                                           Text="{Binding Model.Password}"
-                                          HidePassword="True" Style="{StaticResource TogglePasswordBase}"/>
+                                          HidePassword="True"/>
                 <Label x:Name="PasswordError" 
         IsVisible="False" Style="{StaticResource LabelError}" />
                 <Button 

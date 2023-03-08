@@ -19,7 +19,7 @@ namespace PasswordManager.MAUI.Views
             await ViewModel.RefreshPasswords();
         }
 
-        private void searchBar_TextChanged(object sender, TextChangedEventArgs e)
+        private void SearchBar_TextChanged(object sender, TextChangedEventArgs e)
         {
             ViewModel.PerformSearchCommand.Execute(e.NewTextValue);
         }

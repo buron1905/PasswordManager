@@ -24,14 +24,12 @@
         IsVisible="False" Style="{StaticResource LabelError}" />
                 <Label Text="Password:"/>
                 <controls:TogglePasswordEntry Placeholder="Password"
-                                          Text="{Binding Model.Password}"
-                                          HidePassword="True" Style="{StaticResource TogglePasswordBase}"/>
+                                          Text="{Binding Model.Password}"/>
                 <Label x:Name="PasswordError" 
         IsVisible="False" Style="{StaticResource LabelError}" />
                 <Label Text="Confirm Password:"/>
                 <controls:TogglePasswordEntry Placeholder="Confirm Password"
-                                          Text="{Binding Model.ConfirmPassword}"
-                                          HidePassword="True" Style="{StaticResource TogglePasswordBase}"/>
+                                          Text="{Binding Model.ConfirmPassword}"/>
                 <Label x:Name="ConfirmPasswordError" 
         IsVisible="False" Style="{StaticResource LabelError}" />
                 <Button 
