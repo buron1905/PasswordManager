@@ -1,4 +1,6 @@
-﻿namespace PasswordManager.MAUI.Services
+﻿using CommunityToolkit.Maui.Alerts;
+
+namespace PasswordManager.MAUI.Services
 {
     public class PopupService
     {
@@ -28,6 +30,16 @@
         {
             return await Application.Current.MainPage.DisplayPromptAsync(title, message, accept, cancel, placeholder, maxLength, keyboard, initialValue);
             //return await Application.Current.MainPage.DisplayPromptAsync("Question 2", "What's 5 + 5?", initialValue: "10", maxLength: 2, keyboard: Keyboard.Numeric);
+        }
+
+        public static async Task ShowToast(string text)
+        {
+            await Toast.Make(text, CommunityToolkit.Maui.Core.ToastDuration.Short).Show();
+        }
+
+        public static async Task ShowSnackbar(string text, IView? anchor = null)
+        {
+            await Snackbar.Make(text, anchor: anchor).Show();
         }
     }
 }

@@ -3,75 +3,33 @@
     x:Class="PasswordManager.MAUI.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:PasswordManager.MAUI.Views"
     xmlns:fontAwesome="clr-namespace:FontAwesome"
-    Title="Password manager"
-    Shell.FlyoutBehavior="Disabled">
+    xmlns:views="clr-namespace:PasswordManager.MAUI.Views"
+    xmlns:viewmodels="clr-namespace:PasswordManager.MAUI.ViewModels"
+    x:DataType="viewmodels:AppShellViewModel"
+    Shell.TabBarIsVisible="False"
+    Title="{Binding Title}">
+    <!--Shell.FlyoutBehavior="Disabled"-->
+    
+    <Shell.FlyoutFooter>
+        <StackLayout Padding="20">
+            <Button Text="Logout" Command="{Binding LogoutCommand}" />
+        </StackLayout>
+    </Shell.FlyoutFooter>
 
-    <Shell.Resources>
-        <ResourceDictionary>
-        </ResourceDictionary>
-    </Shell.Resources>
-
-    <ShellItem Route="LoginPage" FlyoutItemIsVisible="False">
-        <ShellContent ContentTemplate="{DataTemplate local:LoginPage}"/>
-    </ShellItem>
+    <ShellContent Title="Loading" Route="LoadingPage" ContentTemplate="{DataTemplate views:LoadingPage}" Shell.FlyoutBehavior="Disabled"/>
+    <ShellContent Title="Login" Route="LoginPage" ContentTemplate="{DataTemplate views:LoginPage}" Shell.FlyoutBehavior="Disabled"/>
+    <ShellContent Title="Register" Route="RegistrationPage" ContentTemplate="{DataTemplate views:RegistrationPage}" Shell.FlyoutBehavior="Disabled"/>
 
     <TabBar>
-        <Tab Title="Vault">
+        <Tab Title="Passwords">
             <Tab.Icon>
                 <FontImageSource FontFamily="FAS"
                              Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                              Glyph="{x:Static fontAwesome:FontAwesomeIcons.List}"/>
             </Tab.Icon>
-            <ShellContent Title="Vault" ContentTemplate="{DataTemplate local:PasswordsListPage}" Route="PasswordsListPage" />
+            <ShellContent Title="Passwords" Route="PasswordsListPage" ContentTemplate="{DataTemplate views:PasswordsListPage}" />
         </Tab>
-        <!--<Tab Title="Generate">
-            <Tab.Icon>
-                <FontImageSource FontFamily="FAS"
-                             Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
-                             Glyph="{x:Static fontAwesome:FontAwesomeIcons.RedoAlt}"/>
-            </Tab.Icon>
-            <ShellContent Title="Generate" ContentTemplate="{DataTemplate local:GeneratePasswordPage}" Route="GeneratePasswordPage" />
-        </Tab>
-        <Tab Title="Settings">
-            <Tab.Icon>
-                <FontImageSource FontFamily="FAS"
-                             Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
-                             Glyph="{x:Static fontAwesome:FontAwesomeIcons.Cogs}"/>
-            </Tab.Icon>
-            <ShellContent Title="Settingsss" ContentTemplate="{DataTemplate local:SettingsPage}" Route="SettingsPage"/>
-        </Tab>-->
     </TabBar>
 
-
 </Shell>
-
-
-
-
-
-<!--Shell...
-    
-    FlyoutBackgroundColor="{AppThemeBinding 
-                Dark={StaticResource SystemOrangeDark}, 
-                Light={StaticResource SystemOrange}}"
-    Shell.BackgroundColor="{AppThemeBinding 
-                Dark={StaticResource SystemOrangeDark}, 
-                Light={StaticResource SystemOrange}}"
-    Shell.TitleColor="{AppThemeBinding 
-                Dark={StaticResource TextColor}, 
-                Light={StaticResource TextColorDark}}"
-    Shell.ForegroundColor="{AppThemeBinding 
-                Dark={StaticResource TextColor}, 
-                Light={StaticResource TextColorDark}}"
-    Shell.DisabledColor="{StaticResource SystemGray}"
-    Shell.TabBarBackgroundColor="{AppThemeBinding 
-                Dark={StaticResource SystemOrangeDark}, 
-                Light={StaticResource SystemOrange}}"
-    Shell.TabBarTitleColor="{AppThemeBinding 
-                Dark={StaticResource TextColor}, 
-                Light={StaticResource TextColorDark}}"
-    Shell.TabBarUnselectedColor="{StaticResource SystemGray2Dark}"
-    >
--->

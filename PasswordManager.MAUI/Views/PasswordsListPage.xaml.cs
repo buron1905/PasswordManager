@@ -6,22 +6,19 @@ namespace PasswordManager.MAUI.Views
     {
         public PasswordsListViewModel ViewModel { get; set; }
 
-        public PasswordsListPage()
+        public PasswordsListPage(PasswordsListViewModel viewModel)
         {
             InitializeComponent();
 
-            ViewModel = BindingContext as PasswordsListViewModel;
+            ViewModel = viewModel;
+            BindingContext = ViewModel;
         }
 
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            await ViewModel.RefreshPasswords();
-        }
-
-        private void SearchBar_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            ViewModel.PerformSearchCommand.Execute(e.NewTextValue);
+            //await ViewModel.RefreshPasswords();
+            await ViewModel.RefreshCommand.ExecuteAsync(null);
         }
     }
 }

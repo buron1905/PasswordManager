@@ -5,13 +5,7 @@
              xmlns:controls="clr-namespace:PasswordManager.MAUI.Views.Controls"
              x:Class="PasswordManager.MAUI.Views.LoginPage"
              x:DataType="viewmodels:LoginViewModel"
-             Shell.FlyoutBehavior="Disabled"
-             Shell.NavBarIsVisible="True"
              Title="{Binding Title}">
-    <ContentPage.BindingContext>
-        <viewmodels:LoginViewModel/>
-    </ContentPage.BindingContext>
-
     <ContentPage.Content>
         <ScrollView>
             <StackLayout Padding="20">
@@ -29,11 +23,13 @@
                 <Label x:Name="PasswordError" 
         IsVisible="False" Style="{StaticResource LabelError}" />
                 <Button 
+                x:Name="submit"
                 Text="Login"
+                IsEnabled="{Binding IsNotBusy}"
                 Command="{Binding LoginCommand}"/>
                 <Label Text="Registration" Style="{StaticResource LabelLink}">
                     <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding RegistrationCommand}" />
+                        <TapGestureRecognizer Command="{Binding GoToRegisterCommand}" />
                     </Label.GestureRecognizers>
                 </Label>
             </StackLayout>

@@ -1,4 +1,7 @@
-﻿namespace PasswordManager.MAUI
+﻿using CommunityToolkit.Maui;
+using PasswordManager.MAUI.Extensions;
+
+namespace PasswordManager.MAUI
 {
     public static class MauiProgram
     {
@@ -7,6 +10,7 @@
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -17,6 +21,11 @@
                 });
 
             //DatabaseService.Init();
+
+            builder
+                .RegisterAppServices()
+                .RegisterViewModels()
+                .RegisterViews();
 
             return builder.Build();
         }

@@ -1,41 +1,32 @@
-﻿using Models.DTOs;
-using MvvmHelpers;
-using MvvmHelpers.Commands;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Models.DTOs;
 using PasswordManager.MAUI.Helpers;
 using PasswordManager.MAUI.Services;
 using PasswordManager.MAUI.Views;
-using System.Windows.Input;
 
 namespace PasswordManager.MAUI.ViewModels
 {
-    public class RegistrationViewModel : BaseViewModel
+    public partial class RegistrationViewModel : BaseViewModel
     {
-        public ICommand RegisterCommand { get; }
-        public ICommand LoginCommand { get; }
+        #region Properties
+
+        [ObservableProperty]
+        RegisterRequestDTO _model;
+
+        #endregion
 
         public RegistrationViewModel()
         {
-            Title = "Registration";
-
-            RegisterCommand = new AsyncCommand(Register);
-            LoginCommand = new AsyncCommand(Login);
+            Title = "Register";
 
             Model = new RegisterRequestDTO();
         }
 
-        RegisterRequestDTO _registerRequestDTO;
-        public RegisterRequestDTO Model
-        {
-            get => _registerRequestDTO;
-            set => SetProperty(ref _registerRequestDTO, value);
-        }
+        #region Commands
 
-        private async Task Login()
-        {
-            await Shell.Current.GoToAsync("..", true);
-        }
-
-        private async Task Register()
+        [RelayCommand]
+        async Task Register()
         {
             if (!ValidationHelper.IsFormValid(Model, Shell.Current.CurrentPage))
                 return;
@@ -44,14 +35,24 @@ namespace PasswordManager.MAUI.ViewModels
             {
                 //await DatabaseService.AddUser(newUser);
                 //ActiveUserService.Instance.Login(newUser, Model.Password);
+                //throw new Exception("Email is already used by another user.");
             }
             catch (Exception ex)
             {
-                await PopupService.ShowError("Error", $"{ex.Message}");
+                await PopupService.ShowSnackbar(ex.Message);
                 return;
             }
 
-            await Shell.Current.GoToAsync($"//{nameof(PasswordsListPage)}");
+            await PopupService.ShowToast("Successfully registered");
+            await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
         }
+
+        [RelayCommand]
+        private async Task GoToLogin()
+        {
+            await Shell.Current.GoToAsync($"///{nameof(LoginPage)}", true);
+        }
+
+        #endregion
     }
 }

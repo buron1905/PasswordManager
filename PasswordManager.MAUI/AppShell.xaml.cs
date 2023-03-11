@@ -1,4 +1,5 @@
-﻿using PasswordManager.MAUI.Views;
+﻿using PasswordManager.MAUI.ViewModels;
+using PasswordManager.MAUI.Views;
 
 namespace PasswordManager.MAUI
 {
@@ -7,6 +8,11 @@ namespace PasswordManager.MAUI
         public AppShell()
         {
             InitializeComponent();
+
+            BindingContext = new AppShellViewModel();
+
+            Routing.RegisterRoute(nameof(LoadingPage),
+                    typeof(LoadingPage));
 
             Routing.RegisterRoute(nameof(LoginPage),
                     typeof(LoginPage));

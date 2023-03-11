@@ -1,62 +1,96 @@
-﻿using Models.DTOs;
-using MvvmHelpers;
-using MvvmHelpers.Commands;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Models.DTOs;
 using PasswordManager.MAUI.Services;
-using PasswordManager.MAUI.Views;
-using System.Windows.Input;
-using Command = MvvmHelpers.Commands.Command;
+using System.Collections.ObjectModel;
 
 namespace PasswordManager.MAUI.ViewModels
 {
-    public class PasswordsListViewModel : BaseViewModel
+    public partial class PasswordsListViewModel : BaseViewModel
     {
-        public List<PasswordDTO> AllPasswords { get; set; }
-        public ObservableRangeCollection<PasswordDTO> FilteredPasswords { get; set; }
+        #region Properties
 
-        public ICommand LogoutCommand { get; }
-        public ICommand RefreshCommand { get; }
-        public ICommand NewPasswordCommand { get; }
-        public ICommand EditCommand { get; }
-        public ICommand DeleteCommand { get; }
-        public ICommand PerformSearchCommand { get; }
+        List<PasswordDTO> AllPasswords { get; set; }
+        public ObservableCollection<PasswordDTO> FilteredPasswords { get; set; }
+
+        [ObservableProperty]
+        string _searchText;
+
+        [ObservableProperty]
+        bool _isRefreshing;
+
+        #endregion
 
         public PasswordsListViewModel()
         {
             Title = "Passwords";
 
-            AllPasswords = new List<PasswordDTO>();
-            FilteredPasswords = new ObservableRangeCollection<PasswordDTO>();
-
-            LogoutCommand = new AsyncCommand(Logout);
-            RefreshCommand = new AsyncCommand(Refresh);
-            NewPasswordCommand = new AsyncCommand(NewPassword);
-            EditCommand = new AsyncCommand<PasswordDTO>(Edit);
-            DeleteCommand = new AsyncCommand<PasswordDTO>(Delete);
-
-            PerformSearchCommand = new Command(PerformSearch);
-            //PerformSearchCommand = new MvvmHelpers.Commands.Command<string>(PerformSearch);
+            AllPasswords = new();
+            FilteredPasswords = new();
         }
 
-        string _searchText;
-        public string SearchText
-        {
-            get => _searchText;
-            set => SetProperty(ref _searchText, value);
-        }
+        #region Commands
 
-        private async Task Logout()
-        {
-            ActiveUserService.Instance.Logout();
-
-            await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
-        }
-
-        private async Task Refresh()
+        [RelayCommand]
+        async Task Refresh()
         {
             IsBusy = true;
+            IsRefreshing = true;
             await RefreshPasswords();
+            IsRefreshing = false;
             IsBusy = false;
         }
+
+        [RelayCommand]
+        async Task GoToNewPassword()
+        {
+            //await Shell.Current.GoToAsync($"{nameof(NewPasswordPage)}");
+        }
+
+        [RelayCommand]
+        async Task Delete(PasswordDTO password)
+        {
+            if (password is null) return;
+
+            if (await PopupService.ShowYesNo($"{password.PasswordName}", $"Are you sure you want to delete this password?"))
+            {
+                //await DatabaseService.RemovePassword(password.Id);
+                AllPasswords.Remove(password);
+                FilteredPasswords.Remove(password);
+            }
+        }
+
+        [RelayCommand]
+        async Task GoToEdit(PasswordDTO password)
+        {
+            if (password is null) return;
+
+            //await Shell.Current.GoToAsync(nameof(PasswordEditPage), true, new Dictionary<string, object>
+            //{
+            //    { "password", password }
+            //});
+        }
+
+        [RelayCommand]
+        void PerformSearch()
+        {
+            var searchText = SearchText ?? string.Empty;
+            searchText = searchText.Trim().ToLowerInvariant();
+
+            var filteredList = AllPasswords.Where(x =>
+                x.PasswordName.Trim().ToLowerInvariant().Contains(searchText)
+                || x.UserName.Trim().ToLowerInvariant().Contains(searchText)
+                ).OrderBy(x => x.PasswordName).ThenBy(x => x.UserName).ToList();
+
+            FilteredPasswords.Clear();
+
+            foreach (var password in filteredList)
+                FilteredPasswords.Add(password);
+        }
+
+        #endregion
+
+        #region Methods
 
         public async Task RefreshPasswords()
         {
@@ -126,42 +160,6 @@ namespace PasswordManager.MAUI.ViewModels
             PerformSearch();
         }
 
-        private async Task NewPassword()
-        {
-            //await Shell.Current.GoToAsync($"{nameof(NewPasswordPage)}");
-        }
-
-        private async Task Delete(PasswordDTO password)
-        {
-            if (password is null)
-                return;
-
-            if (await PopupService.ShowYesNo($"{password.PasswordName}", $"Are you sure you want to delete this password?"))
-            {
-                //await DatabaseService.RemovePassword(password.Id);
-                AllPasswords.Remove(password);
-                FilteredPasswords.Remove(password);
-            }
-        }
-
-        private async Task Edit(PasswordDTO password)
-        {
-            //await Shell.Current.GoToAsync($"{nameof(PasswordDetailPage)}?PasswordId={password.Id}");
-        }
-
-        private void PerformSearch()
-        {
-            var searchText = SearchText ?? string.Empty;
-            searchText = searchText.Trim().ToLowerInvariant();
-
-            var filteredList = AllPasswords.Where(x =>
-                x.PasswordName.Trim().ToLowerInvariant().Contains(searchText)
-                || x.UserName.Trim().ToLowerInvariant().Contains(searchText)
-                ).OrderBy(x => x.PasswordName).ThenBy(x => x.UserName).ToList();
-
-            FilteredPasswords.Clear();
-            FilteredPasswords.AddRange(filteredList);
-
-        }
+        #endregion
     }
 }

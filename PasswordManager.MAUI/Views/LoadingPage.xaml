@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:PasswordManager.MAUI.ViewModels"
+             xmlns:toolkit="clr-namespace:CommunityToolkit.Maui.Behaviors;assembly=CommunityToolkit.Maui"
+             x:Class="PasswordManager.MAUI.Views.LoadingPage"
+             x:DataType="viewmodels:LoadingViewModel"
+             Title="{Binding Title}">
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="{StaticResource Tertiary}"/>
+    </ContentPage.Behaviors>
+    <StackLayout>
+        <ActivityIndicator IsRunning="True" HeightRequest="50" WidthRequest="50" HorizontalOptions="Center" VerticalOptions="Center" />
+        <Label Text="Loading..." HorizontalOptions="Center" />
+    </StackLayout>
+</ContentPage>

@@ -4,13 +4,12 @@ namespace PasswordManager.MAUI.Views
 {
     public partial class LoginPage : ContentPage
     {
-        public LoginViewModel ViewModel { get; set; }
 
-        public LoginPage()
+        public LoginPage(LoginViewModel viewModel)
         {
             InitializeComponent();
 
-            ViewModel = BindingContext as LoginViewModel;
+            BindingContext = viewModel;
         }
     }
 }
