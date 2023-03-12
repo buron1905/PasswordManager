@@ -25,12 +25,13 @@ namespace PasswordManager.MAUI.Extensions
         public static MauiAppBuilder RegisterViewModels(this MauiAppBuilder builder)
         {
             //Singleton
+            builder.Services.AddSingleton<LoadingViewModel>();
             builder.Services.AddSingleton<LoginViewModel>();
             builder.Services.AddSingleton<RegistrationViewModel>();
             builder.Services.AddSingleton<PasswordsListViewModel>();
+            builder.Services.AddSingleton<GeneratePasswordViewModel>();
 
             // Transient
-            builder.Services.AddTransient<LoadingViewModel>();
 
             return builder;
         }
@@ -38,12 +39,13 @@ namespace PasswordManager.MAUI.Extensions
         public static MauiAppBuilder RegisterViews(this MauiAppBuilder builder)
         {
             //Singleton
+            builder.Services.AddSingleton<LoadingPage>();
             builder.Services.AddSingleton<LoginPage>();
             builder.Services.AddSingleton<RegistrationPage>();
             builder.Services.AddSingleton<PasswordsListPage>();
+            builder.Services.AddSingleton<GeneratePasswordPage>();
 
             // Transient
-            builder.Services.AddTransient<LoadingPage>();
 
             return builder;
         }

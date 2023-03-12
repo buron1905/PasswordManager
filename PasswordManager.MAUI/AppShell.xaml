@@ -39,7 +39,7 @@
                              Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                              Glyph="{x:Static fontAwesome:FontAwesomeIcons.RedoAlt}"/>
             </Tab.Icon>
-            <ShellContent Title="Generator" Route="PasswordsListPage" ContentTemplate="{DataTemplate views:PasswordsListPage}" />
+            <ShellContent Title="Generator" Route="GeneratePasswordPage" ContentTemplate="{DataTemplate views:GeneratePasswordPage}" />
         </Tab>
     </FlyoutItem>
             <ShellContent Title="Settings">

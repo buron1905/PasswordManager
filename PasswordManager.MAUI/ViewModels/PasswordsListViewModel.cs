@@ -35,7 +35,6 @@ namespace PasswordManager.MAUI.ViewModels
         async Task Refresh()
         {
             IsBusy = true;
-            IsRefreshing = true;
             await RefreshPasswords();
             IsRefreshing = false;
             IsBusy = false;
@@ -92,7 +91,7 @@ namespace PasswordManager.MAUI.ViewModels
 
         #region Methods
 
-        public async Task RefreshPasswords()
+        async Task RefreshPasswords()
         {
             AllPasswords.Clear();
             Thread.Sleep(1000);
