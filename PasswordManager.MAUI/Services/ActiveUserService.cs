@@ -1,4 +1,5 @@
 ﻿using Models.DTOs;
+using PasswordManager.MAUI.ViewModels;
 
 namespace PasswordManager.MAUI.Services
 {
@@ -38,12 +39,15 @@ namespace PasswordManager.MAUI.Services
         {
             UserDTO = user;
             Password = password;
+            AppShellViewModel.FlyoutHeaderRefresh();
         }
 
         public void Logout()
         {
             UserDTO = null;
             Password = null;
+            SecureStorage.Remove("token");
+            AppShellViewModel.FlyoutHeaderRefresh();
         }
 
     }

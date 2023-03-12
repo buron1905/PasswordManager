@@ -6,22 +6,25 @@
     xmlns:fontAwesome="clr-namespace:FontAwesome"
     xmlns:views="clr-namespace:PasswordManager.MAUI.Views"
     xmlns:viewmodels="clr-namespace:PasswordManager.MAUI.ViewModels"
+    xmlns:controls="clr-namespace:PasswordManager.MAUI.Views.Controls"
     x:DataType="viewmodels:AppShellViewModel"
-    Shell.TabBarIsVisible="False"
     Title="{Binding Title}">
-    <!--Shell.FlyoutBehavior="Disabled"-->
-    
+
+    <Shell.FlyoutHeader>
+        <controls:FlyoutHeader/>
+    </Shell.FlyoutHeader>
+
     <Shell.FlyoutFooter>
         <StackLayout Padding="20">
             <Button Text="Logout" Command="{Binding LogoutCommand}" />
         </StackLayout>
     </Shell.FlyoutFooter>
 
-    <ShellContent Title="Loading" Route="LoadingPage" ContentTemplate="{DataTemplate views:LoadingPage}" Shell.FlyoutBehavior="Disabled"/>
-    <ShellContent Title="Login" Route="LoginPage" ContentTemplate="{DataTemplate views:LoginPage}" Shell.FlyoutBehavior="Disabled"/>
-    <ShellContent Title="Register" Route="RegistrationPage" ContentTemplate="{DataTemplate views:RegistrationPage}" Shell.FlyoutBehavior="Disabled"/>
+    <ShellContent Title="Loading" Route="LoadingPage" ContentTemplate="{DataTemplate views:LoadingPage}" Shell.FlyoutBehavior="Disabled" Shell.FlyoutItemIsVisible="False" Shell.NavBarIsVisible="False"/>
+    <ShellContent Title="Login" Route="LoginPage" ContentTemplate="{DataTemplate views:LoginPage}" Shell.FlyoutBehavior="Disabled" Shell.FlyoutItemIsVisible="False" Shell.NavBarIsVisible="False"/>
+    <ShellContent Title="Register" Route="RegistrationPage" ContentTemplate="{DataTemplate views:RegistrationPage}" Shell.FlyoutBehavior="Disabled" Shell.FlyoutItemIsVisible="False" Shell.NavBarIsVisible="False"/>
 
-    <TabBar>
+    <FlyoutItem Route="Home" FlyoutDisplayOptions="AsMultipleItems">
         <Tab Title="Passwords">
             <Tab.Icon>
                 <FontImageSource FontFamily="FAS"
@@ -30,6 +33,28 @@
             </Tab.Icon>
             <ShellContent Title="Passwords" Route="PasswordsListPage" ContentTemplate="{DataTemplate views:PasswordsListPage}" />
         </Tab>
-    </TabBar>
+        <Tab Title="Generator">
+            <Tab.Icon>
+                <FontImageSource FontFamily="FAS"
+                             Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                             Glyph="{x:Static fontAwesome:FontAwesomeIcons.RedoAlt}"/>
+            </Tab.Icon>
+            <ShellContent Title="Generator" Route="PasswordsListPage" ContentTemplate="{DataTemplate views:PasswordsListPage}" />
+        </Tab>
+    </FlyoutItem>
+            <ShellContent Title="Settings">
+                <ShellContent.Icon>
+                    <FontImageSource FontFamily="FAS"
+                             Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                             Glyph="{x:Static fontAwesome:FontAwesomeIcons.Cogs}"/>
+                </ShellContent.Icon>
+            </ShellContent>
+            <MenuItem Text="About">
+                <MenuItem.IconImageSource>
+                    <FontImageSource FontFamily="FAS"
+                             Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                             Glyph="{x:Static fontAwesome:FontAwesomeIcons.Question}"/>
+                </MenuItem.IconImageSource>
+            </MenuItem>
 
 </Shell>

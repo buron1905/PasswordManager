@@ -17,7 +17,6 @@ namespace PasswordManager.MAUI.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            //await ViewModel.RefreshPasswords();
             await ViewModel.RefreshCommand.ExecuteAsync(null);
         }
     }

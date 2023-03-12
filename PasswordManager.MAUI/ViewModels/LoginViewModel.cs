@@ -33,7 +33,9 @@ namespace PasswordManager.MAUI.ViewModels
 
             if (await LoginService.Login(Model.EmailAddress, Model.Password))
             {
-                await Shell.Current.GoToAsync($"//{nameof(PasswordsListPage)}", true);
+
+                await Shell.Current.GoToAsync($"//Home", true);
+                Model.Password = string.Empty;
             }
             else
             {

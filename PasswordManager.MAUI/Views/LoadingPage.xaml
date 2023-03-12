@@ -9,7 +9,7 @@
     <ContentPage.Behaviors>
         <toolkit:StatusBarBehavior StatusBarColor="{StaticResource Tertiary}"/>
     </ContentPage.Behaviors>
-    <StackLayout>
+    <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
         <ActivityIndicator IsRunning="True" HeightRequest="50" WidthRequest="50" HorizontalOptions="Center" VerticalOptions="Center" />
         <Label Text="Loading..." HorizontalOptions="Center" />
     </StackLayout>
