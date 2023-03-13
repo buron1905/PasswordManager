@@ -5,8 +5,15 @@ using System.Linq.Expressions;
 
 namespace PasswordManager.MAUI.Services
 {
-    public class PasswordService : IPasswordService
+    public class MauiPasswordService : MauiBaseDataService, IPasswordService
     {
+        readonly IPasswordService _offlinePasswordService;
+
+        public MauiPasswordService(HttpClient httpClient, IConnectivity connectivity, IPasswordService offlinePasswordService) : base(httpClient, connectivity)
+        {
+            _offlinePasswordService = offlinePasswordService;
+        }
+
         public Task<bool> AnyAsync(Expression<Func<Password, bool>> expression)
         {
             throw new NotImplementedException();
