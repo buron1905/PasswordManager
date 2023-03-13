@@ -32,7 +32,6 @@ namespace PasswordManager.MAUI.ViewModels
         async Task Refresh()
         {
             IsBusy = true;
-            await Task.Delay(2000);
             await RefreshPasswords();
             IsBusy = false;
             IsRefreshing = false;
@@ -41,7 +40,7 @@ namespace PasswordManager.MAUI.ViewModels
         [RelayCommand]
         async Task GoToNewPassword()
         {
-            //await Shell.Current.GoToAsync($"{nameof(NewPasswordPage)}");
+            //await Shell.Current.GoToAsync($"{nameof(AddEditPasswordPage)}");
         }
 
         [RelayCommand]
