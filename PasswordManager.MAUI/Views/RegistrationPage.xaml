@@ -13,19 +13,19 @@
                 <Label Text="Email:"/>
                 <Entry
                     x:Name="email"
-                Text="{Binding Model.EmailAddress}"
+                Text="{Binding EmailAddress}"
                 Placeholder="Email Address" 
                 Keyboard="Email"/>
                 <Label x:Name="EmailAddressError" 
         IsVisible="False" Style="{StaticResource LabelError}" />
                 <Label Text="Password:"/>
                 <controls:TogglePasswordEntry Placeholder="Password"
-                                          Text="{Binding Model.Password}"/>
+                                          Text="{Binding Password}"/>
                 <Label x:Name="PasswordError" 
         IsVisible="False" Style="{StaticResource LabelError}" />
                 <Label Text="Confirm Password:"/>
                 <controls:TogglePasswordEntry Placeholder="Confirm Password"
-                                          Text="{Binding Model.ConfirmPassword}"/>
+                                          Text="{Binding ConfirmPassword}"/>
                 <Label x:Name="ConfirmPasswordError" 
         IsVisible="False" Style="{StaticResource LabelError}" />
                 <Button 

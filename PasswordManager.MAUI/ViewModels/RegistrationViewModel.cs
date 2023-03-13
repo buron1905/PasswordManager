@@ -12,15 +12,19 @@ namespace PasswordManager.MAUI.ViewModels
         #region Properties
 
         [ObservableProperty]
-        RegisterRequestDTO _model;
+        string _emailAddress;
+
+        [ObservableProperty]
+        string _password;
+
+        [ObservableProperty]
+        string _confirmPassword;
 
         #endregion
 
         public RegistrationViewModel()
         {
             Title = "Register";
-
-            Model = new RegisterRequestDTO();
         }
 
         #region Commands
@@ -28,7 +32,9 @@ namespace PasswordManager.MAUI.ViewModels
         [RelayCommand]
         async Task Register()
         {
-            if (!ValidationHelper.IsFormValid(Model, Shell.Current.CurrentPage))
+            var model = new RegisterRequestDTO() { EmailAddress = EmailAddress, Password = Password, ConfirmPassword = ConfirmPassword };
+
+            if (!ValidationHelper.IsFormValid(model, Shell.Current.CurrentPage))
                 return;
 
             IsBusy = true;
@@ -41,6 +47,8 @@ namespace PasswordManager.MAUI.ViewModels
 
                 await PopupService.ShowToast("Successfully registered");
                 await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
+
+                EmailAddress = Password = ConfirmPassword = string.Empty;
             }
             catch (Exception ex)
             {

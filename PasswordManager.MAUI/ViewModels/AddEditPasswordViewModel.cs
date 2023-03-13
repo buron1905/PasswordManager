@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Models.DTOs;
+using PasswordManager.MAUI.Helpers;
 using PasswordManager.MAUI.Services;
 using PasswordManager.MAUI.Views;
 
@@ -12,10 +13,13 @@ namespace PasswordManager.MAUI.ViewModels
         #region Properties
 
         [ObservableProperty]
-        PasswordDTO _passwordOriginal = new();
+        bool _isRefreshing;
 
         [ObservableProperty]
-        bool _isRefreshing;
+        bool _canRefresh;
+
+        [ObservableProperty]
+        PasswordDTO _passwordOriginal = new();
 
         [ObservableProperty]
         string _passwordName;
@@ -27,13 +31,20 @@ namespace PasswordManager.MAUI.ViewModels
         string _password;
 
         [ObservableProperty]
-        string _description;
+        string _URL;
+
+        [ObservableProperty]
+        string _notes;
+
+        [ObservableProperty]
+        bool _favorite;
 
         #endregion
 
         public AddEditPasswordViewModel()
         {
             Title = "New password";
+            CanRefresh = false;
         }
 
         #region Commands
@@ -44,12 +55,25 @@ namespace PasswordManager.MAUI.ViewModels
             IsBusy = true;
 
             //int.TryParse(PasswordId, out var parsedId);
-            //PasswordOriginal = await DatabaseService.GetPassword(parsedId);
+            //PasswordOriginal = await DatabaseService.GetPassword(Password.Id);
 
             //PasswordName = PasswordOriginal.PasswordName;
             //UserName = PasswordOriginal.UserName;
             //Password = PasswordOriginal.PasswordDecrypted;
             //Description = PasswordOriginal.Notes;
+            //TODO get new data
+
+            if (!PropertiesAreSameAsInOriginalPassword())
+            {
+                if (!await PopupService.ShowYesNo("Refreshing will discard your changes!", "Unsaved changes will be lost. Do you still want to leave?"))
+                {
+                    IsBusy = false;
+                    IsRefreshing = false;
+                    return;
+                }
+            }
+
+            SetProperties(PasswordOriginal);
 
             IsBusy = false;
             IsRefreshing = false;
@@ -58,24 +82,23 @@ namespace PasswordManager.MAUI.ViewModels
         [RelayCommand]
         async Task Save()
         {
-            if (string.IsNullOrWhiteSpace(UserName) || string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(PasswordName))
-            {
-                await PopupService.ShowError("Error", "Fields cannot be empty");
-                return;
-            }
+            var model = GetModelFromProperties();
 
-            PasswordOriginal.PasswordName = PasswordName;
-            PasswordOriginal.UserName = UserName;
-            PasswordOriginal.PasswordDecrypted = Password;
-            PasswordOriginal.Notes = Description;
+            if (!ValidationHelper.IsFormValid(model, Shell.Current.CurrentPage))
+                return;
+
+            IsBusy = true;
+
             //await DatabaseService.UpdatePassword(PasswordOriginal);
-            await Shell.Current.GoToAsync($"//{nameof(PasswordsListPage)}");
+            await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
+
+            IsBusy = false;
         }
 
         [RelayCommand]
         async Task Cancel()
         {
-            //await Shell.Current.GoToAsync($"//{nameof(PasswordsListPage)}/{nameof(PasswordDetailPage)}?PasswordId={PasswordId}");
+            await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
         }
 
         #endregion
@@ -86,9 +109,9 @@ namespace PasswordManager.MAUI.ViewModels
         {
             var deferral = e.GetDeferral();
 
-            if (UserName != PasswordOriginal.UserName || Password != PasswordOriginal.PasswordDecrypted || PasswordName != PasswordOriginal.PasswordName)
+            if (!PropertiesAreSameAsInOriginalPassword())
             {
-                if (!await PopupService.ShowYesNo("Leave unsaved changes?", "Unsaved changes will be lost. Do you still want to leave?"))
+                if (!await PopupService.ShowYesNo("You have unsaved changes!", "Unsaved changes will be lost. Do you still want to leave?"))
                     e.Cancel();
             }
 
@@ -97,8 +120,45 @@ namespace PasswordManager.MAUI.ViewModels
 
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
-            if (query[nameof(PasswordDTO).ToString()] is PasswordDTO)
+            if (query[nameof(PasswordDTO).ToString()] is PasswordDTO password)
+            {
                 Title = "Edit password";
+                CanRefresh = true;
+                SetProperties(password);
+            }
+        }
+
+        PasswordDTO GetModelFromProperties()
+        {
+            return new PasswordDTO()
+            {
+                PasswordName = PasswordName,
+                UserName = UserName,
+                PasswordDecrypted = Password,
+                URL = URL,
+                Notes = Notes,
+                Favorite = Favorite
+            };
+        }
+
+        bool PropertiesAreSameAsInOriginalPassword()
+        {
+            return PasswordName == PasswordOriginal.PasswordName
+                && UserName == PasswordOriginal.UserName
+                && Password == PasswordOriginal.PasswordDecrypted
+                && URL == PasswordOriginal.URL
+                && Notes == PasswordOriginal.Notes
+                && Favorite == PasswordOriginal.Favorite;
+        }
+
+        void SetProperties(PasswordDTO password)
+        {
+            PasswordName = password.PasswordName;
+            UserName = password.UserName;
+            Password = password.PasswordDecrypted;
+            URL = password.URL;
+            Notes = password.Notes;
+            Favorite = password.Favorite; ;
         }
 
         #endregion

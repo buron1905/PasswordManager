@@ -12,15 +12,16 @@ namespace PasswordManager.MAUI.ViewModels
         #region Properties
 
         [ObservableProperty]
-        LoginRequestDTO _model;
+        string _emailAddress;
+
+        [ObservableProperty]
+        string _password;
 
         #endregion
 
         public LoginViewModel()
         {
             Title = "Login";
-
-            Model = new LoginRequestDTO();
         }
 
         #region Commands
@@ -28,16 +29,18 @@ namespace PasswordManager.MAUI.ViewModels
         [RelayCommand]
         async Task Login()
         {
-            if (!ValidationHelper.IsFormValid(Model, Shell.Current.CurrentPage))
+            var model = new LoginRequestDTO() { EmailAddress = EmailAddress, Password = Password };
+
+            if (!ValidationHelper.IsFormValid(model, Shell.Current.CurrentPage))
                 return;
 
             IsBusy = true;
 
-            if (await LoginService.Login(Model.EmailAddress, Model.Password))
+            if (await LoginService.Login(model.EmailAddress, model.Password))
             {
 
                 await Shell.Current.GoToAsync($"//Home", true);
-                Model.Password = string.Empty;
+                Password = string.Empty;
             }
             else
             {
