@@ -10,8 +10,8 @@ namespace PasswordManager.MAUI.ViewModels
     {
         #region Properties
 
-        List<PasswordDTO> AllPasswords { get; set; }
-        public ObservableCollection<PasswordDTO> FilteredPasswords { get; set; }
+        List<PasswordDTO> AllPasswords { get; set; } = new();
+        public ObservableCollection<PasswordDTO> FilteredPasswords { get; } = new();
 
         [ObservableProperty]
         string _searchText;
@@ -24,9 +24,6 @@ namespace PasswordManager.MAUI.ViewModels
         public PasswordsListViewModel()
         {
             Title = "Passwords";
-
-            AllPasswords = new();
-            FilteredPasswords = new();
         }
 
         #region Commands
@@ -35,9 +32,10 @@ namespace PasswordManager.MAUI.ViewModels
         async Task Refresh()
         {
             IsBusy = true;
+            await Task.Delay(2000);
             await RefreshPasswords();
-            IsRefreshing = false;
             IsBusy = false;
+            IsRefreshing = false;
         }
 
         [RelayCommand]
@@ -94,7 +92,6 @@ namespace PasswordManager.MAUI.ViewModels
         async Task RefreshPasswords()
         {
             AllPasswords.Clear();
-            Thread.Sleep(1000);
             AllPasswords = new List<PasswordDTO>
             {
                 new PasswordDTO
@@ -153,9 +150,7 @@ namespace PasswordManager.MAUI.ViewModels
                     UserName = "Username 2"
                 }
             };
-
             //AllPasswords = await DatabaseService.GetUserPasswords(ActiveUserService.Instance.User.Id);
-
             PerformSearch();
         }
 

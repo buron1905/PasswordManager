@@ -31,6 +31,8 @@ namespace PasswordManager.MAUI.ViewModels
             if (!ValidationHelper.IsFormValid(Model, Shell.Current.CurrentPage))
                 return;
 
+            IsBusy = true;
+
             if (await LoginService.Login(Model.EmailAddress, Model.Password))
             {
 
@@ -41,6 +43,8 @@ namespace PasswordManager.MAUI.ViewModels
             {
                 await PopupService.ShowToast("Wrong credentials.");
             }
+
+            IsBusy = false;
         }
 
         [RelayCommand]

@@ -31,11 +31,16 @@ namespace PasswordManager.MAUI.ViewModels
             if (!ValidationHelper.IsFormValid(Model, Shell.Current.CurrentPage))
                 return;
 
+            IsBusy = true;
+
             try
             {
                 //await DatabaseService.AddUser(newUser);
                 //ActiveUserService.Instance.Login(newUser, Model.Password);
                 //throw new Exception("Email is already used by another user.");
+
+                await PopupService.ShowToast("Successfully registered");
+                await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
             }
             catch (Exception ex)
             {
@@ -43,8 +48,7 @@ namespace PasswordManager.MAUI.ViewModels
                 return;
             }
 
-            await PopupService.ShowToast("Successfully registered");
-            await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
+            IsBusy = false;
         }
 
         [RelayCommand]

@@ -38,6 +38,11 @@
                         <TapGestureRecognizer Command="{Binding GoToLoginCommand}" />
                     </Label.GestureRecognizers>
                 </Label>
+                <ActivityIndicator
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        IsRunning="{Binding IsBusy}"
+                        IsVisible="{Binding IsBusy}"/>
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>
