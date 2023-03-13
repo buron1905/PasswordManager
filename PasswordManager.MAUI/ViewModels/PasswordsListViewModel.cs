@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Models.DTOs;
 using PasswordManager.MAUI.Services;
+using PasswordManager.MAUI.Views;
 using System.Collections.ObjectModel;
 
 namespace PasswordManager.MAUI.ViewModels
@@ -61,10 +62,10 @@ namespace PasswordManager.MAUI.ViewModels
         {
             if (password is null) return;
 
-            //await Shell.Current.GoToAsync(nameof(PasswordEditPage), true, new Dictionary<string, object>
-            //{
-            //    { "password", password }
-            //});
+            await Shell.Current.GoToAsync(nameof(AddEditPasswordPage), true, new Dictionary<string, object>
+            {
+                { nameof(PasswordDTO), password }
+            });
         }
 
         [RelayCommand]

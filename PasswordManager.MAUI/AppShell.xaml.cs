@@ -26,6 +26,9 @@ namespace PasswordManager.MAUI
             Routing.RegisterRoute(nameof(GeneratePasswordPage),
                     typeof(GeneratePasswordPage));
 
+            Routing.RegisterRoute(nameof(AddEditPasswordPage),
+                    typeof(AddEditPasswordPage));
+
         }
     }
 }
