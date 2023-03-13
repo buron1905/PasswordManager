@@ -8,6 +8,7 @@ using PasswordManager.MAUI.Views;
 namespace PasswordManager.MAUI.ViewModels
 {
     [QueryProperty(nameof(PasswordOriginal), nameof(PasswordDTO))]
+    [QueryProperty(nameof(PasswordOriginal), $"{nameof(PasswordDTO)}Duplicate")]
     public partial class AddEditPasswordViewModel : BaseViewModel, IQueryAttributable
     {
         #region Properties
@@ -16,7 +17,13 @@ namespace PasswordManager.MAUI.ViewModels
         bool _isRefreshing;
 
         [ObservableProperty]
-        bool _canRefresh;
+        [NotifyPropertyChangedFor(nameof(CanRefresh))]
+        [NotifyPropertyChangedFor(nameof(IsNotNew))]
+        bool _isNew;
+
+        public bool CanRefresh => !IsNew;
+
+        public bool IsNotNew => !IsNew;
 
         [ObservableProperty]
         PasswordDTO _passwordOriginal = new();
@@ -43,8 +50,8 @@ namespace PasswordManager.MAUI.ViewModels
 
         public AddEditPasswordViewModel()
         {
-            Title = "New password";
-            CanRefresh = false;
+            Title = "Add password";
+            IsNew = true;
         }
 
         #region Commands
@@ -80,6 +87,73 @@ namespace PasswordManager.MAUI.ViewModels
         }
 
         [RelayCommand]
+        void RefreshToolbar()
+        {
+            var page = Shell.Current.CurrentPage;
+
+            if (IsNew)
+            {
+                // This is here because of DI, where new Page and ViewModel are not created
+                //var d = page.GetVisualTreeDescendants();
+                //var d2 = page.GetVisualTreeDescendants().OfType<ToolbarItem>();
+                //var d3 = page.GetVisualTreeDescendants().OfType<ToolbarItem>();
+                //var d4 = page.GetVisualTreeDescendants().OfType<ToolbarItem>().FirstOrDefault(x => x.Text == "Duplicate");
+                //page.ToolbarItems.Remove(page.GetVisualTreeDescendants().OfType<ToolbarItem>().FirstOrDefault(x => x.Text == "Duplicate"));
+                //page.ToolbarItems.Remove(page.GetVisualTreeDescendants().OfType<ToolbarItem>().FirstOrDefault(x => x.Text == "Delete"));
+                page.ToolbarItems.Clear();
+
+                var toolbarSave = new ToolbarItem()
+                {
+                    Text = "Save",
+                    Command = SaveCommand,
+                    Order = ToolbarItemOrder.Secondary
+                };
+                page.ToolbarItems.Add(toolbarSave);
+
+                PasswordOriginal = new();
+                return;
+            }
+
+            var toolbarDuplicate = new ToolbarItem()
+            {
+                Text = "Duplicate",
+                Command = DuplicateCommand,
+                Order = ToolbarItemOrder.Secondary
+            };
+
+            var toolbarDelete = new ToolbarItem()
+            {
+                Text = "Delete",
+                Command = DeleteCommand,
+                Order = ToolbarItemOrder.Secondary
+            };
+
+            page.ToolbarItems.Add(toolbarDuplicate);
+            page.ToolbarItems.Add(toolbarDelete);
+        }
+
+        [RelayCommand]
+        async Task SwitchFavorite()
+        {
+            Favorite = !Favorite;
+            if (Favorite)
+                await PopupService.ShowToast("Added to favorites");
+            else
+                await PopupService.ShowToast("Removed from favorites");
+        }
+
+        [RelayCommand]
+        async Task Delete()
+        {
+            if (await PopupService.ShowYesNo($"Delete: {PasswordName}", $"Are you sure you want to delete this password?"))
+            {
+                //await DatabaseService.RemovePassword(password.Id);
+                await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
+                await PopupService.ShowToast("Deleted");
+            }
+        }
+
+        [RelayCommand]
         async Task Save()
         {
             var model = GetModelFromProperties();
@@ -90,7 +164,24 @@ namespace PasswordManager.MAUI.ViewModels
             IsBusy = true;
 
             //await DatabaseService.UpdatePassword(PasswordOriginal);
+            PasswordOriginal = model;
             await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
+
+            IsBusy = false;
+        }
+
+        [RelayCommand]
+        async Task Duplicate()
+        {
+            var model = GetModelFromProperties();
+
+            IsBusy = true;
+
+            await Shell.Current.GoToAsync($"//{nameof(LoadingPage)}");
+            await Shell.Current.GoToAsync($"///Home/{nameof(AddEditPasswordPage)}", true, new Dictionary<string, object>
+            {
+                { $"{nameof(PasswordDTO)}Duplicate", model }
+            });
 
             IsBusy = false;
         }
@@ -120,11 +211,20 @@ namespace PasswordManager.MAUI.ViewModels
 
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
-            if (query[nameof(PasswordDTO).ToString()] is PasswordDTO password)
+
+            if (query.Keys.Contains(nameof(PasswordDTO).ToString()) && query[nameof(PasswordDTO).ToString()] is PasswordDTO password)
             {
-                Title = "Edit password";
-                CanRefresh = true;
                 SetProperties(password);
+
+                Title = "Edit password";
+                IsNew = false;
+            }
+            else if (query.Keys.Contains($"{nameof(PasswordDTO)}Duplicate") && query[$"{nameof(PasswordDTO)}Duplicate"] is PasswordDTO duplicate)
+            {
+                SetProperties(duplicate);
+
+                Title = "Add password";
+                IsNew = true;
             }
         }
 

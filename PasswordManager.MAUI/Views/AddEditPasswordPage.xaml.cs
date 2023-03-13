@@ -18,6 +18,7 @@ public partial class AddEditPasswordPage : ContentPage
     {
         base.OnAppearing();
         Shell.Current.Navigating += ViewModel.Current_Navigating;
+        ViewModel.RefreshToolbarCommand.Execute(null);
     }
 
     protected override void OnDisappearing()
