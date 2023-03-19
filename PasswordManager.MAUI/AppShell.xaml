@@ -24,13 +24,6 @@
     <ShellContent Title="Login" Route="LoginPage" ContentTemplate="{DataTemplate views:LoginPage}" Shell.FlyoutBehavior="Disabled" Shell.FlyoutItemIsVisible="False" Shell.NavBarIsVisible="False"/>
     <ShellContent Title="Register" Route="RegistrationPage" ContentTemplate="{DataTemplate views:RegistrationPage}" Shell.FlyoutBehavior="Disabled" Shell.FlyoutItemIsVisible="False" Shell.NavBarIsVisible="False"/>
 
-    <ShellContent Title="New password" Route="AddEditPasswordPage" ContentTemplate="{DataTemplate views:AddEditPasswordPage}" Shell.PresentationMode="ModalAnimated">
-        <ShellContent.Icon>
-            <FontImageSource FontFamily="FAS"
-                            Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
-                            Glyph="{x:Static fontAwesome:FontAwesomeIcons.Plus}"/>
-        </ShellContent.Icon>
-    </ShellContent>
     <FlyoutItem Route="Home" FlyoutDisplayOptions="AsMultipleItems">
         <Tab Title="Passwords">
             <Tab.Icon>
@@ -47,6 +40,14 @@
                              Glyph="{x:Static fontAwesome:FontAwesomeIcons.RedoAlt}"/>
             </Tab.Icon>
             <ShellContent Title="Generator" Route="GeneratePasswordPage" ContentTemplate="{DataTemplate views:GeneratePasswordPage}" />
+        </Tab>
+        <Tab Title="New" >
+            <Tab.Icon>
+                <FontImageSource FontFamily="FAS"
+                             Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                             Glyph="{x:Static fontAwesome:FontAwesomeIcons.Plus}"/>
+            </Tab.Icon>
+            <ShellContent Title="New password" Route="AddEditPasswordPage" ContentTemplate="{DataTemplate views:AddEditPasswordPage}" />
         </Tab>
     </FlyoutItem>
     <ShellContent Title="Settings">

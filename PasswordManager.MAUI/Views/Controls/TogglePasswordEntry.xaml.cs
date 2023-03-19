@@ -36,7 +36,7 @@ namespace PasswordManager.MAUI.Views.Controls
             set => SetValue(HidePasswordProperty, value);
         }
 
-        private void OnImageButtonClicked(object sender, EventArgs e)
+        private void OnToggleButtonClicked(object sender, EventArgs e)
         {
             HidePassword = !HidePassword;
         }

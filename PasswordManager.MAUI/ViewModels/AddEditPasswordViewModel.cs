@@ -90,29 +90,14 @@ namespace PasswordManager.MAUI.ViewModels
         void RefreshToolbar()
         {
             var page = Shell.Current.CurrentPage;
+            page.ToolbarItems.Clear();
 
-            if (IsNew)
+            var toolbarSave = new ToolbarItem()
             {
-                // This is here because of DI, where new Page and ViewModel are not created
-                //var d = page.GetVisualTreeDescendants();
-                //var d2 = page.GetVisualTreeDescendants().OfType<ToolbarItem>();
-                //var d3 = page.GetVisualTreeDescendants().OfType<ToolbarItem>();
-                //var d4 = page.GetVisualTreeDescendants().OfType<ToolbarItem>().FirstOrDefault(x => x.Text == "Duplicate");
-                //page.ToolbarItems.Remove(page.GetVisualTreeDescendants().OfType<ToolbarItem>().FirstOrDefault(x => x.Text == "Duplicate"));
-                //page.ToolbarItems.Remove(page.GetVisualTreeDescendants().OfType<ToolbarItem>().FirstOrDefault(x => x.Text == "Delete"));
-                page.ToolbarItems.Clear();
-
-                var toolbarSave = new ToolbarItem()
-                {
-                    Text = "Save",
-                    Command = SaveCommand,
-                    Order = ToolbarItemOrder.Secondary
-                };
-                page.ToolbarItems.Add(toolbarSave);
-
-                PasswordOriginal = new();
-                return;
-            }
+                Text = "Save",
+                Command = SaveCommand,
+                Order = ToolbarItemOrder.Secondary
+            };
 
             var toolbarDuplicate = new ToolbarItem()
             {
@@ -128,6 +113,15 @@ namespace PasswordManager.MAUI.ViewModels
                 Order = ToolbarItemOrder.Secondary
             };
 
+            if (IsNew)
+            {
+                page.ToolbarItems.Add(toolbarSave);
+
+                PasswordOriginal = new();
+                return;
+            }
+
+            page.ToolbarItems.Add(toolbarSave);
             page.ToolbarItems.Add(toolbarDuplicate);
             page.ToolbarItems.Add(toolbarDelete);
         }
@@ -178,7 +172,7 @@ namespace PasswordManager.MAUI.ViewModels
             IsBusy = true;
 
             await Shell.Current.GoToAsync($"//{nameof(LoadingPage)}");
-            await Shell.Current.GoToAsync($"///Home/{nameof(AddEditPasswordPage)}", true, new Dictionary<string, object>
+            await Shell.Current.GoToAsync($"//Home/{nameof(AddEditPasswordPage)}", true, new Dictionary<string, object>
             {
                 { $"{nameof(PasswordDTO)}Duplicate", model }
             });

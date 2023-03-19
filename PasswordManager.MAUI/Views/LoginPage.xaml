@@ -15,18 +15,18 @@
                 Placeholder="Email Address" 
                 Keyboard="Email"/>
                 <Label x:Name="EmailAddressError" 
-        IsVisible="False" Style="{StaticResource LabelError}" />
+                    IsVisible="False" Style="{StaticResource LabelError}" />
                 <Label Text="Password" />
                 <controls:TogglePasswordEntry Placeholder="Password"
-                                          Text="{Binding Password}"
-                                          HidePassword="True"/>
+                    Text="{Binding Password}"
+                    HidePassword="True"/>
                 <Label x:Name="PasswordError" 
-        IsVisible="False" Style="{StaticResource LabelError}" />
+                    IsVisible="False" Style="{StaticResource LabelError}" />
                 <Button 
-                x:Name="submit"
-                Text="Login"
-                IsEnabled="{Binding IsNotBusy}"
-                Command="{Binding LoginCommand}"/>
+                    x:Name="submit"
+                    Text="Login"
+                    IsEnabled="{Binding IsNotBusy}"
+                    Command="{Binding LoginCommand}"/>
                 <Label Text="Registration" Style="{StaticResource LabelLink}">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToRegisterCommand}" />
