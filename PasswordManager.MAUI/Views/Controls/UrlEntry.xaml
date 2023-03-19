@@ -7,7 +7,7 @@
     <ContentView.Content>
         <Grid BindingContext="{x:Reference root}" ColumnDefinitions="*, Auto, Auto">
 
-            <Entry Placeholder="{Binding Placeholder}"
+            <Entry Placeholder="{Binding Placeholder}" Keyboard="Url"
                 Text="{Binding Text}"
                 Grid.Row="0"
                 Grid.Column="0"/>

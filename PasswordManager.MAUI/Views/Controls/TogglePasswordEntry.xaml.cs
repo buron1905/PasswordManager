@@ -18,6 +18,10 @@ namespace PasswordManager.MAUI.Views.Controls
             BindableProperty.Create(nameof(HidePassword), typeof(bool), typeof(TogglePasswordEntry),
                 defaultValue: true);
 
+        public static readonly BindableProperty KeyboardProperty =
+            BindableProperty.Create(nameof(Keyboard), typeof(Keyboard), typeof(OutLinedEntry),
+                defaultValue: Keyboard.Default);
+
         public string Placeholder
         {
             get => (string)GetValue(PlaceholderProperty);
@@ -40,6 +44,38 @@ namespace PasswordManager.MAUI.Views.Controls
         {
             HidePassword = !HidePassword;
         }
+
+        public Keyboard Keyboard
+        {
+            get => (Keyboard)GetValue(KeyboardProperty);
+            set => SetValue(KeyboardProperty, value);
+        }
+
+        protected void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+        {
+            txtEntry.Focus();
+        }
+
+        protected void txtEntry_Focused(object sender, FocusEventArgs e)
+        {
+            lblPlaceholder.FontSize = 11;
+            lblPlaceholder.TranslateTo(0, -20, 80, easing: Easing.Linear);
+        }
+
+        protected void txtEntry_Unfocused(object sender, FocusEventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(Text))
+            {
+                lblPlaceholder.FontSize = 11;
+                lblPlaceholder.TranslateTo(0, -20, 80, easing: Easing.Linear);
+            }
+            else
+            {
+                lblPlaceholder.FontSize = 11;
+                lblPlaceholder.TranslateTo(0, 0, 80, easing: Easing.Linear);
+            }
+        }
+
     }
 }
 
