@@ -24,6 +24,19 @@ namespace PasswordManager.MAUI.ViewModels
             await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
         }
 
+        [RelayCommand]
+        async void About()
+        {
+            try
+            {
+                await Browser.Default.OpenAsync(new Uri("https://github.com/buron1905/PasswordManager"), BrowserLaunchMode.SystemPreferred);
+            }
+            catch (Exception ex)
+            {
+                await PopupService.ShowToast("Error with opening URL");
+            }
+        }
+
         #endregion
 
         #region Methods

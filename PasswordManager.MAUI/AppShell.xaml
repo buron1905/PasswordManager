@@ -57,7 +57,7 @@
                             Glyph="{x:Static fontAwesome:FontAwesomeIcons.Cogs}"/>
         </ShellContent.Icon>
     </ShellContent>
-    <MenuItem Text="About">
+    <MenuItem Text="About" Command="{Binding AboutCommand}">
         <MenuItem.IconImageSource>
             <FontImageSource FontFamily="FAS"
                             Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
