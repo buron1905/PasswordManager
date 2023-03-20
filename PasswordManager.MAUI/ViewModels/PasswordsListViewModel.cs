@@ -41,7 +41,7 @@ namespace PasswordManager.MAUI.ViewModels
         [RelayCommand]
         async Task GoToNewPassword()
         {
-            //await Shell.Current.GoToAsync($"{nameof(AddEditPasswordPage)}");
+            await Shell.Current.GoToAsync($"//Home/{nameof(AddEditPasswordPage)}", true);
         }
 
         [RelayCommand]

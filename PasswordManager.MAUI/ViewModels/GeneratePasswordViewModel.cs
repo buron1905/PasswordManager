@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PasswordManager.MAUI.Services;
 using Services;
 
 namespace PasswordManager.MAUI.ViewModels
@@ -22,7 +23,7 @@ namespace PasswordManager.MAUI.ViewModels
             {
                 SetProperty(ref _length, value);
                 Preferences.Set(nameof(Length), value);
-                LengthText = $"Length {_length}";
+                LengthText = $"Password length {_length}";
                 Generate();
             }
         }
@@ -83,6 +84,7 @@ namespace PasswordManager.MAUI.ViewModels
         {
             Title = "Generator";
             Generate();
+            LengthText = $"Password length {Length}";
         }
 
         #region Commands
@@ -91,6 +93,7 @@ namespace PasswordManager.MAUI.ViewModels
         async Task Copy()
         {
             await Clipboard.SetTextAsync(NewPassword);
+            await PopupService.ShowToast("Copied to clipboard");
         }
 
         [RelayCommand]
