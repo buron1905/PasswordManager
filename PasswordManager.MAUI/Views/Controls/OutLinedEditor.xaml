@@ -5,7 +5,7 @@
              x:Class="PasswordManager.MAUI.Views.Controls.OutLinedEditor"
              x:Name="root">
     <Grid RowDefinitions="Auto" BindingContext="{x:Reference root}">
-        <Frame Grid.Row="0" Padding="8,2,8,2" BorderColor="Gray" HeightRequest="100">
+        <Frame Grid.Row="0" Padding="8,2,8,2" BorderColor="Gray" HeightRequest="100" BackgroundColor="Transparent">
             <handlers:BorderlessEditor 
                 x:Name="txtEntry"
                 HeightRequest="96"
@@ -21,7 +21,7 @@
                FontSize="15" 
                x:Name="lblPlaceholder"
                TextColor="Gray"
-               BackgroundColor="White"
+               BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Black}}"
                HorizontalOptions="StartAndExpand"
                VerticalOptions="CenterAndExpand"/>
         <Grid.GestureRecognizers>

@@ -35,6 +35,7 @@ namespace PasswordManager.MAUI.Extensions
             builder.Services.AddSingleton<RegistrationViewModel>();
             builder.Services.AddSingleton<PasswordsListViewModel>();
             builder.Services.AddSingleton<GeneratePasswordViewModel>();
+            builder.Services.AddSingleton<SettingsViewModel>();
 
             // Transient
             builder.Services.AddTransient<AddEditPasswordViewModel>();
@@ -50,6 +51,7 @@ namespace PasswordManager.MAUI.Extensions
             builder.Services.AddSingleton<RegistrationPage>();
             builder.Services.AddSingleton<PasswordsListPage>();
             builder.Services.AddSingleton<GeneratePasswordPage>();
+            builder.Services.AddSingleton<SettingsPage>();
 
             // Transient
             builder.Services.AddTransient<AddEditPasswordPage>();

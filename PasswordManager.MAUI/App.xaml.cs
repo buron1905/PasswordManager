@@ -2,6 +2,7 @@
 using Android.Content.Res;
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
 using PasswordManager.MAUI.Handlers;
+using PasswordManager.MAUI.Helpers;
 #endif
 
 namespace PasswordManager.MAUI
@@ -53,5 +54,31 @@ namespace PasswordManager.MAUI
             //                }
             //            });
         }
+
+        protected override void OnStart()
+        {
+            OnResume();
+        }
+
+        protected override void OnSleep()
+        {
+            TheTheme.SetTheme();
+            RequestedThemeChanged -= App_RequestedThemeChanged;
+        }
+
+        protected override void OnResume()
+        {
+            TheTheme.SetTheme();
+            RequestedThemeChanged += App_RequestedThemeChanged;
+        }
+
+        private void App_RequestedThemeChanged(object sender, AppThemeChangedEventArgs e)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                TheTheme.SetTheme();
+            });
+        }
+
     }
 }

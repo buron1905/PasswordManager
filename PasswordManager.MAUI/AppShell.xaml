@@ -50,7 +50,7 @@
             <ShellContent Title="New password" Route="AddEditPasswordPage" ContentTemplate="{DataTemplate views:AddEditPasswordPage}" />
         </Tab>
     </FlyoutItem>
-    <ShellContent Title="Settings">
+    <ShellContent Title="Settings" Route="SettingsPage" ContentTemplate="{DataTemplate views:SettingsPage}">
         <ShellContent.Icon>
             <FontImageSource FontFamily="FAS"
                             Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
