@@ -27,7 +27,11 @@ public partial class OutLinedEntry : ContentView
     public string Text
     {
         get => (string)GetValue(TextProperty);
-        set => SetValue(TextProperty, value);
+        set
+        {
+            SetValue(TextProperty, value);
+            RefreshPlaceholder();
+        }
     }
     public Keyboard Keyboard
     {
@@ -42,21 +46,26 @@ public partial class OutLinedEntry : ContentView
 
     protected void txtEntry_Focused(object sender, FocusEventArgs e)
     {
-        lblPlaceholder.FontSize = 11;
-        lblPlaceholder.TranslateTo(0, -20, 80, easing: Easing.Linear);
+        RefreshPlaceholder();
     }
 
     protected void txtEntry_Unfocused(object sender, FocusEventArgs e)
     {
-        if (!string.IsNullOrWhiteSpace(Text))
+        RefreshPlaceholder();
+    }
+
+    protected void RefreshPlaceholder()
+    {
+        if (!string.IsNullOrWhiteSpace(Text) || txtEntry.IsFocused)
         {
             lblPlaceholder.FontSize = 11;
             lblPlaceholder.TranslateTo(0, -20, 80, easing: Easing.Linear);
         }
         else
         {
-            lblPlaceholder.FontSize = 11;
+            lblPlaceholder.FontSize = 15;
             lblPlaceholder.TranslateTo(0, 0, 80, easing: Easing.Linear);
+
         }
     }
 }

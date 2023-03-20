@@ -1,43 +1,57 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:handlers="clr-namespace:PasswordManager.MAUI.Handlers"
              xmlns:fontAwesome="clr-namespace:FontAwesome"
              x:Class="PasswordManager.MAUI.Views.Controls.UrlEntry"
              x:Name="root">
     <ContentView.Content>
-        <Grid BindingContext="{x:Reference root}" ColumnDefinitions="*, Auto, Auto">
-
-            <Entry Placeholder="{Binding Placeholder}" Keyboard="Url"
-                Text="{Binding Text}"
-                Grid.Row="0"
-                Grid.Column="0"/>
-
-            <ImageButton
-                x:Name="goToBtn"
-                Margin="3"   
-                Grid.Row="0"
-                Grid.Column="1"
-                Clicked="OnGoToButtonClicked">
-                <ImageButton.Source>
-                    <FontImageSource FontFamily="FAS"
-                        Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
-                        Glyph="{x:Static fontAwesome:FontAwesomeIcons.ExternalLink}"/>
-                </ImageButton.Source>
-            </ImageButton>
-
-            <ImageButton
-                x:Name="clipboardBtn"
-                Margin="3"   
-                Grid.Row="0"
-                Grid.Column="2"
-                Clicked="OnClipboardButtonClicked">
-                <ImageButton.Source>
-                    <FontImageSource FontFamily="FAS"
+        <Grid RowDefinitions="Auto" BindingContext="{x:Reference root}">
+            <Frame Grid.Row="0" Padding="8,2,8,2" BorderColor="Gray">
+                <Grid ColumnDefinitions="*, Auto, Auto">
+                    <handlers:BorderlessEntry Keyboard="{Binding Keyboard}" Focused="txtEntry_Focused" Unfocused="txtEntry_Unfocused"
+                        x:Name="txtEntry"
+                        Text="{Binding Text}"
+                        Grid.Row="0"
+                        Grid.Column="0"/>
+                    <ImageButton
+                        x:Name="goToBtn"
+                        Margin="3"   
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Clicked="OnGoToButtonClicked">
+                        <ImageButton.Source>
+                            <FontImageSource FontFamily="FAS"
+                                Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                                Glyph="{x:Static fontAwesome:FontAwesomeIcons.ExternalLink}"/>
+                        </ImageButton.Source>
+                    </ImageButton>
+                    <ImageButton
+                        x:Name="clipboardBtn"
+                        Margin="3"   
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        Clicked="OnClipboardButtonClicked">
+                        <ImageButton.Source>
+                            <FontImageSource FontFamily="FAS"
                         Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                         Glyph="{x:Static fontAwesome:FontAwesomeIcons.Copy}"/>
-                </ImageButton.Source>
-            </ImageButton>
-
+                        </ImageButton.Source>
+                    </ImageButton>
+                </Grid>
+            </Frame>
+            <Label Grid.Row="0"
+               Margin="10,0,10,0"
+               Text="{Binding Placeholder}"
+               FontSize="15" 
+               x:Name="lblPlaceholder"
+               TextColor="Gray"
+               BackgroundColor="White"
+               HorizontalOptions="StartAndExpand"
+               VerticalOptions="CenterAndExpand"/>
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+            </Grid.GestureRecognizers>
         </Grid>
     </ContentView.Content>
 </ContentView>

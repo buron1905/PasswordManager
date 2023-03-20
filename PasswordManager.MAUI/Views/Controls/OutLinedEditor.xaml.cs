@@ -1,23 +1,21 @@
-using PasswordManager.MAUI.Services;
-
 namespace PasswordManager.MAUI.Views.Controls;
 
-public partial class ClipboardEntry : ContentView
+public partial class OutLinedEditor : ContentView
 {
-    public ClipboardEntry()
+    public OutLinedEditor()
     {
         InitializeComponent();
     }
 
     public static readonly BindableProperty PlaceholderProperty =
-            BindableProperty.Create(nameof(Placeholder), typeof(string), typeof(TogglePasswordEntry));
+        BindableProperty.Create(nameof(Placeholder), typeof(string), typeof(OutLinedEntry));
 
     public static readonly BindableProperty TextProperty =
-        BindableProperty.Create(nameof(Text), typeof(string), typeof(TogglePasswordEntry),
+        BindableProperty.Create(nameof(Text), typeof(string), typeof(OutLinedEntry),
             defaultBindingMode: BindingMode.TwoWay);
 
     public static readonly BindableProperty KeyboardProperty =
-        BindableProperty.Create(nameof(Keyboard), typeof(Keyboard), typeof(TogglePasswordEntry),
+        BindableProperty.Create(nameof(Keyboard), typeof(Keyboard), typeof(OutLinedEntry),
             defaultValue: Keyboard.Default);
 
     public string Placeholder
@@ -35,17 +33,10 @@ public partial class ClipboardEntry : ContentView
             RefreshPlaceholder();
         }
     }
-
     public Keyboard Keyboard
     {
         get => (Keyboard)GetValue(KeyboardProperty);
         set => SetValue(KeyboardProperty, value);
-    }
-
-    private async void OnClipboardButtonClicked(object sender, EventArgs e)
-    {
-        await Clipboard.SetTextAsync(Text);
-        await PopupService.ShowToast("Copied to clipboard");
     }
 
     protected void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
@@ -68,12 +59,13 @@ public partial class ClipboardEntry : ContentView
         if (!string.IsNullOrWhiteSpace(Text) || txtEntry.IsFocused)
         {
             lblPlaceholder.FontSize = 11;
-            lblPlaceholder.TranslateTo(0, -20, 80, easing: Easing.Linear);
+            lblPlaceholder.TranslateTo(0, -50, 80, easing: Easing.Linear);
         }
         else
         {
             lblPlaceholder.FontSize = 15;
             lblPlaceholder.TranslateTo(0, 0, 80, easing: Easing.Linear);
+
         }
     }
 }

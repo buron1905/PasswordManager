@@ -19,7 +19,7 @@ namespace PasswordManager.MAUI.Views.Controls
                 defaultValue: true);
 
         public static readonly BindableProperty KeyboardProperty =
-            BindableProperty.Create(nameof(Keyboard), typeof(Keyboard), typeof(OutLinedEntry),
+            BindableProperty.Create(nameof(Keyboard), typeof(Keyboard), typeof(TogglePasswordEntry),
                 defaultValue: Keyboard.Default);
 
         public string Placeholder
@@ -31,7 +31,11 @@ namespace PasswordManager.MAUI.Views.Controls
         public string Text
         {
             get => (string)GetValue(TextProperty);
-            set => SetValue(TextProperty, value);
+            set
+            {
+                SetValue(TextProperty, value);
+                RefreshPlaceholder();
+            }
         }
 
         public bool HidePassword
@@ -40,15 +44,15 @@ namespace PasswordManager.MAUI.Views.Controls
             set => SetValue(HidePasswordProperty, value);
         }
 
-        private void OnToggleButtonClicked(object sender, EventArgs e)
-        {
-            HidePassword = !HidePassword;
-        }
-
         public Keyboard Keyboard
         {
             get => (Keyboard)GetValue(KeyboardProperty);
             set => SetValue(KeyboardProperty, value);
+        }
+
+        private void OnToggleButtonClicked(object sender, EventArgs e)
+        {
+            HidePassword = !HidePassword;
         }
 
         protected void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
@@ -58,27 +62,27 @@ namespace PasswordManager.MAUI.Views.Controls
 
         protected void txtEntry_Focused(object sender, FocusEventArgs e)
         {
-            lblPlaceholder.FontSize = 11;
-            lblPlaceholder.TranslateTo(0, -20, 80, easing: Easing.Linear);
+            RefreshPlaceholder();
         }
 
         protected void txtEntry_Unfocused(object sender, FocusEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(Text))
+            RefreshPlaceholder();
+        }
+
+        protected void RefreshPlaceholder()
+        {
+            if (!string.IsNullOrWhiteSpace(Text) || txtEntry.IsFocused)
             {
                 lblPlaceholder.FontSize = 11;
                 lblPlaceholder.TranslateTo(0, -20, 80, easing: Easing.Linear);
             }
             else
             {
-                lblPlaceholder.FontSize = 11;
+                lblPlaceholder.FontSize = 15;
                 lblPlaceholder.TranslateTo(0, 0, 80, easing: Easing.Linear);
+
             }
         }
-
     }
 }
-
-
-
-

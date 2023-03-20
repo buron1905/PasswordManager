@@ -20,6 +20,10 @@ public partial class TogglePasswordWithClipboardEntry : ContentView
         BindableProperty.Create(nameof(HidePassword), typeof(bool), typeof(TogglePasswordEntry),
             defaultValue: true);
 
+    public static readonly BindableProperty KeyboardProperty =
+        BindableProperty.Create(nameof(Keyboard), typeof(Keyboard), typeof(TogglePasswordEntry),
+            defaultValue: Keyboard.Default);
+
     public string Placeholder
     {
         get => (string)GetValue(PlaceholderProperty);
@@ -29,13 +33,22 @@ public partial class TogglePasswordWithClipboardEntry : ContentView
     public string Text
     {
         get => (string)GetValue(TextProperty);
-        set => SetValue(TextProperty, value);
+        set
+        {
+            SetValue(TextProperty, value);
+            RefreshPlaceholder();
+        }
     }
 
     public bool HidePassword
     {
         get => (bool)GetValue(HidePasswordProperty);
         set => SetValue(HidePasswordProperty, value);
+    }
+    public Keyboard Keyboard
+    {
+        get => (Keyboard)GetValue(KeyboardProperty);
+        set => SetValue(KeyboardProperty, value);
     }
 
     private void OnToggleButtonClicked(object sender, EventArgs e)
@@ -47,5 +60,34 @@ public partial class TogglePasswordWithClipboardEntry : ContentView
     {
         await Clipboard.SetTextAsync(Text);
         await PopupService.ShowToast("Copied to clipboard");
+    }
+
+    protected void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+    {
+        txtEntry.Focus();
+    }
+
+    protected void txtEntry_Focused(object sender, FocusEventArgs e)
+    {
+        RefreshPlaceholder();
+    }
+
+    protected void txtEntry_Unfocused(object sender, FocusEventArgs e)
+    {
+        RefreshPlaceholder();
+    }
+
+    protected void RefreshPlaceholder()
+    {
+        if (!string.IsNullOrWhiteSpace(Text) || txtEntry.IsFocused)
+        {
+            lblPlaceholder.FontSize = 11;
+            lblPlaceholder.TranslateTo(0, -20, 80, easing: Easing.Linear);
+        }
+        else
+        {
+            lblPlaceholder.FontSize = 15;
+            lblPlaceholder.TranslateTo(0, 0, 80, easing: Easing.Linear);
+        }
     }
 }

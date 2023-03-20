@@ -16,6 +16,10 @@ public partial class UrlEntry : ContentView
         BindableProperty.Create(nameof(Text), typeof(string), typeof(TogglePasswordEntry),
             defaultBindingMode: BindingMode.TwoWay);
 
+    public static readonly BindableProperty KeyboardProperty =
+        BindableProperty.Create(nameof(Keyboard), typeof(Keyboard), typeof(TogglePasswordEntry),
+            defaultValue: Keyboard.Url);
+
     public string Placeholder
     {
         get => (string)GetValue(PlaceholderProperty);
@@ -25,7 +29,17 @@ public partial class UrlEntry : ContentView
     public string Text
     {
         get => (string)GetValue(TextProperty);
-        set => SetValue(TextProperty, value);
+        set
+        {
+            SetValue(TextProperty, value);
+            RefreshPlaceholder();
+        }
+    }
+
+    public Keyboard Keyboard
+    {
+        get => (Keyboard)GetValue(KeyboardProperty);
+        set => SetValue(KeyboardProperty, value);
     }
 
     private async void OnGoToButtonClicked(object sender, EventArgs e)
@@ -52,5 +66,34 @@ public partial class UrlEntry : ContentView
     {
         await Clipboard.SetTextAsync(Text);
         await PopupService.ShowToast("Copied to clipboard");
+    }
+
+    protected void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+    {
+        txtEntry.Focus();
+    }
+
+    protected void txtEntry_Focused(object sender, FocusEventArgs e)
+    {
+        RefreshPlaceholder();
+    }
+
+    protected void txtEntry_Unfocused(object sender, FocusEventArgs e)
+    {
+        RefreshPlaceholder();
+    }
+
+    protected void RefreshPlaceholder()
+    {
+        if (!string.IsNullOrWhiteSpace(Text) || txtEntry.IsFocused)
+        {
+            lblPlaceholder.FontSize = 11;
+            lblPlaceholder.TranslateTo(0, -20, 80, easing: Easing.Linear);
+        }
+        else
+        {
+            lblPlaceholder.FontSize = 15;
+            lblPlaceholder.TranslateTo(0, 0, 80, easing: Easing.Linear);
+        }
     }
 }

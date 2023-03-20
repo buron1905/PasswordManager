@@ -10,10 +10,10 @@
         <ScrollView>
             <StackLayout Padding="20">
                 <Label Text="Login" HorizontalOptions="Center" FontSize="50"/>
-                <controls:OutLinedEntry Text="{Binding EmailAddress}" Placeholder="Email Address" Keyboard="Email"/>
+                <controls:OutLinedEntry Text="{Binding EmailAddress}" Placeholder="Email Address" Keyboard="Email" Margin="0,10,0,10"/>
                 <Label x:Name="EmailAddressError" 
                     IsVisible="False" Style="{StaticResource LabelError}" />
-                <controls:TogglePasswordEntry Placeholder="Password"
+                <controls:TogglePasswordEntry Placeholder="Password"  Margin="0,10,0,10"
                     Text="{Binding Password}"
                     HidePassword="True"/>
                 <Label x:Name="PasswordError" 

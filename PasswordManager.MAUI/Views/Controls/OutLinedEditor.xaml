@@ -2,11 +2,18 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:handlers="clr-namespace:PasswordManager.MAUI.Handlers"
-             x:Class="PasswordManager.MAUI.Views.Controls.OutLinedEntry"
+             x:Class="PasswordManager.MAUI.Views.Controls.OutLinedEditor"
              x:Name="root">
     <Grid RowDefinitions="Auto" BindingContext="{x:Reference root}">
-        <Frame Grid.Row="0" Padding="8,2,8,2" BorderColor="Gray">
-            <handlers:BorderlessEntry x:Name="txtEntry" Keyboard="{Binding Keyboard}" Text="{Binding Text}" Focused="txtEntry_Focused" Unfocused="txtEntry_Unfocused"/>
+        <Frame Grid.Row="0" Padding="8,2,8,2" BorderColor="Gray" HeightRequest="100">
+            <handlers:BorderlessEditor 
+                x:Name="txtEntry"
+                HeightRequest="96"
+                Keyboard="{Binding Keyboard}"
+                Text="{Binding Text}"
+                Focused="txtEntry_Focused" 
+                Unfocused="txtEntry_Unfocused" 
+                VerticalOptions="StartAndExpand"/>
         </Frame>
         <Label Grid.Row="0"
                Margin="10,0,10,0"
