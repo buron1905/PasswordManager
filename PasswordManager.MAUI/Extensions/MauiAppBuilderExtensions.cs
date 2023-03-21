@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PasswordManager.MAUI.Helpers;
 using PasswordManager.MAUI.Services;
 using PasswordManager.MAUI.ViewModels;
 using PasswordManager.MAUI.Views;
@@ -68,7 +69,7 @@ namespace PasswordManager.MAUI.Extensions
         public static MauiAppBuilder AddDbContext(this MauiAppBuilder builder)
         {
             builder.Services.AddDbContext<DataContext>(opt =>
-                opt.UseSqlServer("Data Source=passwordmanager.sqlite3"));
+                opt.UseSqlite($"Data Source={Constants.DatabaseFilename}"));
             //opt.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
             return builder;
         }

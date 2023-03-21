@@ -43,7 +43,6 @@ namespace PasswordManager.MAUI.ViewModels
             //var response = await _authService.LoginAsync(model);
 
             //if (response is not null)
-
             if (await LoginService.Login(model.EmailAddress, model.Password))
             {
                 await Shell.Current.GoToAsync(nameof(LoadingPage));
