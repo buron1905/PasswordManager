@@ -5,11 +5,8 @@ using static Models.Validation.ModelsValidationProperties;
 namespace Models
 {
     [Table("AppUsers")]
-    public class User
+    public class User : Entity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
 
         [Required]
         [EmailAddress]

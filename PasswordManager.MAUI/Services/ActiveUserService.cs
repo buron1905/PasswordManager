@@ -7,6 +7,7 @@ namespace PasswordManager.MAUI.Services
     {
         public UserDTO UserDTO { get; set; }
         public string Password { get; set; }
+        public string Token { get; set; }
 
         private static ActiveUserService instance;
         private ActiveUserService()

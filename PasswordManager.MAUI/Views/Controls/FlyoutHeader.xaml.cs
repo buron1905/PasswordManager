@@ -10,8 +10,9 @@ public partial class FlyoutHeader : ContentView
 
         lblUserName.Text = "Password Manager";
 
-        if (ActiveUserService.Instance.IsActive)
+        if (ActiveUserService.Instance.IsActive && ActiveUserService.Instance.UserDTO.Email is not null)
         {
+            lblUserEmail.IsVisible = true;
             lblUserEmail.Text = ActiveUserService.Instance.UserDTO.Email;
         }
         else

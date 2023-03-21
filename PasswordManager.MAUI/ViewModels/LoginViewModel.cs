@@ -5,6 +5,7 @@ using PasswordManager.MAUI.Helpers;
 using PasswordManager.MAUI.Services;
 using PasswordManager.MAUI.Views;
 using Services.Abstraction.Auth;
+using Services.Abstraction.Data;
 
 namespace PasswordManager.MAUI.ViewModels
 {
@@ -19,13 +20,15 @@ namespace PasswordManager.MAUI.ViewModels
         string _password;
 
         IAuthService _authService;
+        IDataServiceWrapper _dataServiceWrapper;
 
         #endregion
 
-        public LoginViewModel(IAuthService authService)
+        public LoginViewModel(IAuthService authService, IDataServiceWrapper dataServiceWrapper)
         {
             Title = "Login";
             _authService = authService;
+            _dataServiceWrapper = dataServiceWrapper;
         }
 
         #region Commands
@@ -45,9 +48,12 @@ namespace PasswordManager.MAUI.ViewModels
                 var response = await _authService.LoginAsync(model);
 
                 if (response is not null)
-                //if (await LoginService.Login(model.EmailAddress, model.Password))
                 {
                     await Shell.Current.GoToAsync(nameof(LoadingPage));
+
+                    var user = await _dataServiceWrapper.UserService.GetByEmailAsync(model.EmailAddress);
+                    ActiveUserService.Instance.Login(user, Password);
+
                     await Shell.Current.GoToAsync($"//Home", true);
                     await PopupService.ShowToast("Logged in");
                     Password = string.Empty;

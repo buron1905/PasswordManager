@@ -26,7 +26,6 @@ namespace PasswordManager.MAUI.Extensions
 
             // Transient
             builder.Services.AddTransient<IJwtService, JwtService>();
-            builder.Services.AddTransient<IPasswordService, PasswordService>();
 
             return builder;
         }

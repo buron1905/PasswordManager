@@ -37,7 +37,8 @@ namespace Persistance.MAUI.Repositories
 
         public Task<int> SaveChangesAsync()
         {
-            throw new NotImplementedException();
+            return Task.FromResult(0);
+            //throw new NotImplementedException();
         }
     }
 }

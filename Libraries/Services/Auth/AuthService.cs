@@ -48,10 +48,10 @@ namespace Services.Auth
             if (!IsRequestValid(requestDTO))
                 return null;
 
-            requestDTO.PasswordHASH = HashingService.HashPassword(requestDTO.Password);
-
             if (await _repositoryWrapper.UserRepository.AnyAsync(user => user.EmailAddress.Equals(requestDTO.EmailAddress!)))
                 throw new AppException("Email is already used by another user.");
+
+            requestDTO.PasswordHASH = HashingService.HashPassword(requestDTO.Password);
 
             var userDTO = await _dataServiceWrapper.UserService.CreateAsync(requestDTO);
 

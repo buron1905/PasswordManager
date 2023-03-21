@@ -107,6 +107,8 @@ namespace Services.Data
             password.UDT = passwordDTO.UDT;
             password.IDT = passwordDTO.IDT;
 
+            _repositoryWrapper.PasswordRepository.Update(password);
+
             await _repositoryWrapper.SaveChangesAsync();
 
             return password.Adapt<PasswordDTO>();

@@ -11,7 +11,7 @@ namespace Persistance.MAUI.Repositories
 
         public async Task<IEnumerable<Password>> GetAllByUserIdAsync(Guid userId)
         {
-            return FindByCondition(a => a.UserId.Equals(userId)) as IEnumerable<Password>;
+            return await FindByCondition(a => a.UserId.Equals(userId));
         }
 
         public Task<Password?> GetByIdAsync(Guid passwordId)

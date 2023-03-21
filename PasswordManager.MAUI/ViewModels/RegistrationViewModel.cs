@@ -37,6 +37,7 @@ namespace PasswordManager.MAUI.ViewModels
         async Task Register()
         {
             var model = new RegisterRequestDTO() { EmailAddress = EmailAddress, Password = Password, ConfirmPassword = ConfirmPassword };
+            var modelDTO = new UserDTO() { Id = Guid.NewGuid(), Email = EmailAddress, Password = Password };
 
             if (!ValidationHelper.IsFormValid(model, Shell.Current.CurrentPage))
                 return;
@@ -45,15 +46,20 @@ namespace PasswordManager.MAUI.ViewModels
 
             try
             {
-                //await DatabaseService.AddUser(newUser);
-                //ActiveUserService.Instance.Login(newUser, Model.Password);
-                //throw new Exception("Email is already used by another user.");
-                await _authService.RegisterAsync(model);
+                var result = await _authService.RegisterAsync(model);
 
-                await PopupService.ShowToast("Successfully registered");
-                await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
+                if (result is not null)
+                {
+                    ActiveUserService.Instance.Login(modelDTO, Password);
+                    await PopupService.ShowToast("Successfully registered");
+                    await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
 
-                EmailAddress = Password = ConfirmPassword = string.Empty;
+                    EmailAddress = Password = ConfirmPassword = string.Empty;
+                }
+                else
+                {
+                    await PopupService.ShowSnackbar("Error");
+                }
             }
             catch (Exception ex)
             {

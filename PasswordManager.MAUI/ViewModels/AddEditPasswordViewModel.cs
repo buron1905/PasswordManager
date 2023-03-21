@@ -4,6 +4,7 @@ using Models.DTOs;
 using PasswordManager.MAUI.Helpers;
 using PasswordManager.MAUI.Services;
 using PasswordManager.MAUI.Views;
+using Services.Abstraction.Data;
 
 namespace PasswordManager.MAUI.ViewModels
 {
@@ -46,12 +47,15 @@ namespace PasswordManager.MAUI.ViewModels
         [ObservableProperty]
         bool _favorite;
 
+        private readonly IDataServiceWrapper _dataServiceWrapper;
+
         #endregion
 
-        public AddEditPasswordViewModel()
+        public AddEditPasswordViewModel(IDataServiceWrapper dataServiceWrapper)
         {
             Title = "Add password";
             IsNew = true;
+            _dataServiceWrapper = dataServiceWrapper;
         }
 
         #region Commands
@@ -141,7 +145,8 @@ namespace PasswordManager.MAUI.ViewModels
         {
             if (await PopupService.ShowYesNo($"Delete: {PasswordName}", $"Are you sure you want to delete this password?"))
             {
-                //await DatabaseService.RemovePassword(password.Id);
+                var userGuid = ActiveUserService.Instance.UserDTO.Id;
+                await _dataServiceWrapper.PasswordService.DeleteAsync(userGuid, PasswordOriginal.Id);
                 await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
                 await PopupService.ShowToast("Deleted");
             }
@@ -157,7 +162,15 @@ namespace PasswordManager.MAUI.ViewModels
 
             IsBusy = true;
 
-            //await DatabaseService.UpdatePassword(PasswordOriginal);
+            var userGuid = ActiveUserService.Instance.UserDTO.Id;
+            if (IsNew)
+                await _dataServiceWrapper.PasswordService.CreateAsync(userGuid, model);
+            else
+            {
+                model.Id = PasswordOriginal.Id;
+                await _dataServiceWrapper.PasswordService.UpdateAsync(userGuid, model);
+            }
+
             PasswordOriginal = model;
             await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
 

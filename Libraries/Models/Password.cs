@@ -4,12 +4,8 @@ using static Models.Validation.ModelsValidationProperties;
 
 namespace Models
 {
-    public class Password
+    public class Password : Entity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
-
         [Required]
         [MaxLength(MaxPasswordNameLength, ErrorMessage = MaxPasswordNameLengthErrorMessage)]
         public string? PasswordName { get; set; }

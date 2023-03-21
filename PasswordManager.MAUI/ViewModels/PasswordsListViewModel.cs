@@ -3,7 +3,10 @@ using CommunityToolkit.Mvvm.Input;
 using Models.DTOs;
 using PasswordManager.MAUI.Services;
 using PasswordManager.MAUI.Views;
+using Services.Abstraction.Data;
+using Services.Cryptography;
 using System.Collections.ObjectModel;
+using System.Text;
 
 namespace PasswordManager.MAUI.ViewModels
 {
@@ -20,11 +23,14 @@ namespace PasswordManager.MAUI.ViewModels
         [ObservableProperty]
         bool _isRefreshing;
 
+        private readonly IDataServiceWrapper _dataServiceWrapper;
+
         #endregion
 
-        public PasswordsListViewModel()
+        public PasswordsListViewModel(IDataServiceWrapper dataServiceWrapper)
         {
             Title = "Passwords";
+            _dataServiceWrapper = dataServiceWrapper;
         }
 
         #region Commands
@@ -51,7 +57,8 @@ namespace PasswordManager.MAUI.ViewModels
 
             if (await PopupService.ShowYesNo($"{password.PasswordName}", $"Are you sure you want to delete this password?"))
             {
-                //await DatabaseService.RemovePassword(password.Id);
+                var userGuid = ActiveUserService.Instance.UserDTO.Id;
+                await _dataServiceWrapper.PasswordService.DeleteAsync(userGuid, password.Id);
                 AllPasswords.Remove(password);
                 FilteredPasswords.Remove(password);
             }
@@ -91,66 +98,17 @@ namespace PasswordManager.MAUI.ViewModels
 
         async Task RefreshPasswords()
         {
-            AllPasswords.Clear();
-            AllPasswords = new List<PasswordDTO>
+            var userGuid = ActiveUserService.Instance.UserDTO.Id;
+            var passwords = (await _dataServiceWrapper.PasswordService.GetAllByUserIdAsync(userGuid)).ToList() ?? new List<PasswordDTO>();
+
+            foreach (var password in passwords)
             {
-                new PasswordDTO
-                {
-                    PasswordName = "Password 1",
-                    UserName = "Username 1"
-                },
-                new PasswordDTO
-                {
-                    PasswordName = "Password 2",
-                    UserName = "Username 2"
-                },
-                new PasswordDTO
-                {
-                    PasswordName = "Password 2",
-                    UserName = "Username 2"
-                },
-                new PasswordDTO
-                {
-                    PasswordName = "Password 2",
-                    UserName = "Username 2"
-                },
-                new PasswordDTO
-                {
-                    PasswordName = "Password 2",
-                    UserName = "Username 2"
-                },
-                new PasswordDTO
-                {
-                    PasswordName = "Password 2",
-                    UserName = "Username 2"
-                },
-                new PasswordDTO
-                {
-                    PasswordName = "Password 2",
-                    UserName = "Username 2"
-                },
-                new PasswordDTO
-                {
-                    PasswordName = "Password 2",
-                    UserName = "Username 2"
-                },
-                new PasswordDTO
-                {
-                    PasswordName = "Password 2",
-                    UserName = "Username 2"
-                },
-                new PasswordDTO
-                {
-                    PasswordName = "Password 2",
-                    UserName = "Username 2"
-                },
-                new PasswordDTO
-                {
-                    PasswordName = "Password 2",
-                    UserName = "Username 2"
-                }
-            };
-            //AllPasswords = await DatabaseService.GetUserPasswords(ActiveUserService.Instance.User.Id);
+                password.PasswordDecrypted = await EncryptionService.DecryptAsync(Encoding.Unicode.GetBytes(password.PasswordEncrypted ?? string.Empty),
+                    ActiveUserService.Instance.Password);
+            }
+
+            AllPasswords = passwords;
+
             PerformSearch();
         }
 
