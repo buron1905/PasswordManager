@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models;
 using Services.Abstraction.Data.Persistance;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Persistance.Repositories
 {
@@ -19,7 +14,7 @@ namespace Persistance.Repositories
 
         public async Task<IEnumerable<User>> GetAllAsync()
         {
-            return await FindAll()
+            return await (await FindAll())
                .OrderBy(u => u.EmailAddress)
                .ToListAsync();
         }
@@ -34,12 +29,13 @@ namespace Persistance.Repositories
             return FindSingleOrDefaultByCondition(user => user.EmailAddress.Equals(email));
         }
 
-        public Task<User?> GetUserWithPasswordsAndSettingsAsync(Guid userId)
+        public async Task<User?> GetUserWithPasswordsAndSettingsAsync(Guid userId)
         {
-            return FindByCondition(user => user.Id.Equals(userId))
-                .Include(user => user.Passwords)
-                .Include(user => user.Settings)
-                .FirstOrDefaultAsync();
+            throw new NotImplementedException();
+            //return await (await FindByCondition(user => user.Id.Equals(userId)))
+            //    .Include(user => user.Passwords)
+            //    .Include(user => user.Settings)
+            //    .FirstOrDefaultAsync();
         }
 
     }

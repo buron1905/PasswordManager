@@ -4,6 +4,7 @@ using Models.DTOs;
 using PasswordManager.MAUI.Helpers;
 using PasswordManager.MAUI.Services;
 using PasswordManager.MAUI.Views;
+using Services.Abstraction.Auth;
 
 namespace PasswordManager.MAUI.ViewModels
 {
@@ -20,11 +21,14 @@ namespace PasswordManager.MAUI.ViewModels
         [ObservableProperty]
         string _confirmPassword;
 
+        IAuthService _authService;
+
         #endregion
 
-        public RegistrationViewModel()
+        public RegistrationViewModel(IAuthService authService)
         {
             Title = "Register";
+            _authService = authService;
         }
 
         #region Commands
@@ -44,6 +48,7 @@ namespace PasswordManager.MAUI.ViewModels
                 //await DatabaseService.AddUser(newUser);
                 //ActiveUserService.Instance.Login(newUser, Model.Password);
                 //throw new Exception("Email is already used by another user.");
+                await _authService.RegisterAsync(model);
 
                 await PopupService.ShowToast("Successfully registered");
                 await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
@@ -53,7 +58,6 @@ namespace PasswordManager.MAUI.ViewModels
             catch (Exception ex)
             {
                 await PopupService.ShowSnackbar(ex.Message);
-                return;
             }
 
             IsBusy = false;

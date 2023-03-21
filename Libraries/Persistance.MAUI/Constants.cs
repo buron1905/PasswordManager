@@ -1,4 +1,4 @@
-﻿namespace PasswordManager.MAUI.Helpers
+﻿namespace Persistance.MAUI
 {
     public static class Constants
     {

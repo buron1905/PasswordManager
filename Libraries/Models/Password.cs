@@ -42,6 +42,5 @@ namespace Models
 
         [ForeignKey(nameof(User))]
         public Guid UserId { get; set; }
-        public User? User { get; set; }
     }
 }

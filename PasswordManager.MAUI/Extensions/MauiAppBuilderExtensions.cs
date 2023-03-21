@@ -1,10 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PasswordManager.MAUI.Helpers;
-using PasswordManager.MAUI.Services;
+﻿using PasswordManager.MAUI.Services;
 using PasswordManager.MAUI.ViewModels;
 using PasswordManager.MAUI.Views;
-using Persistance;
-using Persistance.Repositories;
+using Persistance.MAUI.Repositories;
 using Services.Abstraction.Auth;
 using Services.Abstraction.Data;
 using Services.Abstraction.Data.Persistance;
@@ -63,14 +60,6 @@ namespace PasswordManager.MAUI.Extensions
             // Transient
             builder.Services.AddTransient<AddEditPasswordPage>();
 
-            return builder;
-        }
-
-        public static MauiAppBuilder AddDbContext(this MauiAppBuilder builder)
-        {
-            builder.Services.AddDbContext<DataContext>(opt =>
-                opt.UseSqlite($"Data Source={Constants.DatabaseFilename}"));
-            //opt.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
             return builder;
         }
 

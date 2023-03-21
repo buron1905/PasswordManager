@@ -29,9 +29,6 @@ namespace PasswordManager.MAUI
                 .RegisterViewModels()
                 .RegisterViews();
 
-            builder
-                .AddDbContext();
-
             return builder.Build();
         }
     }

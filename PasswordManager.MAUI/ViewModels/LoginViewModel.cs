@@ -40,17 +40,24 @@ namespace PasswordManager.MAUI.ViewModels
 
             IsBusy = true;
 
-            //var response = await _authService.LoginAsync(model);
-
-            //if (response is not null)
-            if (await LoginService.Login(model.EmailAddress, model.Password))
+            try
             {
-                await Shell.Current.GoToAsync(nameof(LoadingPage));
-                await Shell.Current.GoToAsync($"//Home", true);
-                await PopupService.ShowToast("Logged in");
-                Password = string.Empty;
+                var response = await _authService.LoginAsync(model);
+
+                if (response is not null)
+                //if (await LoginService.Login(model.EmailAddress, model.Password))
+                {
+                    await Shell.Current.GoToAsync(nameof(LoadingPage));
+                    await Shell.Current.GoToAsync($"//Home", true);
+                    await PopupService.ShowToast("Logged in");
+                    Password = string.Empty;
+                }
+                else
+                {
+                    await PopupService.ShowToast("Wrong credentials.");
+                }
             }
-            else
+            catch (Exception ex)
             {
                 await PopupService.ShowToast("Wrong credentials.");
             }

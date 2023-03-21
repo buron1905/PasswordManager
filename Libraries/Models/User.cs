@@ -10,7 +10,7 @@ namespace Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        
+
         [Required]
         [EmailAddress]
         [MaxLength(MaxEmailLength, ErrorMessage = MaxEmailLengthErrorMessage)]
@@ -19,8 +19,6 @@ namespace Models
         [Required]
         public string? PasswordHASH { get; set; }
 
-        public Settings? Settings { get; set; }
-        public ICollection<Password>? Passwords { get; set; }
 
     }
 }

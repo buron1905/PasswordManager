@@ -64,7 +64,7 @@ namespace Services.Data
             var password = passwordDTO.Adapt<Password>();
 
             password.UserId = user.Id;
-            password.User = user;
+            //password.User = user;
             //TODO: use encryption service - now in controller
             //password.PasswordEncrypted = password.PasswordDecrypted;
 
