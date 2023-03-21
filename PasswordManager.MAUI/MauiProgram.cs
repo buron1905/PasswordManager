@@ -22,10 +22,15 @@ namespace PasswordManager.MAUI
 
             //DatabaseService.Init();
 
+            //builder.Configuration.GetAppSettings(builder.Services);
+
             builder
                 .RegisterAppServices()
                 .RegisterViewModels()
                 .RegisterViews();
+
+            builder
+                .AddDbContext();
 
             return builder.Build();
         }

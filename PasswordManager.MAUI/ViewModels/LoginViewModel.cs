@@ -4,6 +4,7 @@ using Models.DTOs;
 using PasswordManager.MAUI.Helpers;
 using PasswordManager.MAUI.Services;
 using PasswordManager.MAUI.Views;
+using Services.Abstraction.Auth;
 
 namespace PasswordManager.MAUI.ViewModels
 {
@@ -17,11 +18,14 @@ namespace PasswordManager.MAUI.ViewModels
         [ObservableProperty]
         string _password;
 
+        IAuthService _authService;
+
         #endregion
 
-        public LoginViewModel()
+        public LoginViewModel(IAuthService authService)
         {
             Title = "Login";
+            _authService = authService;
         }
 
         #region Commands
@@ -36,9 +40,12 @@ namespace PasswordManager.MAUI.ViewModels
 
             IsBusy = true;
 
+            //var response = await _authService.LoginAsync(model);
+
+            //if (response is not null)
+
             if (await LoginService.Login(model.EmailAddress, model.Password))
             {
-
                 await Shell.Current.GoToAsync(nameof(LoadingPage));
                 await Shell.Current.GoToAsync($"//Home", true);
                 await PopupService.ShowToast("Logged in");

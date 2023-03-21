@@ -1,8 +1,14 @@
-﻿using PasswordManager.MAUI.Services;
+﻿using Microsoft.EntityFrameworkCore;
+using PasswordManager.MAUI.Services;
 using PasswordManager.MAUI.ViewModels;
 using PasswordManager.MAUI.Views;
+using Persistance;
+using Persistance.Repositories;
 using Services.Abstraction.Auth;
+using Services.Abstraction.Data;
+using Services.Abstraction.Data.Persistance;
 using Services.Auth;
+using Services.Data;
 
 namespace PasswordManager.MAUI.Extensions
 {
@@ -15,14 +21,14 @@ namespace PasswordManager.MAUI.Extensions
 
             //Singleton
             //// From WebAPI
-            //builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
-            //builder.Services.AddScoped<IDataServiceWrapper, DataServiceWrapper>();
+            builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+            builder.Services.AddScoped<IDataServiceWrapper, DataServiceWrapper>();
             builder.Services.AddSingleton<IAuthService, AuthService>();
             builder.Services.AddSingleton<MauiAuthService>();
 
             // Transient
-            //builder.Services.AddTransient<IJwtService, JwtService>();
-            //builder.Services.AddTransient<IPasswordService, PasswordService>();
+            builder.Services.AddTransient<IJwtService, JwtService>();
+            builder.Services.AddTransient<IPasswordService, PasswordService>();
 
             return builder;
         }
@@ -58,5 +64,14 @@ namespace PasswordManager.MAUI.Extensions
 
             return builder;
         }
+
+        public static MauiAppBuilder AddDbContext(this MauiAppBuilder builder)
+        {
+            builder.Services.AddDbContext<DataContext>(opt =>
+                opt.UseSqlServer("Data Source=passwordmanager.sqlite3"));
+            //opt.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+            return builder;
+        }
+
     }
 }

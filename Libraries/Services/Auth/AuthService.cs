@@ -19,14 +19,14 @@ namespace Services.Auth
         private readonly IDataServiceWrapper _dataServiceWrapper;
         private readonly IRepositoryWrapper _repositoryWrapper;
         private readonly IJwtService _jwtService;
-        private readonly AppSettings _appSettings;
+        private readonly AppSettings? _appSettings;
 
-        public AuthService(IDataServiceWrapper dataServiceWrapper, IRepositoryWrapper repositoryWrapper, IJwtService jwtService, IOptions<AppSettings> appSettings)
+        public AuthService(IDataServiceWrapper dataServiceWrapper, IRepositoryWrapper repositoryWrapper, IJwtService jwtService, IOptions<AppSettings>? appSettings = null)
         {
             _dataServiceWrapper = dataServiceWrapper;
             _repositoryWrapper = repositoryWrapper;
             _jwtService = jwtService;
-            _appSettings = appSettings.Value;
+            _appSettings = appSettings?.Value;
         }
 
         public async Task<AuthResponseDTO?> LoginAsync(LoginRequestDTO requestDTO)
@@ -60,7 +60,7 @@ namespace Services.Auth
 
         private AuthResponseDTO GetAuthResponse(Guid userId, string emailAddress, string password)
         {
-            var expires = DateTime.UtcNow.AddMinutes(_appSettings.JweTokenMinutesTTL);
+            var expires = DateTime.UtcNow.AddMinutes(_appSettings?.JweTokenMinutesTTL ?? 5);
             var claims = _jwtService.GetClaims(userId, emailAddress, password, expires);
             var tokenString = _jwtService.GenerateJweToken(claims, JWTKeys._privateSigningKey, JWTKeys._publicEncryptionKey, expires);
 
