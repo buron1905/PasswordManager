@@ -1,9 +1,9 @@
 ﻿#if __ANDROID__
 using Android.Content.Res;
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
+#endif
 using PasswordManager.MAUI.Handlers;
 using PasswordManager.MAUI.Helpers;
-#endif
 
 namespace PasswordManager.MAUI
 {
