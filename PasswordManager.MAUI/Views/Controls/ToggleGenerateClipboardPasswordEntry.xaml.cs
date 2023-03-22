@@ -1,14 +1,14 @@
 using PasswordManager.MAUI.Services;
+using Services;
 
 namespace PasswordManager.MAUI.Views.Controls;
 
-public partial class TogglePasswordWithClipboardEntry : ContentView
+public partial class ToggleGenerateClipboardPasswordEntry : ContentView
 {
-    public TogglePasswordWithClipboardEntry()
+    public ToggleGenerateClipboardPasswordEntry()
     {
         InitializeComponent();
     }
-
     public static readonly BindableProperty PlaceholderProperty =
             BindableProperty.Create(nameof(Placeholder), typeof(string), typeof(TogglePasswordEntry));
 
@@ -54,6 +54,20 @@ public partial class TogglePasswordWithClipboardEntry : ContentView
     private void OnToggleButtonClicked(object sender, EventArgs e)
     {
         HidePassword = !HidePassword;
+    }
+
+    private void OnGenerateButtonClicked(object sender, EventArgs e)
+    {
+        var Length = Preferences.Get("Length", 8);
+        var NumbersOn = Preferences.Get("NumbersOn", true);
+        var UppercaseOn = Preferences.Get("UppercaseOn", true);
+        var SpecialCharsOn = Preferences.Get("SpecialCharsOn", true);
+        var LowercaseOn = Preferences.Get("LowercaseOn", true);
+
+        if (!NumbersOn && !SpecialCharsOn && !UppercaseOn && !LowercaseOn)
+            LowercaseOn = true;
+
+        Text = PasswordGeneratorService.GeneratePassword(Length, NumbersOn, SpecialCharsOn, UppercaseOn, LowercaseOn);
     }
 
     private async void OnClipboardButtonClicked(object sender, EventArgs e)
