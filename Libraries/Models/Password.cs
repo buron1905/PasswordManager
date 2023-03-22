@@ -29,13 +29,6 @@ namespace Models
 
         public bool Favorite { get; set; }
 
-        [Required]
-        public DateTime UDT { get; set; }
-
-        [Required]
-        public DateTime IDT { get; set; }
-
-
         [ForeignKey(nameof(User))]
         public Guid UserId { get; set; }
     }

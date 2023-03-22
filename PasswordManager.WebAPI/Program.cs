@@ -1,13 +1,7 @@
-using Persistance;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using NLog;
-using PasswordManager.WebAPI;
 using PasswordManager.WebAPI.Extensions;
-using System.Text;
 using PasswordManager.WebAPI.Middleware;
+using Persistance;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,8 +11,8 @@ var appSettings = builder.Configuration.GetAppSettings(builder.Services);
 
 builder.Services.AddApplicationServices();
 
-LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
-builder.Services.ConfigureLoggerService();
+//LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
+//builder.Services.ConfigureLoggerService();
 
 builder.Services.AddControllers();
 

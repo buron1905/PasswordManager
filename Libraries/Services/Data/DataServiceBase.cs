@@ -1,14 +1,7 @@
-﻿using Models;
-using Persistance;
-using Services.Abstraction.Data;
+﻿using Services.Abstraction.Data;
 using Services.Abstraction.Data.Persistance;
 using Services.Abstraction.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Data
 {
@@ -23,7 +16,7 @@ namespace Services.Data
             var repository = _repositoryWrapper.GetRepository<T>();
             if (repository is null)
                 return false;
-            
+
             return await repository.AnyAsync(expression);
         }
 
@@ -32,7 +25,7 @@ namespace Services.Data
             var repository = _repositoryWrapper.GetRepository<T>();
             if (repository is null)
                 return null;
-            
+
             return await repository.FindSingleOrDefaultByCondition(expression);
         }
 

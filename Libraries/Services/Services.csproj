@@ -10,11 +10,13 @@
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="MailKit" Version="3.4.1" />
     <PackageReference Include="Mapster" Version="7.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="6.23.1" />
     <PackageReference Include="MimeKit" Version="3.4.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.10.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Persistance\Persistance.csproj" />
     <ProjectReference Include="..\Services.Abstraction\Services.Abstraction.csproj" />
   </ItemGroup>
 

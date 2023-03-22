@@ -10,5 +10,11 @@ namespace Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
+
+        [Required]
+        public DateTime UDT { get; set; }
+
+        [Required]
+        public DateTime IDT { get; set; }
     }
 }

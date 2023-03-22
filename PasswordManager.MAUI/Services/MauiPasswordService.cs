@@ -1,5 +1,6 @@
 ﻿using Models;
 using Models.DTOs;
+using PasswordManager.MAUI.Helpers;
 using Services.Abstraction.Data;
 using System.Linq.Expressions;
 
@@ -7,11 +8,11 @@ namespace PasswordManager.MAUI.Services
 {
     public class MauiPasswordService : MauiBaseDataService, IPasswordService
     {
-        readonly IPasswordService _offlinePasswordService;
+        private readonly IDataServiceWrapper _dataServiceWrapper;
 
-        public MauiPasswordService(HttpClient httpClient, IConnectivity connectivity, IPasswordService offlinePasswordService) : base(httpClient, connectivity)
+        public MauiPasswordService(HttpClient httpClient, IConnectivity connectivity, IDataServiceWrapper dataServiceWrapper) : base(httpClient, connectivity)
         {
-            _offlinePasswordService = offlinePasswordService;
+            _dataServiceWrapper = dataServiceWrapper;
         }
 
         public Task<bool> AnyAsync(Expression<Func<Password, bool>> expression)
@@ -24,9 +25,28 @@ namespace PasswordManager.MAUI.Services
             throw new NotImplementedException();
         }
 
-        public Task DeleteAsync(Guid userId, Guid passwordId)
+        public async Task DeleteAsync(Guid userId, Guid passwordId)
         {
-            throw new NotImplementedException();
+            if (IsNetworkAccess())
+            {
+                Uri uri = new Uri(string.Format(AppConstants.ApiUrl, passwordId));
+
+                try
+                {
+                    HttpResponseMessage response = await _httpClient.DeleteAsync(uri);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+
+            await _dataServiceWrapper.PasswordService.DeleteAsync(userId, passwordId);
+
         }
 
         public Task<Password> FindSingleOrDefaultByCondition(Expression<Func<Password, bool>> expression)

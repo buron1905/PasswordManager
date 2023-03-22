@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Models;
 using Services.Abstraction.Data.Persistance;
 using System.Linq.Expressions;
 
 namespace Persistance.Repositories
 {
-    public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
+    public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : Entity
     {
         protected DataContext _dataContext;
 
@@ -35,11 +36,13 @@ namespace Persistance.Repositories
 
         public void Create(T entity)
         {
+            entity.IDT = DateTime.UtcNow;
             _dataContext.Set<T>().Add(entity);
         }
 
         public void Update(T entity)
         {
+            entity.UDT = DateTime.UtcNow;
             _dataContext.Set<T>().Update(entity);
         }
 

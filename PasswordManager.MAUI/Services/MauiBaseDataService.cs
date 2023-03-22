@@ -2,8 +2,8 @@
 {
     public abstract class MauiBaseDataService
     {
-        HttpClient _httpClient;
-        readonly IConnectivity _connectivity;
+        protected HttpClient _httpClient;
+        protected readonly IConnectivity _connectivity;
 
         public MauiBaseDataService(HttpClient httpClient, IConnectivity connectivity)
         {

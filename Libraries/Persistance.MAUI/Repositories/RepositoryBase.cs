@@ -37,12 +37,14 @@ namespace Persistance.MAUI.Repositories
         {
             await Init();
             entity.Id = Guid.NewGuid();
+            entity.IDT = DateTime.UtcNow;
             await _connection.InsertAsync(entity);
         }
 
         public async void Update(T entity)
         {
             await Init();
+            entity.UDT = DateTime.UtcNow;
             await _connection.UpdateAsync(entity);
             var test2 = await _connection.Table<T>().ToListAsync();
         }

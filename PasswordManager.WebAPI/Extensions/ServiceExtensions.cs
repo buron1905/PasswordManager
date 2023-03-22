@@ -1,16 +1,14 @@
-﻿using Persistance.Repositories;
-using LoggerService;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Services.Abstraction;
-using System.Text;
-using Services.Data;
-using Services.Auth;
-using Services.TMP;
+using Models;
+using Persistance.Repositories;
 using Services.Abstraction.Auth;
 using Services.Abstraction.Data;
 using Services.Abstraction.Data.Persistance;
-using Models;
+using Services.Auth;
+using Services.Data;
+using Services.TMP;
+using System.Text;
 
 namespace PasswordManager.WebAPI.Extensions
 {
@@ -83,9 +81,9 @@ namespace PasswordManager.WebAPI.Extensions
             return services;
         }
 
-        public static void ConfigureLoggerService(this IServiceCollection services)
-        {
-            services.AddSingleton<ILoggerManager, LoggerManager>();
-        }
+        //public static void ConfigureLoggerService(this IServiceCollection services)
+        //{
+        //    services.AddSingleton<ILoggerManager, LoggerManager>();
+        //}
     }
 }

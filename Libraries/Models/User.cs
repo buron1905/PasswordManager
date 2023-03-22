@@ -16,6 +16,9 @@ namespace Models
         [Required]
         public string? PasswordHASH { get; set; }
 
+        public bool EmailConfirmed { get; set; }
+
+        public bool TwoFactorEnabled { get; set; }
 
     }
 }
