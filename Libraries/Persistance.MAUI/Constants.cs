@@ -10,7 +10,9 @@
             // create the database if it doesn't exist
             SQLite.SQLiteOpenFlags.Create |
             // enable multi-threaded database access
-            SQLite.SQLiteOpenFlags.SharedCache;
+            SQLite.SQLiteOpenFlags.SharedCache |
+            // The file is encrypted and inaccessible while the device is locked
+            SQLite.SQLiteOpenFlags.ProtectionComplete;
 
         public static string DatabasePath => Path.Combine(FileSystem.AppDataDirectory, DatabaseFilename);
     }
