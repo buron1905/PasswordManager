@@ -8,9 +8,13 @@ namespace Services.Abstraction.Auth
         Task<AuthResponseDTO?> LoginTfaAsync(LoginTfaRequestDTO requestDTO);
         Task<AuthResponseDTO?> RegisterAsync(RegisterRequestDTO requestDTO);
         Task<AuthResponseDTO?> RefreshTokenAsync(string token);
-        Task<AuthResponseDTO?> SetTwoFactorEnabledAsync(Guid userId, string password);
-        Task SetTwoFactorDisabledAsync(Guid userId);
-        Task<TfaSetupDTO?> GetTfaSetup(string email, string password);
+        AuthResponseDTO GetAuthResponse(Guid userId, string emailAddress, string password, bool isAuthSuccessful = true, bool tfaEnabled = false, bool tfaChecked = true);
+        Task<UserDTO?> SetTwoFactorEnabledAsync(Guid userId, string password);
+        Task<UserDTO?> SetTwoFactorDisabledAsync(Guid userId);
+        Task<TfaSetupDTO?> GetTfaSetup(Guid userId, string password);
+        Task<TfaSetupDTO?> EnableTfa(Guid userId, string password, TfaSetupDTO tfaSetupDTO);
+        Task<TfaSetupDTO?> DisableTfa(Guid userId, string password, TfaSetupDTO tfaSetupDTO);
+        Task<string> DecryptString(string password, string textEncrypted);
         TfaSetupDTO GenerateTfaSetupDTO(string issuer, string accountTitle, string accountSecretKey);
         bool ValidateTfaCode(string secret, string code);
         bool TokenIsValid(string token);

@@ -93,10 +93,10 @@ namespace PasswordManager.WebAPI.Controllers
         public async Task<IActionResult> GetTfaSetup()
         {
             var claims = HttpContext.GetUserClaims();
-            var email = JwtService.GetUserEmailFromClaims(claims);
+            var userId = JwtService.GetUserGuidFromClaims(claims);
             var password = JwtService.GetUserPasswordFromClaims(claims);
 
-            var result = await _authService.GetTfaSetup(email, password);
+            var result = await _authService.GetTfaSetup(userId, password);
 
             if (result is null)
                 return BadRequest();
@@ -106,28 +106,22 @@ namespace PasswordManager.WebAPI.Controllers
 
         [Authorize]
         [HttpPost("tfa-setup")]
-        public async Task<IActionResult> PostTfaSetup([FromBody] TfaSetupDTO tfaSetupDTO)
+        public async Task<IActionResult> EnableTfaSetup([FromBody] TfaSetupDTO tfaSetupDTO)
         {
             var claims = HttpContext.GetUserClaims();
             var userId = JwtService.GetUserGuidFromClaims(claims);
             var email = JwtService.GetUserEmailFromClaims(claims);
             var password = JwtService.GetUserPasswordFromClaims(claims);
 
-            var isValidCode = _authService.ValidateTfaCode(password, tfaSetupDTO.Code);
+            var result = await _authService.EnableTfa(userId, password, tfaSetupDTO);
 
-            if (!isValidCode)
-                return BadRequest("Invalid code");
+            if (result is null)
+                return BadRequest();
 
-            var response = await _authService.SetTwoFactorEnabledAsync(userId, password);
-            var tfaResponse = _authService.GenerateTfaSetupDTO("Password Manager", email!, password!);
-            tfaResponse.IsTfaEnabled = true;
-
-            if (response is null)
-                return Unauthorized(new AuthResponseDTO { IsAuthSuccessful = false, ErrorMessage = "" });
-
+            var response = _authService.GetAuthResponse(userId, email, password, true, true, true);
             SetTokenCookie(response.JweToken!);
 
-            return Ok(tfaResponse);
+            return Ok(result);
         }
 
         [Authorize]
@@ -136,19 +130,14 @@ namespace PasswordManager.WebAPI.Controllers
         {
             var claims = HttpContext.GetUserClaims();
             var userId = JwtService.GetUserGuidFromClaims(claims);
-            var email = JwtService.GetUserEmailFromClaims(claims);
             var password = JwtService.GetUserPasswordFromClaims(claims);
 
-            var isValidCode = _authService.ValidateTfaCode(password, tfaSetupDTO.Code);
+            var result = await _authService.DisableTfa(userId, password, tfaSetupDTO);
 
-            if (!isValidCode)
-                return BadRequest("Invalid code");
+            if (result is null)
+                return BadRequest();
 
-            await _authService.SetTwoFactorDisabledAsync(userId);
-            var tfaResponse = _authService.GenerateTfaSetupDTO("Password Manager", email!, password!);
-            tfaResponse.IsTfaEnabled = false;
-
-            return Ok(tfaResponse);
+            return Ok(result);
         }
 
         #endregion TFA
