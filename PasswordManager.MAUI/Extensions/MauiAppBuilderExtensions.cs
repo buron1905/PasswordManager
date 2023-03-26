@@ -22,6 +22,7 @@ namespace PasswordManager.MAUI.Extensions
             builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
             builder.Services.AddScoped<IDataServiceWrapper, DataServiceWrapper>();
             builder.Services.AddSingleton<IAuthService, AuthService>();
+            builder.Services.AddSingleton<ITwoFactorAuthService, TwoFactorAuthService>();
             builder.Services.AddSingleton<MauiAuthService>();
 
             // Transient

@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { LoginModel } from './../models/login.model';
 import { AuthResponseModel } from '../models/auth-response.model';
+import { TfaSetup } from '../models/tfa-setup.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,9 @@ export class AuthService {
   
   private loginPath = `${environment.apiUrl}/auth/login`;
   private registerPath = `${environment.apiUrl}/auth/register`;
+  private tfaLoginPath = `${environment.apiUrl}/auth/tfa-login`;
+  private tfaSetupPath = `${environment.apiUrl}/auth/tfa-setup`;
+  private tfaDisablePath = `${environment.apiUrl}/auth/tfa-disable`;
   
   constructor(private http: HttpClient, private router: Router, private jwtHelper: JwtHelperService) { }
 
@@ -28,7 +32,23 @@ export class AuthService {
   }
 
   login(data: AuthResponseModel) : void {
-    localStorage.setItem('expirationDateTime', data.ExpirationDateTime);
+    localStorage.setItem('expirationDateTime', data.expirationDateTime);
+  }
+
+  loginTfa(data: AbstractControl<any, any>): Observable<AuthResponseModel> {
+    return this.http.post<AuthResponseModel>(this.tfaLoginPath, data);
+  }
+  
+  getTfaSetup(): Observable<TfaSetup> {
+    return this.http.get<TfaSetup>(`${this.tfaSetupPath}`);
+  }
+
+  enableTfa(data: AbstractControl<any, any>): Observable<TfaSetup> {
+    return this.http.post<TfaSetup>(this.tfaSetupPath, data);
+  }
+
+  disableTfa(data: AbstractControl<any, any>): Observable<TfaSetup> {
+    return this.http.post<TfaSetup>(this.tfaDisablePath, data);
   }
 
   logout(redirect: boolean = true): void {

@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <a class="navbar-brand" routerLink="" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">Password Manager</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+      <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarScroll">
       <ul class="navbar-nav me-auto my-2 my-lg-0">
@@ -15,12 +15,26 @@
         <li *ngIf="isAuthenticated()" class="nav-item">
           <a class="nav-link" routerLinkActive="active" routerLink="/generator" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">Generator</a>
         </li>
+        <li *ngIf="isAuthenticated()" class="nav-item">
+          <a class="nav-link" routerLinkActive="active" routerLink="/settings" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">Settings</a>
+        </li>
       </ul>
-      <form class="d-flex">
+      <div class="d-flex">
         <a *ngIf="!isAuthenticated()" class="btn btn-outline-dark" routerLink="/login" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">Log In</a>
-        <a *ngIf="!isAuthenticated()" class="btn btn-primary ms-1" routerLink="/register"data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">Register</a>
+        <a *ngIf="!isAuthenticated()" class="btn btn-primary ms-1" routerLink="/register" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">Register</a>
         <a *ngIf="isAuthenticated()" class="btn btn-outline-dark" (click)="logout()" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">Logout</a>
-      </form>
+      </div>
     </div>
   </div>
 </nav>
+
+<!--<div *ngIf="isAuthenticated()" class="nav-item dropdown">
+  <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="bi bi-person-circle pointer" title="Options"></i>
+  </a>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><a class="dropdown-item pointer"><i class="bi bi-gear"></i>&nbsp;&nbsp;Settings</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item pointer" (click)="logout()"><i class="bi bi-box-arrow-right"></i>&nbsp;&nbsp;Logout</a></li>
+  </ul>
+</div>-->

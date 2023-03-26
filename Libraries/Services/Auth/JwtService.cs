@@ -80,14 +80,15 @@ namespace Services.Auth
                 return null;
         }
 
-        public IEnumerable<Claim> GetClaims(Guid userId, string emailAddress, string password, DateTime expirationUTCDateTime)
+        public IEnumerable<Claim> GetClaims(Guid userId, string emailAddress, string password, DateTime expirationUTCDateTime, bool tfaChecked = true)
         {
             var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
                     new Claim(ClaimTypes.Email, emailAddress),
                     new Claim("password", password),
-                    new Claim(ClaimTypes.Expiration, expirationUTCDateTime.ToString())
+                    new Claim(ClaimTypes.Expiration, expirationUTCDateTime.ToString()),
+                    new Claim("tfaChecked", tfaChecked.ToString())
                 };
 
             return claims;
@@ -111,6 +112,14 @@ namespace Services.Auth
         public static string? GetUserPasswordFromClaims(IEnumerable<Claim> claims)
         {
             return claims.FirstOrDefault(c => c.Type.Equals("password"))?.Value;
+        }
+
+        /// <summary>
+        /// Default is true
+        /// </summary>
+        public static bool GetTfaCheckedFromClaims(IEnumerable<Claim> claims)
+        {
+            return claims.FirstOrDefault(c => c.Type.Equals("tfaChecked"))?.Value != false.ToString(); // default is true
         }
 
         public static DateTime? GetTokenExpirationFromClaims(IEnumerable<Claim> claims)

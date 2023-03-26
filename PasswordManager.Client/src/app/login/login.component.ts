@@ -3,6 +3,8 @@ import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/fo
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
+import { ModalTfaLoginComponent } from '../modal-tfa-login/modal-tfa-login.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +18,7 @@ export class LoginComponent implements OnInit {
   wrongCredentials = false;
   toggledPassword = false;
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private toastrService: ToastrService) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private toastrService: ToastrService, private modalService: NgbModal) {
     this.loginForm = this.fb.group({
       emailAddress: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
@@ -36,9 +38,27 @@ export class LoginComponent implements OnInit {
 
     this.authService.authenticate(this.loginForm.value).subscribe(
       data => {
-        this.authService.login(data);
-        this.toastrService.success('Login successful');
-        this.router.navigate(['/passwords']);
+        this.loading = false;
+
+        if (data.isTfaEnabled) {
+          const modalTfaLogin = this.modalService.open(ModalTfaLoginComponent);
+          modalTfaLogin.componentInstance.token = data.jweToken;
+          modalTfaLogin.result.then((result) => {
+            if (result == true) {
+              this.authService.login(data);
+              this.toastrService.success('Login successful');
+              this.router.navigate(['/passwords']);
+            }
+            else {
+              this.toastrService.error("Two factor verification failed");
+            }
+          });
+        }
+        else {
+          this.authService.login(data);
+          this.toastrService.success('Login successful');
+          this.router.navigate(['/passwords']);
+        }
       },
       error => {
         this.wrongCredentials = true;

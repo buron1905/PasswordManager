@@ -21,6 +21,7 @@ namespace PasswordManager.WebAPI.Extensions
 
             services.AddTransient<IJwtService, JwtService>();
             services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<ITwoFactorAuthService, TwoFactorAuthService>();
             services.AddTransient<IPasswordService, PasswordService>();
 
             return services;

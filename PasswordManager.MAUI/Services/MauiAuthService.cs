@@ -12,6 +12,16 @@ namespace PasswordManager.MAUI.Services
             _offlineAuthService = offlineAuthService;
         }
 
+        public string GenerateTfaSetupDTO(string issuer, string accountTitle, string accountSecretKey)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TfaSetupDTO> GetTfaSetup(Guid userId, string password)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<AuthResponseDTO> LoginAsync(LoginRequestDTO requestDTO)
         {
             if (!IsNetworkAccess())
@@ -33,6 +43,11 @@ namespace PasswordManager.MAUI.Services
             */
         }
 
+        public Task<AuthResponseDTO> LoginTfaAsync(LoginTfaRequestDTO requestDTO)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<AuthResponseDTO> RefreshTokenAsync(string token)
         {
             throw new NotImplementedException();
@@ -43,10 +58,29 @@ namespace PasswordManager.MAUI.Services
             throw new NotImplementedException();
         }
 
+        public Task SetTwoFactorDisabledAsync(Guid userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TfaSetupDTO?> SetTwoFactorEnabledAsync(Guid userId, string password)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool TokenIsValid(string token)
         {
             throw new NotImplementedException();
         }
 
+        public bool ValidateTfaCode(string secret, string code)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<AuthResponseDTO> IAuthService.SetTwoFactorEnabledAsync(string email, string password)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

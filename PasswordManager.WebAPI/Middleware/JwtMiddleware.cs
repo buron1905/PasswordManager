@@ -19,10 +19,11 @@ namespace PasswordManager.WebAPI.Middleware
         public async Task Invoke(HttpContext httpContext, IJwtService jwtService, IOptions<AppSettings> appSettings)
         {
             var token = httpContext.Request.Cookies["token"] ?? httpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-            if (token != null)
+            if (token is not null)
             {
                 var claims = jwtService.ValidateJweToken(token, JWTKeys._publicSigningKey, JWTKeys._privateEncryptionKey);
-                if (claims != null)
+
+                if (claims is not null && JwtService.GetTfaCheckedFromClaims(claims))
                 {
                     httpContext.SetUser(claims);
 

@@ -37,7 +37,7 @@ namespace PasswordManager.MAUI.ViewModels
         async Task Register()
         {
             var model = new RegisterRequestDTO() { EmailAddress = EmailAddress, Password = Password, ConfirmPassword = ConfirmPassword };
-            var modelDTO = new UserDTO() { Id = Guid.NewGuid(), Email = EmailAddress, Password = Password };
+            var modelDTO = new UserDTO() { Id = Guid.NewGuid(), EmailAddress = EmailAddress, Password = Password };
 
             if (!ValidationHelper.IsFormValid(model, Shell.Current.CurrentPage))
                 return;

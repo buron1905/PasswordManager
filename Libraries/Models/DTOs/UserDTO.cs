@@ -4,14 +4,13 @@ using static Models.Validation.ModelsValidationProperties;
 
 namespace Models.DTOs
 {
-    public class UserDTO
+    public class UserDTO : EntityDTO
     {
-        public Guid Id { get; set; }
-        
+
         [Required]
         [EmailAddress]
         [MaxLength(MaxEmailLength, ErrorMessage = MaxEmailLengthErrorMessage)]
-        public string? Email { get; set; }
+        public string? EmailAddress { get; set; }
 
         [Required]
         public string? Password { get; set; }
@@ -19,5 +18,10 @@ namespace Models.DTOs
 
         [JsonIgnore]
         public string? PasswordHASH { get; set; }
+
+        public bool TwoFactorEnabled { get; set; }
+
+        public string? TwoFactorSecret { get; set; }
+
     }
 }

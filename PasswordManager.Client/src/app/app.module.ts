@@ -28,6 +28,8 @@ import { PasswordGeneratorComponent } from './password-generator/password-genera
 import { ModalDeletePasswordComponent } from './modal-delete-password/modal-delete-password.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ModalGeneratePasswordComponent } from './modal-generate-password/modal-generate-password.component';
+import { ModalTfaLoginComponent } from './modal-tfa-login/modal-tfa-login.component';
+import { SettingsComponent } from './settings/settings.component';
 
 export function tokenGetter() { 
   return localStorage.getItem("token"); 
@@ -47,6 +49,8 @@ export function tokenGetter() {
     PasswordGeneratorComponent,
     ModalDeletePasswordComponent,
     ModalGeneratePasswordComponent,
+    ModalTfaLoginComponent,
+    SettingsComponent,
   ],
   imports: [
     BrowserModule,

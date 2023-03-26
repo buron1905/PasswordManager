@@ -11,20 +11,19 @@ using System.Security.Claims;
 
 namespace Services.Auth
 {
-    /// <summary>
-    /// Service is used for login and registration
-    /// </summary>
     public class AuthService : IAuthService
     {
         private readonly IDataServiceWrapper _dataServiceWrapper;
         private readonly IRepositoryWrapper _repositoryWrapper;
+        private readonly ITwoFactorAuthService _twoFactorAuthService;
         private readonly IJwtService _jwtService;
         private readonly AppSettings? _appSettings;
 
-        public AuthService(IDataServiceWrapper dataServiceWrapper, IRepositoryWrapper repositoryWrapper, IJwtService jwtService, IOptions<AppSettings>? appSettings = null)
+        public AuthService(IDataServiceWrapper dataServiceWrapper, IRepositoryWrapper repositoryWrapper, ITwoFactorAuthService twoFactorAuthService, IJwtService jwtService, IOptions<AppSettings>? appSettings = null)
         {
             _dataServiceWrapper = dataServiceWrapper;
             _repositoryWrapper = repositoryWrapper;
+            _twoFactorAuthService = twoFactorAuthService;
             _jwtService = jwtService;
             _appSettings = appSettings?.Value;
         }
@@ -39,9 +38,83 @@ namespace Services.Auth
 
             //get user guid
             var userDTO = await _dataServiceWrapper.UserService.GetByEmailAsync(requestDTO.EmailAddress!);
+            var response = GetAuthResponse(userDTO.Id, requestDTO.EmailAddress!, requestDTO.Password!, true, userDTO.TwoFactorEnabled, !userDTO.TwoFactorEnabled);
 
-            return GetAuthResponse(userDTO.Id, requestDTO.EmailAddress!, requestDTO.Password!);
+            return response;
         }
+
+        public async Task<AuthResponseDTO?> LoginTfaAsync(LoginTfaRequestDTO requestDTO)
+        {
+
+            if (requestDTO is null)
+                return null;
+            if (requestDTO.Token is null || requestDTO.Code is null)
+                return null;
+
+            var claims = _jwtService.ValidateJweToken(requestDTO.Token, JWTKeys._publicSigningKey, JWTKeys._privateEncryptionKey);
+            if (claims is null)
+                return null;
+
+            var userId = JwtService.GetUserGuidFromClaims(claims);
+            var password = JwtService.GetUserPasswordFromClaims(claims);
+
+            var valid = _twoFactorAuthService.ValidateTwoFactorPin(password, requestDTO.Code!);
+
+            if (!valid)
+                return null;
+
+            var emailAddress = JwtService.GetUserEmailFromClaims(claims);
+
+            var response = GetAuthResponse(userId, emailAddress, password, true, true, true);
+
+            return response;
+        }
+
+        public bool ValidateTfaCode(string secret, string code)
+        {
+            return _twoFactorAuthService.ValidateTwoFactorPin(secret, code);
+        }
+
+        public async Task<AuthResponseDTO?> SetTwoFactorEnabledAsync(Guid userId, string password)
+        {
+            var user = await _dataServiceWrapper.UserService.GetByIdAsync(userId);
+            //if (password is not null)
+            //{
+            //    secret = Encoding.Unicode.GetString(await EncryptionService.EncryptAsync(secret, password));
+            //}
+
+            user.TwoFactorEnabled = true;
+            //user.TwoFactorSecret = secret;
+            var result = await _dataServiceWrapper.UserService.UpdateAsync(userId, user);
+
+            var response = GetAuthResponse(userId, user.EmailAddress, password, true, true, true);
+
+            return response;
+        }
+
+        public async Task SetTwoFactorDisabledAsync(Guid userId)
+        {
+            var user = await _dataServiceWrapper.UserService.GetByIdAsync(userId);
+            user.TwoFactorEnabled = false;
+            await _dataServiceWrapper.UserService.UpdateAsync(userId, user);
+        }
+
+        public TfaSetupDTO GenerateTfaSetupDTO(string issuer, string accountTitle, string accountSecretKey)
+        {
+            return _twoFactorAuthService.GenerateTfaSetup(issuer, accountTitle, accountSecretKey);
+        }
+
+        //private async Task<string?> GetTfaSecret(Guid userId, string password)
+        //{
+        //    var secretEncrypted = (await _dataServiceWrapper.UserService.GetByIdAsync(userId)).TwoFactorSecret;
+        //    if (secretEncrypted is null)
+        //        return null;
+
+        //    var secretDecrypted = await EncryptionService.DecryptAsync(Encoding.Unicode.GetBytes(secretEncrypted),
+        //        password);
+
+        //    return secretDecrypted;
+        //}
 
         public async Task<AuthResponseDTO?> RegisterAsync(RegisterRequestDTO requestDTO)
         {
@@ -58,14 +131,16 @@ namespace Services.Auth
             return GetAuthResponse(userDTO.Id, requestDTO.EmailAddress!, requestDTO.Password!);
         }
 
-        private AuthResponseDTO GetAuthResponse(Guid userId, string emailAddress, string password)
+        private AuthResponseDTO GetAuthResponse(Guid userId, string emailAddress, string password, bool isAuthSuccessful = true, bool tfaEnabled = false, bool tfaChecked = true)
         {
             var expires = DateTime.UtcNow.AddMinutes(_appSettings?.JweTokenMinutesTTL ?? 5);
-            var claims = _jwtService.GetClaims(userId, emailAddress, password, expires);
+            var claims = _jwtService.GetClaims(userId, emailAddress, password, expires, tfaChecked);
             var tokenString = _jwtService.GenerateJweToken(claims, JWTKeys._privateSigningKey, JWTKeys._publicEncryptionKey, expires);
 
             return new AuthResponseDTO
             {
+                IsAuthSuccessful = isAuthSuccessful,
+                IsTfaEnabled = tfaEnabled,
                 JweToken = tokenString,
                 ExpirationDateTime = expires
             };
@@ -120,5 +195,16 @@ namespace Services.Auth
             return true;
         }
 
+        public async Task<TfaSetupDTO?> GetTfaSetup(string email, string password)
+        {
+            var userDTO = await _dataServiceWrapper.UserService.GetByEmailAsync(email);
+            if (userDTO is null)
+                return null;
+
+            var result = GenerateTfaSetupDTO("Password Manager", email!, password!);
+            result.IsTfaEnabled = userDTO.TwoFactorEnabled;
+
+            return result;
+        }
     }
 }

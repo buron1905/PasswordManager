@@ -20,5 +20,7 @@ namespace Models
 
         public bool TwoFactorEnabled { get; set; }
 
+        public string? TwoFactorSecret { get; set; }
+
     }
 }

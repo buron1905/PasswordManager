@@ -69,8 +69,10 @@ namespace Services.Data
             }
 
             // TODO: Check update logic
-            user.EmailAddress = userDTO.Email;
+            user.EmailAddress = userDTO.EmailAddress;
             user.PasswordHASH = userDTO.PasswordHASH;
+            user.TwoFactorEnabled = userDTO.TwoFactorEnabled;
+            user.TwoFactorSecret = userDTO.TwoFactorSecret;
 
             await _repositoryWrapper.SaveChangesAsync();
 

@@ -4,9 +4,8 @@ using static Models.Validation.ModelsValidationProperties;
 
 namespace Models.DTOs
 {
-    public class PasswordDTO
+    public class PasswordDTO : EntityDTO
     {
-        public Guid Id { get; set; }
 
         [Required(ErrorMessage = RequiredPasswordNameErrorMessage)]
         [MaxLength(MaxPasswordNameLength, ErrorMessage = MaxPasswordNameLengthErrorMessage)]
@@ -30,10 +29,6 @@ namespace Models.DTOs
         public string? Notes { get; set; }
 
         public bool Favorite { get; set; }
-
-        public DateTime UDT { get; set; }
-
-        public DateTime IDT { get; set; }
 
     }
 }

@@ -1,4 +1,7 @@
 export interface AuthResponseModel {
-  JweToken: string;
-  ExpirationDateTime: string;
-  }
+  isAuthSuccessful: boolean;
+  isTfaEnabled: boolean;
+  errorMessage: string;
+  jweToken: string;
+  expirationDateTime: string;
+}
