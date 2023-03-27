@@ -47,6 +47,16 @@
                     <Label Text="Always ask for master password" Style="{StaticResource LabelMedium}" VerticalOptions="Center"/>
                     <Switch Grid.Column="1" IsToggled="{Binding AskForPassword, Mode=TwoWay}"/>
                 </Grid>
+
+
+                <StackLayout Margin="0,30,0,0">
+                    
+                    
+                    
+                </StackLayout>
+
+
+
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>

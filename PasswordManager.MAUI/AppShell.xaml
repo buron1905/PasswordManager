@@ -50,13 +50,17 @@
             <ShellContent Title="New password" Route="AddEditPasswordPage" ContentTemplate="{DataTemplate views:AddEditPasswordPage}" />
         </Tab>
     </FlyoutItem>
-    <ShellContent Title="Settings" Route="SettingsPage" ContentTemplate="{DataTemplate views:SettingsPage}">
-        <ShellContent.Icon>
+    <FlyoutItem Title="Settings">
+        <FlyoutItem.Icon>
             <FontImageSource FontFamily="FAS"
                             Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                             Glyph="{x:Static fontAwesome:FontAwesomeIcons.Cogs}"/>
-        </ShellContent.Icon>
-    </ShellContent>
+        </FlyoutItem.Icon>
+        <Tab>
+            <ShellContent Title="User Settings" Route="SettingsPage" ContentTemplate="{DataTemplate views:SettingsPage}"/>
+            <ShellContent Title="Two-Factor Authentication" Route="TfaSettingsPage" ContentTemplate="{DataTemplate views:TfaSettingsPage}"/>
+        </Tab>
+    </FlyoutItem>
     <MenuItem Text="About" Command="{Binding AboutCommand}">
         <MenuItem.IconImageSource>
             <FontImageSource FontFamily="FAS"

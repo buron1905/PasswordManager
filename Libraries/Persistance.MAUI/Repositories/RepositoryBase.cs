@@ -16,7 +16,12 @@ namespace Persistance.MAUI.Repositories
         async Task Init()
         {
             if (_connection is not null)
+            {
+                var userTable = await _connection.Table<User>().ToListAsync();
+                var passwordTable = await _connection.Table<Password>().ToListAsync();
+                var settingsTable = await _connection.Table<Settings>().ToListAsync();
                 return;
+            }
 
             //File.Delete(Constants.DatabasePath);
 

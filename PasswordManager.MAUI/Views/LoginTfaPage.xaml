@@ -11,8 +11,6 @@
             <StackLayout Padding="20">
                 <controls:OutLinedEntry Placeholder="Code"  Margin="0,10,0,10"
                     Text="{Binding Code}"/>
-                <Label x:Name="EmailAddressError" 
-                    IsVisible="False" Style="{StaticResource LabelError}" />
                 <Button 
                     x:Name="submit"
                     Text="Verify"

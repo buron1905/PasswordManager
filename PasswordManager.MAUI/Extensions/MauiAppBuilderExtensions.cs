@@ -37,14 +37,15 @@ namespace PasswordManager.MAUI.Extensions
         public static MauiAppBuilder RegisterViewModels(this MauiAppBuilder builder)
         {
             //Singleton
-            builder.Services.AddSingleton<LoadingViewModel>();
-            builder.Services.AddSingleton<LoginViewModel>();
-            builder.Services.AddSingleton<LoginTfaViewModel>();
-            builder.Services.AddSingleton<RegistrationViewModel>();
-            builder.Services.AddSingleton<RegistrationSuccessfulViewModel>();
-            builder.Services.AddSingleton<PasswordsListViewModel>();
-            builder.Services.AddSingleton<GeneratePasswordViewModel>();
-            builder.Services.AddSingleton<SettingsViewModel>();
+            builder.Services.AddTransient<LoadingViewModel>();
+            builder.Services.AddTransient<LoginViewModel>();
+            builder.Services.AddTransient<LoginTfaViewModel>();
+            builder.Services.AddTransient<RegistrationViewModel>();
+            builder.Services.AddTransient<RegistrationSuccessfulViewModel>();
+            builder.Services.AddTransient<PasswordsListViewModel>();
+            builder.Services.AddTransient<GeneratePasswordViewModel>();
+            builder.Services.AddTransient<SettingsViewModel>();
+            builder.Services.AddTransient<TfaSettingsViewModel>();
 
             // Transient
             builder.Services.AddTransient<AddEditPasswordViewModel>();
@@ -55,14 +56,15 @@ namespace PasswordManager.MAUI.Extensions
         public static MauiAppBuilder RegisterViews(this MauiAppBuilder builder)
         {
             //Singleton
-            builder.Services.AddSingleton<LoadingPage>();
-            builder.Services.AddSingleton<LoginPage>();
-            builder.Services.AddSingleton<LoginTfaPage>();
-            builder.Services.AddSingleton<RegistrationPage>();
-            builder.Services.AddSingleton<RegistrationSuccessfulPage>();
-            builder.Services.AddSingleton<PasswordsListPage>();
-            builder.Services.AddSingleton<GeneratePasswordPage>();
-            builder.Services.AddSingleton<SettingsPage>();
+            builder.Services.AddTransient<LoadingPage>();
+            builder.Services.AddTransient<LoginPage>();
+            builder.Services.AddTransient<LoginTfaPage>();
+            builder.Services.AddTransient<RegistrationPage>();
+            builder.Services.AddTransient<RegistrationSuccessfulPage>();
+            builder.Services.AddTransient<PasswordsListPage>();
+            builder.Services.AddTransient<GeneratePasswordPage>();
+            builder.Services.AddTransient<SettingsPage>();
+            builder.Services.AddTransient<TfaSettingsPage>();
 
             // Transient
             builder.Services.AddTransient<AddEditPasswordPage>();

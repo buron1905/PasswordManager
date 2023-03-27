@@ -28,16 +28,19 @@ namespace PasswordManager.MAUI.ViewModels
         [RelayCommand]
         async Task Verify()
         {
+            IsBusy = true;
             var response = await _authService.LoginTfaAsync(new LoginTfaRequestDTO() { Code = Code, Token = ActiveUserService.Instance.Token });
 
             if (response is null)
             {
                 await PopupService.ShowToast("Wrong Code.");
+                IsBusy = false;
                 return;
             }
 
             await Shell.Current.GoToAsync($"//Home", true);
             await PopupService.ShowToast("Logged in");
+            IsBusy = false;
         }
 
         [RelayCommand]
