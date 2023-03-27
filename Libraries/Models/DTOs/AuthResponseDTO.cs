@@ -4,6 +4,8 @@
     {
         public bool IsAuthSuccessful { get; set; }
 
+        public bool EmailVerified { get; set; }
+
         public bool IsTfaEnabled { get; set; }
 
         public string? ErrorMessage { get; set; }

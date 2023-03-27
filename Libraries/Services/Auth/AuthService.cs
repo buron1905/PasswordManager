@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using Models;
 using Models.DTOs;
+using Services.Abstraction;
 using Services.Abstraction.Auth;
 using Services.Abstraction.Data;
 using Services.Abstraction.Data.Persistance;
@@ -18,14 +19,16 @@ namespace Services.Auth
         private readonly IRepositoryWrapper _repositoryWrapper;
         private readonly ITwoFactorAuthService _twoFactorAuthService;
         private readonly IJwtService _jwtService;
+        private readonly IEmailService _emailService;
         private readonly AppSettings? _appSettings;
 
-        public AuthService(IDataServiceWrapper dataServiceWrapper, IRepositoryWrapper repositoryWrapper, ITwoFactorAuthService twoFactorAuthService, IJwtService jwtService, IOptions<AppSettings>? appSettings = null)
+        public AuthService(IDataServiceWrapper dataServiceWrapper, IRepositoryWrapper repositoryWrapper, ITwoFactorAuthService twoFactorAuthService, IJwtService jwtService, IEmailService emailService, IOptions<AppSettings>? appSettings = null)
         {
             _dataServiceWrapper = dataServiceWrapper;
             _repositoryWrapper = repositoryWrapper;
             _twoFactorAuthService = twoFactorAuthService;
             _jwtService = jwtService;
+            _emailService = emailService;
             _appSettings = appSettings?.Value;
         }
 
@@ -39,7 +42,7 @@ namespace Services.Auth
 
             //get user guid
             var userDTO = await _dataServiceWrapper.UserService.GetByEmailAsync(requestDTO.EmailAddress!);
-            var response = GetAuthResponse(userDTO.Id, requestDTO.EmailAddress!, requestDTO.Password!, true, userDTO.TwoFactorEnabled, !userDTO.TwoFactorEnabled);
+            var response = GetAuthResponse(userDTO.Id, requestDTO.EmailAddress!, requestDTO.Password!, true, userDTO.TwoFactorEnabled, !userDTO.TwoFactorEnabled, emailVerified: userDTO.EmailConfirmed);
 
             return response;
         }
@@ -161,18 +164,21 @@ namespace Services.Auth
 
             var userDTO = await _dataServiceWrapper.UserService.CreateAsync(requestDTO);
 
-            return GetAuthResponse(userDTO.Id, requestDTO.EmailAddress!, requestDTO.Password!);
+            _emailService.SendRegistrationEmail(userDTO.EmailAddress, userDTO.EmailConfirmationToken);
+
+            return GetAuthResponse(userDTO.Id, userDTO.EmailAddress!, requestDTO.Password!, emailVerified: userDTO.EmailConfirmed);
         }
 
-        public AuthResponseDTO GetAuthResponse(Guid userId, string emailAddress, string password, bool isAuthSuccessful = true, bool tfaEnabled = false, bool tfaChecked = true)
+        public AuthResponseDTO GetAuthResponse(Guid userId, string emailAddress, string password, bool isAuthSuccessful = true, bool tfaEnabled = false, bool tfaChecked = true, bool emailVerified = true)
         {
             var expires = DateTime.UtcNow.AddMinutes(_appSettings?.JweTokenMinutesTTL ?? 5);
-            var claims = _jwtService.GetClaims(userId, emailAddress, password, expires, tfaChecked);
+            var claims = _jwtService.GetClaims(userId, emailAddress, password, expires, tfaChecked, emailVerified);
             var tokenString = _jwtService.GenerateJweToken(claims, JWTKeys._privateSigningKey, JWTKeys._publicEncryptionKey, expires);
 
             return new AuthResponseDTO
             {
                 IsAuthSuccessful = isAuthSuccessful,
+                EmailVerified = emailVerified,
                 IsTfaEnabled = tfaEnabled,
                 JweToken = tokenString,
                 ExpirationDateTime = expires
@@ -189,11 +195,13 @@ namespace Services.Auth
             var userId = claims.First(c => c.Type.Equals(ClaimTypes.NameIdentifier))?.Value;
             var emailAddress = claims.First(c => c.Type.Equals(ClaimTypes.Email))?.Value;
             var password = claims.FirstOrDefault(claim => claim.Type.Equals("password"))?.Value;
+            var tfaChecked = claims.FirstOrDefault(claim => claim.Type.Equals("tfaChecked"))?.Value == true.ToString();
+            var emailConfirmed = claims.FirstOrDefault(claim => claim.Type.Equals("emailConfirmed"))?.Value == true.ToString();
 
             if (!await AuthUser(emailAddress!, password!))
                 return null;
 
-            var response = GetAuthResponse(new Guid(userId!), emailAddress!, password!);
+            var response = GetAuthResponse(new Guid(userId!), emailAddress!, password!, tfaChecked: tfaChecked, emailVerified: emailConfirmed);
 
             return response;
         }
@@ -249,6 +257,31 @@ namespace Services.Auth
             result.IsTfaEnabled = userDTO.TwoFactorEnabled;
 
             return result;
+        }
+
+        public async Task<bool> ConfirmEmailAsync(string email, string token)
+        {
+            var userDTO = await _dataServiceWrapper.UserService.GetByEmailAsync(email);
+
+            if (userDTO is null) return false;
+            if (userDTO.EmailConfirmed)
+                return true;
+            if (userDTO.EmailConfirmationToken is null) return false;
+
+            if (userDTO.EmailConfirmationToken.Equals(token))
+            {
+                userDTO.EmailConfirmed = true;
+                await _dataServiceWrapper.UserService.UpdateAsync(userDTO.Id, userDTO);
+                return true;
+            }
+            return false;
+        }
+
+        public async Task ResendConfirmEmail(string email)
+        {
+            var userDTO = await _dataServiceWrapper.UserService.GetByEmailAsync(email);
+
+            _emailService.SendRegistrationEmail(email, userDTO.EmailConfirmationToken);
         }
     }
 }

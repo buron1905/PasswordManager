@@ -43,6 +43,9 @@
         <div *ngIf="submitted && wrongCredentials" id="submitHelpBlock" class="form-text alert alert-danger">
           <b>Error: </b>Wrong credentials.
         </div>
+        <div *ngIf="submitted && !emailConfirmed && !wrongCredentials" id="submitHelpBlock" class="form-text alert alert-danger">
+          <b>Error: </b>Email not confirmed.
+        </div>
       </form>
     </div>
     <div class="col-lg-4"></div>

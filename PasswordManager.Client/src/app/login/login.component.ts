@@ -15,6 +15,7 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   loading = false;
   submitted = false;
+  emailConfirmed = true;
   wrongCredentials = false;
   toggledPassword = false;
 
@@ -31,6 +32,7 @@ export class LoginComponent implements OnInit {
   login(): void {
     this.submitted = true;
     this.wrongCredentials = false;
+    this.emailConfirmed = true;
     if (this.loginForm.invalid) {
       return;
     }
@@ -39,6 +41,12 @@ export class LoginComponent implements OnInit {
     this.authService.authenticate(this.loginForm.value).subscribe(
       data => {
         this.loading = false;
+
+        this.emailConfirmed = data.emailVerified;
+
+        if (!this.emailConfirmed) {
+          return;
+        }
 
         if (data.isTfaEnabled) {
           const modalTfaLogin = this.modalService.open(ModalTfaLoginComponent);

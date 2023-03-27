@@ -8,6 +8,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 var appSettings = builder.Configuration.GetAppSettings(builder.Services);
+var emailSettings = builder.Configuration.GetEmailSettings(builder.Services);
+
+//var emailConfiguration = builder.Configuration
+//        .GetSection("EmailConfiguration")
+//        .Get<EmailConfiguration>();
+//builder.Services.AddSingleton(emailConfiguration);
 
 builder.Services.AddApplicationServices();
 

@@ -51,6 +51,7 @@ namespace Services.Data
         public async Task<UserDTO> CreateAsync(RegisterRequestDTO registerDTO)
         {
             var user = registerDTO.Adapt<User>();
+            user.EmailConfirmationToken = Guid.NewGuid().ToString();
 
             _repositoryWrapper.UserRepository.Create(user);
 
@@ -73,6 +74,8 @@ namespace Services.Data
             user.PasswordHASH = userDTO.PasswordHASH;
             user.TwoFactorEnabled = userDTO.TwoFactorEnabled;
             user.TwoFactorSecret = userDTO.TwoFactorSecret;
+            user.EmailConfirmed = userDTO.EmailConfirmed;
+            user.EmailConfirmationToken = userDTO.EmailConfirmationToken;
 
             await _repositoryWrapper.SaveChangesAsync();
 

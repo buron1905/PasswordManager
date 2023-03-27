@@ -12,7 +12,37 @@ namespace PasswordManager.MAUI.Services
             _offlineAuthService = offlineAuthService;
         }
 
+        public Task<bool> ConfirmEmailAsync(string email, string token)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> DecryptString(string password, string textEncrypted)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TfaSetupDTO> DisableTfa(Guid userId, string password, TfaSetupDTO tfaSetupDTO)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TfaSetupDTO> EnableTfa(Guid userId, string password, TfaSetupDTO tfaSetupDTO)
+        {
+            throw new NotImplementedException();
+        }
+
         public string GenerateTfaSetupDTO(string issuer, string accountTitle, string accountSecretKey)
+        {
+            throw new NotImplementedException();
+        }
+
+        public AuthResponseDTO GetAuthResponse(Guid userId, string emailAddress, string password, bool isAuthSuccessful = true, bool tfaEnabled = false, bool tfaChecked = true)
+        {
+            throw new NotImplementedException();
+        }
+
+        public AuthResponseDTO GetAuthResponse(Guid userId, string emailAddress, string password, bool isAuthSuccessful = true, bool tfaEnabled = false, bool tfaChecked = true, bool emailVerified = true)
         {
             throw new NotImplementedException();
         }
@@ -58,6 +88,11 @@ namespace PasswordManager.MAUI.Services
             throw new NotImplementedException();
         }
 
+        public void ResendConfirmEmail(string email)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task SetTwoFactorDisabledAsync(Guid userId)
         {
             throw new NotImplementedException();
@@ -78,7 +113,22 @@ namespace PasswordManager.MAUI.Services
             throw new NotImplementedException();
         }
 
-        Task<AuthResponseDTO> IAuthService.SetTwoFactorEnabledAsync(string email, string password)
+        TfaSetupDTO IAuthService.GenerateTfaSetupDTO(string issuer, string accountTitle, string accountSecretKey)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task IAuthService.ResendConfirmEmail(string email)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<UserDTO> IAuthService.SetTwoFactorDisabledAsync(Guid userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<UserDTO> IAuthService.SetTwoFactorEnabledAsync(Guid userId, string password)
         {
             throw new NotImplementedException();
         }

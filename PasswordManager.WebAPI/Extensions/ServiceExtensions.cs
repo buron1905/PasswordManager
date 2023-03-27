@@ -2,6 +2,8 @@
 using Microsoft.IdentityModel.Tokens;
 using Models;
 using Persistance.Repositories;
+using Services;
+using Services.Abstraction;
 using Services.Abstraction.Auth;
 using Services.Abstraction.Data;
 using Services.Abstraction.Data.Persistance;
@@ -20,6 +22,7 @@ namespace PasswordManager.WebAPI.Extensions
             services.AddScoped<IDataServiceWrapper, DataServiceWrapper>();
 
             services.AddTransient<IJwtService, JwtService>();
+            services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<ITwoFactorAuthService, TwoFactorAuthService>();
             services.AddTransient<IPasswordService, PasswordService>();

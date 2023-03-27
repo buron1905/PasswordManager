@@ -8,6 +8,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { LoginModel } from './../models/login.model';
 import { AuthResponseModel } from '../models/auth-response.model';
 import { TfaSetup } from '../models/tfa-setup.model';
+import { EmailConfirmationModel } from '../models/email-confirmation.model';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,7 @@ export class AuthService {
   private tfaLoginPath = `${environment.apiUrl}/auth/tfa-login`;
   private tfaSetupPath = `${environment.apiUrl}/auth/tfa-setup`;
   private tfaDisablePath = `${environment.apiUrl}/auth/tfa-disable`;
+  private verifyEmailPath = `${environment.apiUrl}/auth/email-confirm`;
   
   constructor(private http: HttpClient, private router: Router, private jwtHelper: JwtHelperService) { }
 
@@ -75,6 +77,10 @@ export class AuthService {
     //  return (await lastValueFrom(this.http.post<{ isValid: boolean }>(this.tokenIsValidPath, token))).isValid;
     //}
     return false;
+  }
+
+  verifyEmail(data: EmailConfirmationModel): Observable<void> {
+    return this.http.post<void>(`${this.verifyEmailPath}`, data);
   }
   
 }

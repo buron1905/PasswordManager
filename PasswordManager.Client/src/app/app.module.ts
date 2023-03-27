@@ -30,6 +30,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ModalGeneratePasswordComponent } from './modal-generate-password/modal-generate-password.component';
 import { ModalTfaLoginComponent } from './modal-tfa-login/modal-tfa-login.component';
 import { SettingsComponent } from './settings/settings.component';
+import { EmailConfirmationComponent } from './email-confirmation/email-confirmation.component';
+import { RegistrationSuccessfulComponent } from './registration-successful/registration-successful.component';
 
 export function tokenGetter() { 
   return localStorage.getItem("token"); 
@@ -51,6 +53,8 @@ export function tokenGetter() {
     ModalGeneratePasswordComponent,
     ModalTfaLoginComponent,
     SettingsComponent,
+    EmailConfirmationComponent,
+    RegistrationSuccessfulComponent,
   ],
   imports: [
     BrowserModule,

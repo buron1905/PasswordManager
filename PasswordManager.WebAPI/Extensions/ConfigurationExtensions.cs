@@ -10,5 +10,13 @@ namespace PasswordManager.WebAPI.Extensions
             services.Configure<AppSettings>(appSettingsSection);
             return appSettingsSection.Get<AppSettings>();
         }
+
+        public static EmailConfiguration GetEmailSettings(this IConfiguration configuration, IServiceCollection services)
+        {
+            var emailSettingsSection = configuration.GetSection("EmailConfiguration");
+            services.Configure<EmailConfiguration>(emailSettingsSection);
+            return emailSettingsSection.Get<EmailConfiguration>();
+        }
+
     }
 }

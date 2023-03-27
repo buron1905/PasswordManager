@@ -9,11 +9,15 @@ import { AuthGuardService } from './services/auth-guard.service';
 import { AddEditComponent } from './add-edit/add-edit.component';
 import { PasswordGeneratorComponent } from './password-generator/password-generator.component';
 import { SettingsComponent } from './settings/settings.component';
+import { EmailConfirmationComponent } from './email-confirmation/email-confirmation.component';
+import { RegistrationSuccessfulComponent } from './registration-successful/registration-successful.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent, title: 'Home' },
   { path: 'login', component: LoginComponent, title: 'Login' },
   { path: 'register', component: RegisterComponent, title: 'Register' },
+  { path: 'registration-successful', component: RegistrationSuccessfulComponent, title: 'Registration successful' },
+  { path: 'email-confirmation/:email/:token', component: EmailConfirmationComponent, title: 'Email Confirmation' },
   { path: 'passwords', component: PasswordsComponent, title: 'Passwords', canActivate: [AuthGuardService] },
   { path: 'passwords/add', component: AddEditComponent, title: 'Add', canActivate: [AuthGuardService] },
   { path: 'passwords/edit/:id', component: AddEditComponent, title: 'Edit', canActivate: [AuthGuardService] },

@@ -18,6 +18,8 @@ namespace Models
 
         public bool EmailConfirmed { get; set; }
 
+        public string? EmailConfirmationToken { get; set; }
+
         public bool TwoFactorEnabled { get; set; }
 
         public string? TwoFactorSecret { get; set; }

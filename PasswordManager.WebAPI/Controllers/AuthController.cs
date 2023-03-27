@@ -36,6 +36,9 @@ namespace PasswordManager.WebAPI.Controllers
             if (response == null)
                 return Unauthorized(new AuthResponseDTO { IsAuthSuccessful = false, ErrorMessage = "Invalid Authentication" });
 
+            if (!response.EmailVerified)
+                return Ok(new AuthResponseDTO { IsAuthSuccessful = false, EmailVerified = false, ErrorMessage = "Email is not confirmed." });
+
             if (!response.IsTfaEnabled)
                 SetTokenCookie(response.JweToken!);
 
@@ -50,9 +53,34 @@ namespace PasswordManager.WebAPI.Controllers
             if (response == null)
                 return Unauthorized(new AuthResponseDTO { IsAuthSuccessful = false, ErrorMessage = "Invalid Authentication" });
 
-            SetTokenCookie(response.JweToken!);
+            //SetTokenCookie(response.JweToken!);
 
             return Ok(response);
+        }
+
+        [HttpPost("email-confirm")]
+        public async Task<IActionResult> ConfirmEmail([FromBody] VerifyEmailRequestDTO requestDTO)
+        {
+            if (requestDTO.Email is null || requestDTO.Token is null)
+                return BadRequest("Invalid Email Confirmation Request");
+
+            var confirmed = await _authService.ConfirmEmailAsync(requestDTO.Email, requestDTO.Token);
+
+            if (!confirmed)
+                return BadRequest("Invalid Email Confirmation Request");
+
+            return Ok();
+        }
+
+        [HttpPost("email-confirm-resend/{email}")]
+        public async Task<IActionResult> ResendConfirmEmail(string email)
+        {
+            if (email is null)
+                return BadRequest("Invalid Resend Confirmation Email Request");
+
+            await _authService.ResendConfirmEmail(email);
+
+            return Ok();
         }
 
         [HttpPost("refresh-token")]
