@@ -22,13 +22,15 @@ namespace PasswordManager.MAUI.ViewModels
         string _confirmPassword;
 
         IAuthService _authService;
+        IConnectivity _connectivity;
 
         #endregion
 
-        public RegistrationViewModel(IAuthService authService)
+        public RegistrationViewModel(IAuthService authService, IConnectivity connectivity)
         {
             Title = "Register";
             _authService = authService;
+            _connectivity = connectivity;
         }
 
         #region Commands
@@ -36,6 +38,11 @@ namespace PasswordManager.MAUI.ViewModels
         [RelayCommand]
         async Task Register()
         {
+            if (_connectivity.NetworkAccess != NetworkAccess.Internet)
+            {
+                await PopupService.ShowToast("Registration must be online");
+            }
+
             var model = new RegisterRequestDTO() { EmailAddress = EmailAddress, Password = Password, ConfirmPassword = ConfirmPassword };
             var modelDTO = new UserDTO() { Id = Guid.NewGuid(), EmailAddress = EmailAddress, Password = Password };
 
@@ -52,18 +59,18 @@ namespace PasswordManager.MAUI.ViewModels
                 {
                     ActiveUserService.Instance.Login(modelDTO, Password);
                     await PopupService.ShowToast("Successfully registered");
-                    await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
+                    await Shell.Current.GoToAsync($"{nameof(RegistrationSuccessfulPage)}");
 
                     EmailAddress = Password = ConfirmPassword = string.Empty;
                 }
                 else
                 {
-                    await PopupService.ShowSnackbar("Error");
+                    await PopupService.ShowToast("Error");
                 }
             }
             catch (Exception ex)
             {
-                await PopupService.ShowSnackbar(ex.Message);
+                await PopupService.ShowToast(ex.Message);
             }
 
             IsBusy = false;

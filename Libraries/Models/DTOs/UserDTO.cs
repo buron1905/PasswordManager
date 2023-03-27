@@ -19,7 +19,8 @@ namespace Models.DTOs
         [JsonIgnore]
         public string? PasswordHASH { get; set; }
 
-        public bool EmailConfirmed { get; set; }
+        // temporarity for MAUI testing
+        public bool EmailConfirmed { get; set; } = true;
 
         public string? EmailConfirmationToken { get; set; }
 

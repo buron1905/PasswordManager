@@ -2,6 +2,8 @@
 using PasswordManager.MAUI.ViewModels;
 using PasswordManager.MAUI.Views;
 using Persistance.MAUI.Repositories;
+using Services;
+using Services.Abstraction;
 using Services.Abstraction.Auth;
 using Services.Abstraction.Data;
 using Services.Abstraction.Data.Persistance;
@@ -27,6 +29,7 @@ namespace PasswordManager.MAUI.Extensions
 
             // Transient
             builder.Services.AddTransient<IJwtService, JwtService>();
+            builder.Services.AddTransient<IEmailService, EmailService>();
 
             return builder;
         }
@@ -36,7 +39,9 @@ namespace PasswordManager.MAUI.Extensions
             //Singleton
             builder.Services.AddSingleton<LoadingViewModel>();
             builder.Services.AddSingleton<LoginViewModel>();
+            builder.Services.AddSingleton<LoginTfaViewModel>();
             builder.Services.AddSingleton<RegistrationViewModel>();
+            builder.Services.AddSingleton<RegistrationSuccessfulViewModel>();
             builder.Services.AddSingleton<PasswordsListViewModel>();
             builder.Services.AddSingleton<GeneratePasswordViewModel>();
             builder.Services.AddSingleton<SettingsViewModel>();
@@ -52,7 +57,9 @@ namespace PasswordManager.MAUI.Extensions
             //Singleton
             builder.Services.AddSingleton<LoadingPage>();
             builder.Services.AddSingleton<LoginPage>();
+            builder.Services.AddSingleton<LoginTfaPage>();
             builder.Services.AddSingleton<RegistrationPage>();
+            builder.Services.AddSingleton<RegistrationSuccessfulPage>();
             builder.Services.AddSingleton<PasswordsListPage>();
             builder.Services.AddSingleton<GeneratePasswordPage>();
             builder.Services.AddSingleton<SettingsPage>();

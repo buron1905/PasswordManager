@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:PasswordManager.MAUI.ViewModels"
+             x:Class="PasswordManager.MAUI.Views.RegistrationSuccessfulPage"
+             x:DataType="viewmodels:RegistrationSuccessfulViewModel"
+             Title="{Binding Title}">
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout Padding="20">
+                <Label Text="Registration was successful" HorizontalOptions="Center" Style="{StaticResource LabelLarge}"/>
+                <Label Margin="0,20,0,20" Text="Please check your email for verification." Style="{StaticResource LabelMedium}"/>
+                <Label Text="Go back to Login" Style="{StaticResource LabelLink}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToLoginCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

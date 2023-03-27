@@ -49,10 +49,26 @@ namespace PasswordManager.MAUI.ViewModels
 
                 if (response is not null)
                 {
-                    await Shell.Current.GoToAsync(nameof(LoadingPage));
+                    if (!response.EmailVerified)
+                    {
+                        await PopupService.ShowToast("Email is not confirmed.");
+                        IsBusy = false;
+                        return;
+                    }
 
-                    var user = await _dataServiceWrapper.UserService.GetByEmailAsync(model.EmailAddress);
-                    ActiveUserService.Instance.Login(user, Password);
+                    var userDTO = await _dataServiceWrapper.UserService.GetByEmailAsync(model.EmailAddress);
+                    ActiveUserService.Instance.Login(userDTO, Password);
+                    ActiveUserService.Instance.Token = response.JweToken;
+
+                    if (response.IsTfaEnabled)
+                    {
+
+                        await Shell.Current.GoToAsync(nameof(LoginTfaPage));
+                        IsBusy = false;
+                        return;
+                    }
+
+                    //await Shell.Current.GoToAsync(nameof(LoadingPage));
 
                     await Shell.Current.GoToAsync($"//Home", true);
                     await PopupService.ShowToast("Logged in");

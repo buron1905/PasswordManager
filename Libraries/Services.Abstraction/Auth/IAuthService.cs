@@ -6,6 +6,7 @@ namespace Services.Abstraction.Auth
     {
         Task<AuthResponseDTO?> LoginAsync(LoginRequestDTO requestDTO);
         Task<AuthResponseDTO?> LoginTfaAsync(LoginTfaRequestDTO requestDTO);
+        Task<AuthResponseDTO?> LoginTfaAsync(string code, string email, string password);
         Task<AuthResponseDTO?> RegisterAsync(RegisterRequestDTO requestDTO);
         Task<AuthResponseDTO?> RefreshTokenAsync(string token);
         AuthResponseDTO GetAuthResponse(Guid userId, string emailAddress, string password, bool isAuthSuccessful = true, bool tfaEnabled = false, bool tfaChecked = true, bool emailVerified = true);

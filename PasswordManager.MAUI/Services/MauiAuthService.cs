@@ -78,6 +78,11 @@ namespace PasswordManager.MAUI.Services
             throw new NotImplementedException();
         }
 
+        public Task<AuthResponseDTO> LoginTfaAsync(string code, string email, string password)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<AuthResponseDTO> RefreshTokenAsync(string token)
         {
             throw new NotImplementedException();

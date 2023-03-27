@@ -33,6 +33,7 @@ namespace PasswordManager.MAUI.Helpers
                 }
             }
         }
+
         private static void ShowValidationFields
         (List<ValidationResult> errors,
         object model, Page page, string validationLabelSuffix = "Error")
@@ -50,6 +51,7 @@ namespace PasswordManager.MAUI.Helpers
                 }
             }
         }
+
         private static IEnumerable<string> GetValidatablePropertyNames(object model)
         {
             var validatableProperties = new List<string>();
@@ -61,6 +63,7 @@ namespace PasswordManager.MAUI.Helpers
             }
             return validatableProperties;
         }
+
         private static List<PropertyInfo> GetValidatableProperties(object model)
         {
             var properties = model.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(prop => prop.CanRead

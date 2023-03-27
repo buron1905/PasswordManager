@@ -17,6 +17,9 @@ namespace PasswordManager.MAUI
             Routing.RegisterRoute(nameof(LoginPage),
                     typeof(LoginPage));
 
+            Routing.RegisterRoute(nameof(LoginTfaPage),
+                    typeof(LoginTfaPage));
+
             Routing.RegisterRoute(nameof(RegistrationPage),
                     typeof(RegistrationPage));
 
@@ -31,6 +34,9 @@ namespace PasswordManager.MAUI
 
             Routing.RegisterRoute(nameof(SettingsPage),
                     typeof(SettingsPage));
+
+            Routing.RegisterRoute(nameof(RegistrationSuccessfulPage),
+                    typeof(RegistrationSuccessfulPage));
 
         }
     }

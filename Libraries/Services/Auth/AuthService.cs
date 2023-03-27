@@ -72,7 +72,7 @@ namespace Services.Auth
 
             var emailAddress = JwtService.GetUserEmailFromClaims(claims);
 
-            var response = GetAuthResponse(userId, emailAddress, password, true, true, true);
+            var response = GetAuthResponse(userId, emailAddress, password, true, userDTO.TwoFactorEnabled, true, userDTO.EmailConfirmed);
 
             return response;
         }
@@ -164,7 +164,8 @@ namespace Services.Auth
 
             var userDTO = await _dataServiceWrapper.UserService.CreateAsync(requestDTO);
 
-            _emailService.SendRegistrationEmail(userDTO.EmailAddress, userDTO.EmailConfirmationToken);
+            // Temporarily turned off for MAUI testing
+            //_emailService.SendRegistrationEmail(userDTO.EmailAddress, userDTO.EmailConfirmationToken);
 
             return GetAuthResponse(userDTO.Id, userDTO.EmailAddress!, requestDTO.Password!, emailVerified: userDTO.EmailConfirmed);
         }
@@ -282,6 +283,26 @@ namespace Services.Auth
             var userDTO = await _dataServiceWrapper.UserService.GetByEmailAsync(email);
 
             _emailService.SendRegistrationEmail(email, userDTO.EmailConfirmationToken);
+        }
+
+        public async Task<AuthResponseDTO?> LoginTfaAsync(string code, string email, string password)
+        {
+            if (code is null || email is null || password is null)
+                return null;
+
+            var userDTO = await _dataServiceWrapper.UserService.GetByEmailAsync(email);
+            if (userDTO is null) return null;
+
+            var secret = await DecryptString(password, userDTO.TwoFactorSecret);
+
+            var valid = _twoFactorAuthService.ValidateTwoFactorPin(secret, code!);
+
+            if (!valid)
+                return null;
+
+            var response = GetAuthResponse(userDTO.Id, email, password, true, true, true, userDTO.EmailConfirmed);
+
+            return response;
         }
     }
 }
