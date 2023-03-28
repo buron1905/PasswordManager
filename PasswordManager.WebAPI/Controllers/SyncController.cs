@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Models.DTOs;
 using PasswordManager.WebAPI.Extensions;
+using PasswordManager.WebAPI.Helpers.Attributes;
 using Services.Abstraction.Data;
 using Services.Auth;
 
