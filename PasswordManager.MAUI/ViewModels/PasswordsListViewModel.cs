@@ -24,13 +24,15 @@ namespace PasswordManager.MAUI.ViewModels
         bool _isRefreshing;
 
         private readonly IDataServiceWrapper _dataServiceWrapper;
+        private readonly ISyncService _syncService;
 
         #endregion
 
-        public PasswordsListViewModel(IDataServiceWrapper dataServiceWrapper)
+        public PasswordsListViewModel(IDataServiceWrapper dataServiceWrapper, ISyncService syncService)
         {
             Title = "Passwords";
             _dataServiceWrapper = dataServiceWrapper;
+            _syncService = syncService;
         }
 
         #region Commands
@@ -98,8 +100,11 @@ namespace PasswordManager.MAUI.ViewModels
 
         async Task RefreshPasswords()
         {
-            var userGuid = ActiveUserService.Instance.UserDTO.Id;
-            var passwords = (await _dataServiceWrapper.PasswordService.GetAllByUserIdAsync(userGuid)).ToList() ?? new List<PasswordDTO>();
+            var userId = ActiveUserService.Instance.UserDTO.Id;
+
+            await _syncService.GetLastChangeDateTime(userId);
+
+            var passwords = (await _dataServiceWrapper.PasswordService.GetAllByUserIdAsync(userId)).ToList() ?? new List<PasswordDTO>();
 
             foreach (var password in passwords)
             {

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Maui;
 using PasswordManager.MAUI.Extensions;
+using PasswordManager.MAUI.Handlers;
 
 namespace PasswordManager.MAUI
 {
@@ -28,6 +29,8 @@ namespace PasswordManager.MAUI
                 .RegisterAppServices()
                 .RegisterViewModels()
                 .RegisterViews();
+
+            builder.Services.AddSingleton<IHttpsClientHandlerService, HttpsClientHandlerService>();
 
             return builder.Build();
         }

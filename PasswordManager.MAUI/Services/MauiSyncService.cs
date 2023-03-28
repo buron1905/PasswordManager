@@ -1,4 +1,5 @@
 ﻿using Models.DTOs;
+using PasswordManager.MAUI.Handlers;
 using PasswordManager.MAUI.Helpers;
 using Services.Abstraction.Data;
 using System.Text;
@@ -11,7 +12,7 @@ namespace PasswordManager.MAUI.Services
 
         private readonly IDataServiceWrapper _dataServiceWrapper;
 
-        public MauiSyncService(HttpClient httpClient, IConnectivity connectivity, IDataServiceWrapper dataServiceWrapper) : base(httpClient, connectivity)
+        public MauiSyncService(HttpClient httpClient, IConnectivity connectivity, IDataServiceWrapper dataServiceWrapper, IHttpsClientHandlerService service) : base(httpClient, connectivity, service)
         {
             _dataServiceWrapper = dataServiceWrapper;
         }
@@ -20,7 +21,7 @@ namespace PasswordManager.MAUI.Services
         {
             if (IsNetworkAccess())
             {
-                Uri uri = new Uri(string.Format(AppConstants.ApiUrl, "Sync"));
+                Uri uri = new Uri(string.Format(AppConstants.ApiUrl + "Sync", string.Empty));
 
                 try
                 {
@@ -45,6 +46,7 @@ namespace PasswordManager.MAUI.Services
         {
             if (IsNetworkAccess())
             {
+
 
                 Uri uri = new Uri(string.Format(AppConstants.ApiUrl, "Sync"));
                 string json = JsonSerializer.Serialize<SyncRequestDTO>(data);

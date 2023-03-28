@@ -3,7 +3,8 @@
     public class AppConstants
     {
         // Base
-        public const string ApiUrl = "https://localhost:5001/api/";
+        public const string ApiUrl = "https://10.0.2.2:5001/api/";
+        //public const string ApiUrl = "https://localhost:5001/api/";
 
         // Auth
         public const string LoginSuffix = "Auth/login";
