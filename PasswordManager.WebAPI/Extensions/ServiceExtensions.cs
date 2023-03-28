@@ -21,6 +21,8 @@ namespace PasswordManager.WebAPI.Extensions
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
             services.AddScoped<IDataServiceWrapper, DataServiceWrapper>();
 
+
+            services.AddTransient<ISyncService, SyncService>();
             services.AddTransient<IJwtService, JwtService>();
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IAuthService, AuthService>();

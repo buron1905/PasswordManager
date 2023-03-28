@@ -6,7 +6,6 @@ namespace Models.DTOs
 {
     public class PasswordDTO : EntityDTO
     {
-
         [Required(ErrorMessage = RequiredPasswordNameErrorMessage)]
         [MaxLength(MaxPasswordNameLength, ErrorMessage = MaxPasswordNameLengthErrorMessage)]
         public string? PasswordName { get; set; }

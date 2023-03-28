@@ -6,6 +6,8 @@ namespace Models
 {
     public class Password : Entity
     {
+        public bool Synced { get; set; }
+
         [Required]
         [MaxLength(MaxPasswordNameLength, ErrorMessage = MaxPasswordNameLengthErrorMessage)]
         public string? PasswordName { get; set; }

@@ -16,5 +16,9 @@ namespace Models
 
         [Required]
         public DateTime IDT { get; set; }
+
+        public DateTime DDT { get; set; }
+
+        public bool Deleted { get; set; }
     }
 }
