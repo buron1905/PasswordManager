@@ -56,10 +56,10 @@
                             Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                             Glyph="{x:Static fontAwesome:FontAwesomeIcons.Cogs}"/>
         </FlyoutItem.Icon>
-        <Tab>
-            <ShellContent Title="User Settings" Route="SettingsPage" ContentTemplate="{DataTemplate views:SettingsPage}"/>
+        <!--<Tab>-->
+            <!--<ShellContent Title="User Settings" Route="SettingsPage" ContentTemplate="{DataTemplate views:SettingsPage}"/>-->
             <ShellContent Title="Two-Factor Authentication" Route="TfaSettingsPage" ContentTemplate="{DataTemplate views:TfaSettingsPage}"/>
-        </Tab>
+        <!--</Tab>-->
     </FlyoutItem>
     <MenuItem Text="About" Command="{Binding AboutCommand}">
         <MenuItem.IconImageSource>

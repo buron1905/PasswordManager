@@ -3,9 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:PasswordManager.MAUI.ViewModels"
              xmlns:controls="clr-namespace:PasswordManager.MAUI.Views.Controls"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="PasswordManager.MAUI.Views.TfaSettingsPage"
              x:DataType="viewmodels:TfaSettingsViewModel"
              Title="{Binding Title}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Content>
         <ScrollView>
             <StackLayout Padding="20">
@@ -13,7 +19,7 @@
                 <StackLayout IsVisible="{Binding TfaEnabled}">
                     <Label Margin="0,0,0,20" Text="Two-Factor Authentication is enabled." Style="{StaticResource LabelMedium}"/>
                     <Label Margin="0,0,0,0" Text="QR Code:" Style="{StaticResource LabelMedium}"/>
-                    <Image Source="{Binding QrCodeSetupImageUrl}"/>
+                    <Image Source="{Binding QrCodeSetupImageBytes, Mode=OneWay, Converter={StaticResource ByteArrayToImageSourceConverter}}"/>
                     <HorizontalStackLayout>
                         <Label Margin="0,0,0,0" Text="Manual key:" Style="{StaticResource LabelMedium}"/>
                         <Label Text="(copy)" Style="{StaticResource LabelLink}" HorizontalTextAlignment="Start" VerticalTextAlignment="Start">

@@ -21,8 +21,8 @@ namespace PasswordManager.MAUI.Extensions
 
             //Singleton
             //// From WebAPI
-            builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
-            builder.Services.AddScoped<IDataServiceWrapper, DataServiceWrapper>();
+            builder.Services.AddSingleton<IRepositoryWrapper, RepositoryWrapper>();
+            builder.Services.AddSingleton<IDataServiceWrapper, DataServiceWrapper>();
             builder.Services.AddSingleton<IAuthService, AuthService>();
             builder.Services.AddSingleton<ITwoFactorAuthService, TwoFactorAuthService>();
             builder.Services.AddSingleton<MauiAuthService>();
