@@ -1,9 +1,12 @@
 ﻿using Models.DTOs;
+using PasswordManager.MAUI.Helpers;
 using Services.Abstraction.Auth;
+using System.Text;
+using System.Text.Json;
 
 namespace PasswordManager.MAUI.Services
 {
-    public class MauiAuthService : MauiBaseDataService, IAuthService
+    public class MauiAuthService : MauiBaseDataService, IMauiAuthService
     {
         readonly IAuthService _offlineAuthService;
 
@@ -12,22 +15,22 @@ namespace PasswordManager.MAUI.Services
             _offlineAuthService = offlineAuthService;
         }
 
-        public Task<bool> ConfirmEmailAsync(string email, string token)
+        public async Task<bool> ConfirmEmailAsync(string email, string token)
         {
             throw new NotImplementedException();
         }
 
-        public Task<string> DecryptString(string password, string textEncrypted)
+        public async Task<string> DecryptString(string password, string textEncrypted)
         {
             throw new NotImplementedException();
         }
 
-        public Task<TfaSetupDTO> DisableTfa(Guid userId, string password, TfaSetupDTO tfaSetupDTO)
+        public async Task<TfaSetupDTO> DisableTfa(Guid userId, string password, TfaSetupDTO tfaSetupDTO)
         {
             throw new NotImplementedException();
         }
 
-        public Task<TfaSetupDTO> EnableTfa(Guid userId, string password, TfaSetupDTO tfaSetupDTO)
+        public async Task<TfaSetupDTO> EnableTfa(Guid userId, string password, TfaSetupDTO tfaSetupDTO)
         {
             throw new NotImplementedException();
         }
@@ -47,15 +50,15 @@ namespace PasswordManager.MAUI.Services
             throw new NotImplementedException();
         }
 
-        public Task<TfaSetupDTO> GetTfaSetup(Guid userId, string password)
+        public async Task<TfaSetupDTO> GetTfaSetup(Guid userId, string password)
         {
             throw new NotImplementedException();
         }
 
-        public Task<AuthResponseDTO> LoginAsync(LoginRequestDTO requestDTO)
+        public async Task<AuthResponseDTO> LoginAsync(LoginRequestDTO requestDTO)
         {
             if (!IsNetworkAccess())
-                return _offlineAuthService.LoginAsync(requestDTO);
+                return await _offlineAuthService.LoginAsync(requestDTO);
 
             throw new NotImplementedException();
 
@@ -73,24 +76,47 @@ namespace PasswordManager.MAUI.Services
             */
         }
 
-        public Task<AuthResponseDTO> LoginTfaAsync(LoginTfaRequestDTO requestDTO)
+        public async Task<AuthResponseDTO> LoginTfaAsync(LoginTfaRequestDTO requestDTO)
         {
             throw new NotImplementedException();
         }
 
-        public Task<AuthResponseDTO> LoginTfaAsync(string code, string email, string password)
+        public async Task<AuthResponseDTO> LoginTfaAsync(string code, string email, string password)
         {
             throw new NotImplementedException();
         }
 
-        public Task<AuthResponseDTO> RefreshTokenAsync(string token)
+        public async Task<AuthResponseDTO> RefreshTokenAsync(string token)
         {
             throw new NotImplementedException();
         }
 
-        public Task<AuthResponseDTO> RegisterAsync(RegisterRequestDTO requestDTO)
+        public async Task<AuthResponseDTO?> RegisterAsync(RegisterRequestDTO requestDTO)
         {
-            throw new NotImplementedException();
+            if (!IsNetworkAccess())
+                return null;
+
+            Uri uri = new Uri(string.Format(AppConstants.ApiUrl + AppConstants.RegisterSuffix));
+            string json = JsonSerializer.Serialize(requestDTO);
+            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            try
+            {
+                HttpResponseMessage response = await _httpClient.PostAsync(uri, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    string contentResponse = await response.Content.ReadAsStringAsync();
+                    var authResponseDTO = JsonSerializer.Deserialize<AuthResponseDTO>(contentResponse);
+                    return authResponseDTO;
+                }
+                else
+                    return null;
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         public void ResendConfirmEmail(string email)
@@ -98,12 +124,12 @@ namespace PasswordManager.MAUI.Services
             throw new NotImplementedException();
         }
 
-        public Task SetTwoFactorDisabledAsync(Guid userId)
+        public async Task SetTwoFactorDisabledAsync(Guid userId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<TfaSetupDTO?> SetTwoFactorEnabledAsync(Guid userId, string password)
+        public async Task<TfaSetupDTO?> SetTwoFactorEnabledAsync(Guid userId, string password)
         {
             throw new NotImplementedException();
         }
@@ -137,5 +163,6 @@ namespace PasswordManager.MAUI.Services
         {
             throw new NotImplementedException();
         }
+
     }
 }

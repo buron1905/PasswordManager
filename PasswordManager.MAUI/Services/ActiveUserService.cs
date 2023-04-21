@@ -5,15 +5,29 @@ namespace PasswordManager.MAUI.Services
 {
     public class ActiveUserService
     {
-        public UserDTO UserDTO { get; set; }
-        public string Password { get; set; }
+        #region Properties
+
+        public UserDTO ActiveUser { get; set; }
+        public string CipherKey { get; set; }
         public string Token { get; set; }
 
+        public bool IsActive
+        {
+            get
+            {
+                return ActiveUser != null;
+            }
+        }
+
         private static ActiveUserService instance;
+
+        #endregion
+
         private ActiveUserService()
         {
-
         }
+
+        #region Methods
 
         public static ActiveUserService Instance
         {
@@ -28,29 +42,24 @@ namespace PasswordManager.MAUI.Services
             }
         }
 
-        public bool IsActive
+        public void Login(UserDTO user, string cipherKey)
         {
-            get
-            {
-                return UserDTO != null;
-            }
-        }
-
-        public void Login(UserDTO user, string password)
-        {
-            UserDTO = user;
-            Password = password;
+            ActiveUser = user;
+            ActiveUser.Password = null;
+            CipherKey = cipherKey;
             AppShellViewModel.FlyoutHeaderRefresh();
         }
 
         public void Logout()
         {
-            UserDTO = null;
-            Password = null;
+            ActiveUser = null;
+            CipherKey = null;
+            instance = null;
             SecureStorage.Remove("token");
             AppShellViewModel.FlyoutHeaderRefresh();
-            instance = null;
         }
+
+        #endregion
 
     }
 }

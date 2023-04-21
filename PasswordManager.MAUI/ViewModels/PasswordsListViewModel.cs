@@ -57,9 +57,9 @@ namespace PasswordManager.MAUI.ViewModels
         {
             if (password is null) return;
 
-            if (await PopupService.ShowYesNo($"{password.PasswordName}", $"Are you sure you want to delete this password?"))
+            if (await AlertService.ShowYesNo($"{password.PasswordName}", $"Are you sure you want to delete this password?"))
             {
-                var userGuid = ActiveUserService.Instance.UserDTO.Id;
+                var userGuid = ActiveUserService.Instance.ActiveUser.Id;
                 await _dataServiceWrapper.PasswordService.DeleteAsync(userGuid, password.Id);
                 AllPasswords.Remove(password);
                 FilteredPasswords.Remove(password);
@@ -100,7 +100,7 @@ namespace PasswordManager.MAUI.ViewModels
 
         async Task RefreshPasswords()
         {
-            var userId = ActiveUserService.Instance.UserDTO.Id;
+            var userId = ActiveUserService.Instance.ActiveUser.Id;
 
             await _syncService.GetLastChangeDateTime(userId);
 
@@ -109,7 +109,7 @@ namespace PasswordManager.MAUI.ViewModels
             foreach (var password in passwords)
             {
                 password.PasswordDecrypted = await EncryptionService.DecryptAsync(Encoding.Unicode.GetBytes(password.PasswordEncrypted ?? string.Empty),
-                    ActiveUserService.Instance.Password);
+                    ActiveUserService.Instance.CipherKey);
             }
 
             AllPasswords = passwords;

@@ -45,7 +45,7 @@ public partial class ClipboardEntry : ContentView
     private async void OnClipboardButtonClicked(object sender, EventArgs e)
     {
         await Clipboard.SetTextAsync(Text);
-        await PopupService.ShowToast("Copied to clipboard");
+        await AlertService.ShowToast("Copied to clipboard");
     }
 
     protected void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)

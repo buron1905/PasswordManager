@@ -5,6 +5,7 @@ using PasswordManager.MAUI.Helpers;
 using PasswordManager.MAUI.Services;
 using PasswordManager.MAUI.Views;
 using Services.Abstraction.Auth;
+using Services.Abstraction.Exceptions;
 
 namespace PasswordManager.MAUI.ViewModels
 {
@@ -26,7 +27,7 @@ namespace PasswordManager.MAUI.ViewModels
 
         #endregion
 
-        public RegistrationViewModel(IAuthService authService, IConnectivity connectivity)
+        public RegistrationViewModel(IMauiAuthService authService, IConnectivity connectivity)
         {
             Title = "Register";
             _authService = authService;
@@ -38,39 +39,45 @@ namespace PasswordManager.MAUI.ViewModels
         [RelayCommand]
         async Task Register()
         {
+            var registrationRequestDTO = new RegisterRequestDTO() { EmailAddress = EmailAddress, Password = Password, ConfirmPassword = ConfirmPassword };
+            var userDTO = new UserDTO() { Id = Guid.NewGuid(), EmailAddress = EmailAddress, Password = Password };
+
             if (_connectivity.NetworkAccess != NetworkAccess.Internet)
             {
-                await PopupService.ShowToast("Registration must be online");
+                await AlertService.ShowToast("Registration must be online", CommunityToolkit.Maui.Core.ToastDuration.Long);
+                ValidationHelper.ValidateForm(registrationRequestDTO, Shell.Current.CurrentPage);
+                return;
             }
 
-            var model = new RegisterRequestDTO() { EmailAddress = EmailAddress, Password = Password, ConfirmPassword = ConfirmPassword };
-            var modelDTO = new UserDTO() { Id = Guid.NewGuid(), EmailAddress = EmailAddress, Password = Password };
-
-            if (!ValidationHelper.IsFormValid(model, Shell.Current.CurrentPage))
+            if (!ValidationHelper.ValidateForm(registrationRequestDTO, Shell.Current.CurrentPage))
                 return;
 
             IsBusy = true;
 
             try
             {
-                var result = await _authService.RegisterAsync(model);
+                var result = await _authService.RegisterAsync(registrationRequestDTO);
 
                 if (result is not null)
                 {
-                    ActiveUserService.Instance.Login(modelDTO, Password);
-                    await PopupService.ShowToast("Successfully registered");
+                    ActiveUserService.Instance.Login(userDTO, Password);
+                    await AlertService.ShowToast("Successfully registered");
                     await Shell.Current.GoToAsync($"{nameof(RegistrationSuccessfulPage)}");
 
                     EmailAddress = Password = ConfirmPassword = string.Empty;
                 }
                 else
                 {
-                    await PopupService.ShowToast("Error");
+                    await AlertService.ShowToast("Registration Unsuccessful");
                 }
             }
-            catch (Exception ex)
+            catch (AppException ex)
             {
-                await PopupService.ShowToast(ex.Message);
+                await AlertService.ShowToast($"{ex.Message}");
+            }
+            catch
+            {
+                await AlertService.ShowToast($"Unhandled Error");
             }
 
             IsBusy = false;

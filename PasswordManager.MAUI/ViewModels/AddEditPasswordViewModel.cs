@@ -76,7 +76,7 @@ namespace PasswordManager.MAUI.ViewModels
 
             if (!PropertiesAreSameAsInOriginalPassword())
             {
-                if (!await PopupService.ShowYesNo("Refreshing will discard your changes!", "Unsaved changes will be lost. Do you still want to leave?"))
+                if (!await AlertService.ShowYesNo("Refreshing will discard your changes!", "Unsaved changes will be lost. Do you still want to leave?"))
                 {
                     IsBusy = false;
                     IsRefreshing = false;
@@ -135,20 +135,20 @@ namespace PasswordManager.MAUI.ViewModels
         {
             Favorite = !Favorite;
             if (Favorite)
-                await PopupService.ShowToast("Added to favorites");
+                await AlertService.ShowToast("Added to favorites");
             else
-                await PopupService.ShowToast("Removed from favorites");
+                await AlertService.ShowToast("Removed from favorites");
         }
 
         [RelayCommand]
         async Task Delete()
         {
-            if (await PopupService.ShowYesNo($"Delete: {PasswordName}", $"Are you sure you want to delete this password?"))
+            if (await AlertService.ShowYesNo($"Delete: {PasswordName}", $"Are you sure you want to delete this password?"))
             {
-                var userGuid = ActiveUserService.Instance.UserDTO.Id;
+                var userGuid = ActiveUserService.Instance.ActiveUser.Id;
                 await _dataServiceWrapper.PasswordService.DeleteAsync(userGuid, PasswordOriginal.Id);
                 await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
-                await PopupService.ShowToast("Deleted");
+                await AlertService.ShowToast("Deleted");
             }
         }
 
@@ -157,12 +157,12 @@ namespace PasswordManager.MAUI.ViewModels
         {
             var model = GetModelFromProperties();
 
-            if (!ValidationHelper.IsFormValid(model, Shell.Current.CurrentPage))
+            if (!ValidationHelper.ValidateForm(model, Shell.Current.CurrentPage))
                 return;
 
             IsBusy = true;
 
-            var userGuid = ActiveUserService.Instance.UserDTO.Id;
+            var userGuid = ActiveUserService.Instance.ActiveUser.Id;
             if (IsNew)
                 await _dataServiceWrapper.PasswordService.CreateAsync(userGuid, model);
             else
@@ -209,7 +209,7 @@ namespace PasswordManager.MAUI.ViewModels
 
             if (!PropertiesAreSameAsInOriginalPassword())
             {
-                if (!await PopupService.ShowYesNo("You have unsaved changes!", "Unsaved changes will be lost. Do you still want to leave?"))
+                if (!await AlertService.ShowYesNo("You have unsaved changes!", "Unsaved changes will be lost. Do you still want to leave?"))
                     e.Cancel();
             }
 

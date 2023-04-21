@@ -57,7 +57,7 @@ public partial class UrlEntry : ContentView
             catch (Exception ex)
             {
                 // unexpected error (e.g. no browser is installed)
-                await PopupService.ShowToast("Error with opening URL");
+                await AlertService.ShowToast("Error with opening URL");
             }
         }
     }
@@ -65,7 +65,7 @@ public partial class UrlEntry : ContentView
     private async void OnClipboardButtonClicked(object sender, EventArgs e)
     {
         await Clipboard.SetTextAsync(Text);
-        await PopupService.ShowToast("Copied to clipboard");
+        await AlertService.ShowToast("Copied to clipboard");
     }
 
     protected void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)

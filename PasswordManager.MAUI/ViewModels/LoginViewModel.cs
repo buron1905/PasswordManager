@@ -38,7 +38,7 @@ namespace PasswordManager.MAUI.ViewModels
         {
             var model = new LoginRequestDTO() { EmailAddress = EmailAddress, Password = Password };
 
-            if (!ValidationHelper.IsFormValid(model, Shell.Current.CurrentPage))
+            if (!ValidationHelper.ValidateForm(model, Shell.Current.CurrentPage))
                 return;
 
             IsBusy = true;
@@ -51,7 +51,7 @@ namespace PasswordManager.MAUI.ViewModels
                 {
                     if (!response.EmailVerified)
                     {
-                        await PopupService.ShowToast("Email is not confirmed.");
+                        await AlertService.ShowToast("Email is not confirmed.");
                         IsBusy = false;
                         return;
                     }
@@ -71,17 +71,17 @@ namespace PasswordManager.MAUI.ViewModels
                     //await Shell.Current.GoToAsync(nameof(LoadingPage));
 
                     await Shell.Current.GoToAsync($"//Home", true);
-                    await PopupService.ShowToast("Logged in");
+                    await AlertService.ShowToast("Logged in");
                     Password = string.Empty;
                 }
                 else
                 {
-                    await PopupService.ShowToast("Wrong credentials.");
+                    await AlertService.ShowToast("Wrong credentials.");
                 }
             }
             catch (Exception ex)
             {
-                await PopupService.ShowToast("Wrong credentials.");
+                await AlertService.ShowToast("Wrong credentials.");
             }
 
             IsBusy = false;

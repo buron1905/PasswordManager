@@ -33,13 +33,13 @@ namespace PasswordManager.MAUI.ViewModels
 
             if (response is null)
             {
-                await PopupService.ShowToast("Wrong Code.");
+                await AlertService.ShowToast("Wrong Code.");
                 IsBusy = false;
                 return;
             }
 
             await Shell.Current.GoToAsync($"//Home", true);
-            await PopupService.ShowToast("Logged in");
+            await AlertService.ShowToast("Logged in");
             IsBusy = false;
         }
 

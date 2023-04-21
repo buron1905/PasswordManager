@@ -93,7 +93,7 @@ namespace PasswordManager.MAUI.ViewModels
         async Task Copy()
         {
             await Clipboard.SetTextAsync(NewPassword);
-            await PopupService.ShowToast("Copied to clipboard");
+            await AlertService.ShowToast("Copied to clipboard");
         }
 
         [RelayCommand]

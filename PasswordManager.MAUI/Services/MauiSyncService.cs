@@ -1,5 +1,4 @@
 ﻿using Models.DTOs;
-using PasswordManager.MAUI.Handlers;
 using PasswordManager.MAUI.Helpers;
 using Services.Abstraction.Data;
 using System.Text;
@@ -12,7 +11,7 @@ namespace PasswordManager.MAUI.Services
 
         private readonly IDataServiceWrapper _dataServiceWrapper;
 
-        public MauiSyncService(HttpClient httpClient, IConnectivity connectivity, IDataServiceWrapper dataServiceWrapper, IHttpsClientHandlerService service) : base(httpClient, connectivity, service)
+        public MauiSyncService(HttpClient httpClient, IConnectivity connectivity, IDataServiceWrapper dataServiceWrapper) : base(httpClient, connectivity)
         {
             _dataServiceWrapper = dataServiceWrapper;
         }
@@ -79,12 +78,12 @@ namespace PasswordManager.MAUI.Services
             if (!data.SendingNewData)
                 return;
 
-            var userId = ActiveUserService.Instance.UserDTO.Id;
+            var userId = ActiveUserService.Instance.ActiveUser.Id;
 
             if (data.UserDTO.Id != userId)
                 return;
 
-            var offlinePasswords = await _dataServiceWrapper.PasswordService.GetAllByUserIdAsync(ActiveUserService.Instance.UserDTO.Id);
+            var offlinePasswords = await _dataServiceWrapper.PasswordService.GetAllByUserIdAsync(ActiveUserService.Instance.ActiveUser.Id);
             var newPasswords = data.Passwords.Where(x => !offlinePasswords.Any(o => o.Id == x.Id)).ToList();
             var updatedPasswords = data.Passwords.Where(x => offlinePasswords.Any(o => o.Id == x.Id)).ToList();
 

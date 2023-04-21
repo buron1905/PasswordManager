@@ -49,12 +49,12 @@ namespace PasswordManager.MAUI.ViewModels
             IsBusy = true;
             try
             {
-                var result = await _authService.GetTfaSetup(ActiveUserService.Instance.UserDTO.Id, ActiveUserService.Instance.Password);
+                var result = await _authService.GetTfaSetup(ActiveUserService.Instance.ActiveUser.Id, ActiveUserService.Instance.CipherKey);
 
 
                 if (result is null)
                 {
-                    await PopupService.ShowToast("Error.");
+                    await AlertService.ShowToast("Error.");
                     IsBusy = false;
                     return;
                 }
@@ -66,7 +66,7 @@ namespace PasswordManager.MAUI.ViewModels
             }
             catch (Exception ex)
             {
-                await PopupService.ShowToast(ex.Message);
+                await AlertService.ShowToast(ex.Message);
             }
 
             IsBusy = false;
@@ -77,10 +77,10 @@ namespace PasswordManager.MAUI.ViewModels
         {
             IsBusy = true;
 
-            var result = await _authService.EnableTfa(ActiveUserService.Instance.UserDTO.Id, ActiveUserService.Instance.Password, new TfaSetupDTO() { Code = Code });
+            var result = await _authService.EnableTfa(ActiveUserService.Instance.ActiveUser.Id, ActiveUserService.Instance.CipherKey, new TfaSetupDTO() { Code = Code });
             if (result is null)
             {
-                await PopupService.ShowToast("Wrong Code.");
+                await AlertService.ShowToast("Wrong Code.");
                 IsBusy = false;
                 return;
             }
@@ -90,7 +90,7 @@ namespace PasswordManager.MAUI.ViewModels
             QrCodeSetupImageUrl = result.QrCodeSetupImageUrl;
             SetQrCodeBytes();
             Code = "";
-            await PopupService.ShowToast("Enabled");
+            await AlertService.ShowToast("Enabled");
 
             TfaEnabled = true;
             IsBusy = false;
@@ -101,11 +101,11 @@ namespace PasswordManager.MAUI.ViewModels
         {
             IsBusy = true;
 
-            var result = await _authService.DisableTfa(ActiveUserService.Instance.UserDTO.Id, ActiveUserService.Instance.Password, new TfaSetupDTO() { Code = Code });
+            var result = await _authService.DisableTfa(ActiveUserService.Instance.ActiveUser.Id, ActiveUserService.Instance.CipherKey, new TfaSetupDTO() { Code = Code });
 
             if (result is null)
             {
-                await PopupService.ShowToast("Wrong Code.");
+                await AlertService.ShowToast("Wrong Code.");
                 IsBusy = false;
                 return;
             }
@@ -115,7 +115,7 @@ namespace PasswordManager.MAUI.ViewModels
             QrCodeSetupImageUrl = result.QrCodeSetupImageUrl;
             SetQrCodeBytes();
             Code = "";
-            await PopupService.ShowToast("Disabled");
+            await AlertService.ShowToast("Disabled");
 
             TfaEnabled = false;
             IsBusy = false;
@@ -125,7 +125,7 @@ namespace PasswordManager.MAUI.ViewModels
         async Task Copy()
         {
             await Clipboard.SetTextAsync(AuthKey);
-            await PopupService.ShowToast("Copied to clipboard");
+            await AlertService.ShowToast("Copied to clipboard");
         }
 
         #endregion

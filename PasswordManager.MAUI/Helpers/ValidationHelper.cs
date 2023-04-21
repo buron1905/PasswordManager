@@ -7,7 +7,7 @@ namespace PasswordManager.MAUI.Helpers
 
     public static class ValidationHelper
     {
-        public static bool IsFormValid(object model, Page page)
+        public static bool ValidateForm(object model, Page page)
         {
             HideValidationFields(model, page);
             var errors = new List<ValidationResult>();

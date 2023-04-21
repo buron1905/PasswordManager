@@ -31,9 +31,9 @@ namespace PasswordManager.MAUI.ViewModels
             {
                 await Browser.Default.OpenAsync(new Uri("https://github.com/buron1905/PasswordManager"), BrowserLaunchMode.SystemPreferred);
             }
-            catch (Exception ex)
+            catch
             {
-                await PopupService.ShowToast("Error with opening URL");
+                await AlertService.ShowToast("Error with opening URL");
             }
         }
 
@@ -43,7 +43,8 @@ namespace PasswordManager.MAUI.ViewModels
 
         public static void FlyoutHeaderRefresh()
         {
-            Shell.Current.FlyoutHeader = new FlyoutHeader();
+            if (Shell.Current is not null)
+                Shell.Current.FlyoutHeader = new FlyoutHeader();
         }
 
         #endregion

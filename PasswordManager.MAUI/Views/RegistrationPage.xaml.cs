@@ -11,5 +11,6 @@ namespace PasswordManager.MAUI.Views
 
             BindingContext = viewModel;
         }
+
     }
 }

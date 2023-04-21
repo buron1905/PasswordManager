@@ -16,16 +16,16 @@ namespace PasswordManager.MAUI.Extensions
     {
         public static MauiAppBuilder RegisterAppServices(this MauiAppBuilder builder)
         {
+            // Singleton
             builder.Services.AddSingleton<IConnectivity>(Connectivity.Current);
             builder.Services.AddSingleton<HttpClient>();
 
-            //Singleton
             //// From WebAPI
             builder.Services.AddSingleton<IRepositoryWrapper, RepositoryWrapper>();
             builder.Services.AddSingleton<IDataServiceWrapper, DataServiceWrapper>();
+            builder.Services.AddSingleton<IMauiAuthService, MauiAuthService>();
             builder.Services.AddSingleton<IAuthService, AuthService>();
             builder.Services.AddSingleton<ITwoFactorAuthService, TwoFactorAuthService>();
-            builder.Services.AddSingleton<MauiAuthService>();
             builder.Services.AddSingleton<ISyncService, MauiSyncService>();
 
             // Transient
@@ -37,7 +37,7 @@ namespace PasswordManager.MAUI.Extensions
 
         public static MauiAppBuilder RegisterViewModels(this MauiAppBuilder builder)
         {
-            //Singleton
+            // Singleton
             builder.Services.AddTransient<LoadingViewModel>();
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<LoginTfaViewModel>();
@@ -56,7 +56,7 @@ namespace PasswordManager.MAUI.Extensions
 
         public static MauiAppBuilder RegisterViews(this MauiAppBuilder builder)
         {
-            //Singleton
+            // Singleton
             builder.Services.AddTransient<LoadingPage>();
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<LoginTfaPage>();
