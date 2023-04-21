@@ -37,7 +37,7 @@ namespace Services
 
         public void SendRegistrationEmail(string recipientEmailAddress, string emailConfirmationToken)
         {
-            Send(_emailConfiguration.From, recipientEmailAddress, "Confirm registration", $"https://localhost:5001/email-confirmation/{recipientEmailAddress}/{emailConfirmationToken}");
+            Send(_emailConfiguration.From, recipientEmailAddress, "Confirm registration", $"https://password-manager-client.azurewebsites.net/email-confirmation/{recipientEmailAddress}/{emailConfirmationToken}");
         }
     }
 }
