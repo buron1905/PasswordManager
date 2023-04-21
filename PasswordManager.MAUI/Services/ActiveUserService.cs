@@ -49,6 +49,7 @@ namespace PasswordManager.MAUI.Services
             Password = null;
             SecureStorage.Remove("token");
             AppShellViewModel.FlyoutHeaderRefresh();
+            instance = null;
         }
 
     }
