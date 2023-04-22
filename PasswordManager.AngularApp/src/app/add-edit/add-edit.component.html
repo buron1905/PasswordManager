@@ -1,0 +1,100 @@
+<div class="container navbarMargin">
+  <ngx-loading [show]="loading"></ngx-loading>
+  <div class="row">
+    <h1 class="h1 fw-bold text-center" *ngIf="isAddMode">Add password</h1>
+    <h1 class="h1 fw-bold text-center" *ngIf="!isAddMode">Edit password</h1>
+  </div>
+  <div class="row">
+    <div class="col-lg-4"></div>
+    <div class="col-lg-4">
+      <form [formGroup]="passwordForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3 form-floating">
+          <input type="text" class="form-control" id="passwordName" formControlName="passwordName" aria-describedby="passwordNameHelpBlock" required placeholder="Name"
+                 [ngClass]="{ 'is-invalid': submitted && passwordName?.errors }">
+          <label for="passwordName" class="form-label">Name</label>
+          <div *ngIf="submitted && passwordName?.errors" class="invalid-feedback">
+            <div *ngIf="passwordName?.errors?.['required']">This field is required.</div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <div class="input-group" [class.has-validation]="submitted && userName?.errors">
+            <div class="form-floating" [class.is-invalid]="submitted && userName?.errors">
+              <input type="text" class="form-control" [class.is-invalid]="submitted && userName?.errors" id="floatingInputGroup2" formControlName="userName" placeholder="Username" required autocomplete="username">
+              <label for="floatingInputGroup2">Username</label>
+            </div>
+            <button type="button" (click)="copyToClipboard(userName.value)" class="btn btn-outline-secondary" title="Copy username" aria-label="Copy username">
+              <i class="bi bi-files"></i>
+            </button>
+            <div class="invalid-feedback" *ngIf="submitted && userName?.errors">
+              <div *ngIf="userName?.errors?.['required']">This field is required.</div>
+            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <div class="input-group" [class.has-validation]="submitted && passwordDecrypted?.errors">
+            <div class="form-floating" [class.is-invalid]="submitted && passwordDecrypted?.errors">
+              <input [type]="toggledPassword ? 'text' : 'password'" class="form-control" [class.is-invalid]="submitted && passwordDecrypted?.errors" id="password" formControlName="passwordDecrypted" aria-describedby="passwordDecryptedHelpBlock" required autocomplete="new-password"
+                     spellcheck="false" autocorrect="off" autocapitalize="off" placeholder="Password"
+                     [ngClass]="{ 'is-invalid': submitted && passwordDecrypted?.errors }">
+              <label for="passwordDecrypted" class="form-label">Password</label>
+            </div>
+            <button type="button" (click)="togglePassword()" class="btn btn-outline-secondary" title="Toggle visibility" aria-label="Toggle visibility">
+              <i class="bi" [class.bi-eye]="!toggledPassword" [class.bi-eye-slash]="toggledPassword"></i>
+            </button>
+            <button type="button" (click)="generatePassword()" class="btn btn-outline-secondary" title="Generate password" aria-label="Generate password">
+              <i class="bi bi-arrow-clockwise"></i>
+            </button>
+            <button type="button" (click)="copyToClipboard(passwordDecrypted.value)" class="btn btn-outline-secondary" title="Copy password" aria-label="Copy password">
+              <i class="bi bi-files"></i>
+            </button>
+            <div *ngIf="submitted && passwordDecrypted?.errors" class="invalid-feedback">
+              <div *ngIf="passwordDecrypted?.errors?.['required']">This field is required.</div>
+              <div *ngIf="passwordDecrypted?.errors?.['minlength']">Password must be at least 6 characters long.</div>
+              <div *ngIf="passwordDecrypted?.errors?.['maxlength']">Password must not exceed 255 characters.</div>
+            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <div class="input-group">
+            <div class="form-floating">
+              <input type="url" class="form-control" id="url" formControlName="url" aria-describedby="urlHelpBlock" placeholder="URL (e.g. https://google.com/)"
+                     [ngClass]="{ 'is-invalid': submitted && url?.errors }">
+              <label for="url" class="form-label">URL</label>
+            </div>
+            <button type="button" (click)="goToUrl(url.value)" class="btn btn-outline-secondary" title="Go to URL" aria-label="Go to URL">
+              <i class="bi bi-box-arrow-up-right"></i>
+            </button>
+            <button type="button" (click)="copyToClipboard(url.value)" class="btn btn-outline-secondary" title="Copy URL" aria-label="Copy URL">
+              <i class="bi bi-files"></i>
+            </button>
+            <div *ngIf="submitted && url?.errors" class="invalid-feedback">
+              <div *ngIf="url?.errors?.['maxlength']">URL length must not exceed 2048 characters.</div>
+            </div>
+          </div>
+        </div>
+        <div class="mb-3 form-floating">
+          <textarea maxlength="255" type="" class="form-control" id="notes" formControlName="notes" aria-describedby="notesHelpBlock" placeholder="Notes"
+                    [ngClass]="{ 'is-invalid': submitted && notes?.errors }"></textarea>
+          <label for="notes" class="form-label">Notes</label>
+          <div *ngIf="submitted && notes?.errors" class="invalid-feedback">
+            <div *ngIf="notes?.errors?.['maxlength']">Notes length must not exceed 10000 characters.</div>
+          </div>
+        </div>
+        <div class="d-flex bd-highlight mb-3">
+          <button type="submit" [disabled]="loading" class="btn btn-primary p-2" aria-describedby="submitHelpBlock">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            Save
+          </button>
+          <a routerLink="/passwords" class="btn btn-link p-2 me-auto">Cancel</a>
+          <a (click)="toggleFavorite()" class="btn btn-link me-1 p-2" [title]="favorite.value ? 'Remove from favorites' : 'Add to favorites'" aria-label="Favorite">
+            <i class="bi" [class.bi-star]="!favorite.value" [class.bi-star-fill]="favorite.value"></i>
+          </a>
+          <a *ngIf="!isAddMode" class="btn btn-danger p-2" title="Delete" (click)="delete(password.id)">
+            <i class="bi bi-trash3"></i>
+          </a>
+        </div>
+      </form>
+    </div>
+    <div class="col-lg-4"></div>
+  </div>
+</div>
