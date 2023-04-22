@@ -53,8 +53,6 @@ namespace PasswordManager.WebAPI.Controllers
             if (response == null)
                 return Unauthorized(new AuthResponseDTO { IsAuthSuccessful = false, ErrorMessage = "Invalid Authentication" });
 
-            //SetTokenCookie(response.JweToken!);
-
             return Ok(response);
         }
 

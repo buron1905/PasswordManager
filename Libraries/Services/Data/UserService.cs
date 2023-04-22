@@ -52,9 +52,6 @@ namespace Services.Data
         {
             var user = registerDTO.Adapt<User>();
             user.EmailConfirmationToken = Guid.NewGuid().ToString();
-            // For MAUI TESTING
-            user.EmailConfirmed = true;
-            //
             _repositoryWrapper.UserRepository.Create(user);
 
             await _repositoryWrapper.SaveChangesAsync();

@@ -164,8 +164,7 @@ namespace Services.Auth
 
             var userDTO = await _dataServiceWrapper.UserService.CreateAsync(requestDTO);
 
-            // Temporarily turned off for MAUI testing
-            //_emailService.SendRegistrationEmail(userDTO.EmailAddress, userDTO.EmailConfirmationToken);
+            _emailService.SendRegistrationEmail(userDTO.EmailAddress, userDTO.EmailConfirmationToken);
 
             return GetAuthResponse(userDTO.Id, userDTO.EmailAddress!, requestDTO.Password!, emailVerified: userDTO.EmailConfirmed);
         }
