@@ -17,8 +17,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<DataContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
-    
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -36,11 +35,11 @@ else
     app.UseStaticFiles();
 }
 
-app.UseHttpsRedirection();
-
 app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseMiddleware<JwtMiddleware>();
+
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
