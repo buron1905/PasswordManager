@@ -40,7 +40,10 @@ namespace PasswordManager.MAUI.ViewModels
         async Task Register()
         {
             var registrationRequestDTO = new RegisterRequestDTO() { EmailAddress = EmailAddress, Password = Password, ConfirmPassword = ConfirmPassword };
-            var userDTO = new UserDTO() { Id = Guid.NewGuid(), EmailAddress = EmailAddress, Password = Password };
+
+            var usedEmailLabel = Shell.Current.CurrentPage.FindByName<Label>("UsedEmailError");
+            if (usedEmailLabel is not null)
+                usedEmailLabel.IsVisible = false;
 
             if (_connectivity.NetworkAccess != NetworkAccess.Internet)
             {
@@ -58,9 +61,8 @@ namespace PasswordManager.MAUI.ViewModels
             {
                 var result = await _authService.RegisterAsync(registrationRequestDTO);
 
-                if (result is not null)
+                if (result is not null && result.IsRegistrationSuccessful)
                 {
-                    ActiveUserService.Instance.Login(userDTO, Password);
                     await AlertService.ShowToast("Successfully registered");
                     await Shell.Current.GoToAsync($"{nameof(RegistrationSuccessfulPage)}");
 
@@ -68,6 +70,7 @@ namespace PasswordManager.MAUI.ViewModels
                 }
                 else
                 {
+                    usedEmailLabel.IsVisible = true;
                     await AlertService.ShowToast("Registration Unsuccessful");
                 }
             }

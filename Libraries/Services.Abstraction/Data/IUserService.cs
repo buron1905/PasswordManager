@@ -8,7 +8,7 @@ namespace Services.Abstraction.Data
         Task<IEnumerable<UserDTO>> GetAllAsync();
         Task<UserDTO> GetByIdAsync(Guid userId);
         Task<UserDTO> GetByEmailAsync(string email);
-        Task<UserDTO> CreateAsync(RegisterRequestDTO registerDTO);
+        Task<UserDTO> CreateAsync(UserDTO userDTO);
         Task<UserDTO> UpdateAsync(Guid userId, UserDTO userDTO);
         Task DeleteAsync(Guid userId);
     }

@@ -41,9 +41,15 @@ namespace Persistance.MAUI.Repositories
         public async void Create(T entity)
         {
             await Init();
-            entity.Id = Guid.NewGuid();
-            entity.IDT = DateTime.UtcNow;
-            await _connection.InsertAsync(entity);
+
+            if (entity.Id == Guid.Empty)
+            {
+                entity.Id = Guid.NewGuid();
+                entity.IDT = DateTime.UtcNow;
+                entity.UDT = entity.IDT;
+            }
+
+            await _connection.InsertOrReplaceAsync(entity);
         }
 
         public async void Update(T entity)

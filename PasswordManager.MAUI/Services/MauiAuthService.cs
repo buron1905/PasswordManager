@@ -1,6 +1,7 @@
 ﻿using Models.DTOs;
 using PasswordManager.MAUI.Helpers;
 using Services.Abstraction.Auth;
+using Services.Abstraction.Data;
 using System.Text;
 using System.Text.Json;
 
@@ -9,10 +10,19 @@ namespace PasswordManager.MAUI.Services
     public class MauiAuthService : MauiBaseDataService, IMauiAuthService
     {
         readonly IAuthService _offlineAuthService;
+        readonly IDataServiceWrapper _dataServiceWrapper;
+        JsonSerializerOptions _serializerOptions;
 
-        public MauiAuthService(HttpClient httpClient, IConnectivity connectivity, IAuthService offlineAuthService) : base(httpClient, connectivity)
+        public MauiAuthService(HttpClient httpClient, IConnectivity connectivity, IAuthService offlineAuthService, IDataServiceWrapper dataServiceWrapper) : base(httpClient, connectivity)
         {
             _offlineAuthService = offlineAuthService;
+            _dataServiceWrapper = dataServiceWrapper;
+
+            _serializerOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            };
         }
 
         public async Task<bool> ConfirmEmailAsync(string email, string token)
@@ -61,19 +71,6 @@ namespace PasswordManager.MAUI.Services
                 return await _offlineAuthService.LoginAsync(requestDTO);
 
             throw new NotImplementedException();
-
-            // Online
-            //var response = await httpClient.GetAsync("https://www.montemagno.com/monkeys.json");
-            //if (response.IsSuccessStatusCode)
-            //{
-            //    monkeyList = await response.Content.ReadFromJsonAsync<List<Monkey>>();
-            //}
-            // Offline
-            /*using var stream = await FileSystem.OpenAppPackageFileAsync("monkeydata.json");
-            using var reader = new StreamReader(stream);
-            var contents = await reader.ReadToEndAsync();
-            monkeyList = JsonSerializer.Deserialize<List<Monkey>>(contents);
-            */
         }
 
         public async Task<AuthResponseDTO> LoginTfaAsync(LoginTfaRequestDTO requestDTO)
@@ -91,7 +88,7 @@ namespace PasswordManager.MAUI.Services
             throw new NotImplementedException();
         }
 
-        public async Task<AuthResponseDTO?> RegisterAsync(RegisterRequestDTO requestDTO)
+        public async Task<RegisterResponseDTO?> RegisterAsync(RegisterRequestDTO requestDTO)
         {
             if (!IsNetworkAccess())
                 return null;
@@ -106,8 +103,11 @@ namespace PasswordManager.MAUI.Services
                 if (response.IsSuccessStatusCode)
                 {
                     string contentResponse = await response.Content.ReadAsStringAsync();
-                    var authResponseDTO = JsonSerializer.Deserialize<AuthResponseDTO>(contentResponse);
-                    return authResponseDTO;
+                    var registerResponseDTO = JsonSerializer.Deserialize<RegisterResponseDTO>(contentResponse, _serializerOptions);
+
+                    await _dataServiceWrapper.UserService.CreateAsync(registerResponseDTO.User);
+
+                    return registerResponseDTO;
                 }
                 else
                     return null;

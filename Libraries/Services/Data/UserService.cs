@@ -48,10 +48,10 @@ namespace Services.Data
             return userDTO;
         }
 
-        public async Task<UserDTO> CreateAsync(RegisterRequestDTO registerDTO)
+        public async Task<UserDTO> CreateAsync(UserDTO userDTO)
         {
-            var user = registerDTO.Adapt<User>();
-            user.EmailConfirmationToken = Guid.NewGuid().ToString();
+            var user = userDTO.Adapt<User>();
+
             _repositoryWrapper.UserRepository.Create(user);
 
             await _repositoryWrapper.SaveChangesAsync();

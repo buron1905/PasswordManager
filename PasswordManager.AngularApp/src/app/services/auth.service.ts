@@ -9,6 +9,7 @@ import { LoginModel } from './../models/login.model';
 import { AuthResponseModel } from '../models/auth-response.model';
 import { TfaSetup } from '../models/tfa-setup.model';
 import { EmailConfirmationModel } from '../models/email-confirmation.model';
+import { RegisterResponseModel } from '../models/register-response.model';
 
 @Injectable({
   providedIn: 'root'
@@ -29,8 +30,8 @@ export class AuthService {
     return this.http.post<AuthResponseModel>(this.loginPath, data);
   }
 
-  register(data: AbstractControl<any, any>): Observable<AuthResponseModel> {
-    return this.http.post<AuthResponseModel>(this.registerPath, data);
+  register(data: AbstractControl<any, any>): Observable<RegisterResponseModel> {
+    return this.http.post<RegisterResponseModel>(this.registerPath, data);
   }
 
   login(data: AuthResponseModel) : void {

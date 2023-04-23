@@ -152,7 +152,7 @@ namespace Services.Auth
             return tfaResponse;
         }
 
-        public async Task<AuthResponseDTO?> RegisterAsync(RegisterRequestDTO requestDTO)
+        public async Task<RegisterResponseDTO?> RegisterAsync(RegisterRequestDTO requestDTO)
         {
             if (!IsRequestValid(requestDTO))
                 return null;
@@ -160,13 +160,22 @@ namespace Services.Auth
             if (await _repositoryWrapper.UserRepository.AnyAsync(user => user.EmailAddress.Equals(requestDTO.EmailAddress!)))
                 throw new AppException("Email is already used by another user.");
 
-            requestDTO.PasswordHASH = HashingService.HashPassword(requestDTO.Password);
+            var userDTO = new UserDTO()
+            {
+                EmailAddress = requestDTO.EmailAddress,
+                PasswordHASH = HashingService.HashPassword(requestDTO.Password!),
+                TwoFactorEnabled = false,
+                EmailConfirmationToken = Guid.NewGuid().ToString(),
+                TwoFactorSecret = Encoding.Unicode.GetString(await EncryptionService.EncryptAsync(Guid.NewGuid().ToString().Trim().Replace("-", "").Substring(0, 10), requestDTO.Password!))
+            };
 
-            var userDTO = await _dataServiceWrapper.UserService.CreateAsync(requestDTO);
+            userDTO = await _dataServiceWrapper.UserService.CreateAsync(userDTO);
 
             _emailService.SendRegistrationEmail(userDTO.EmailAddress, userDTO.EmailConfirmationToken);
 
-            return GetAuthResponse(userDTO.Id, userDTO.EmailAddress!, requestDTO.Password!, emailVerified: userDTO.EmailConfirmed);
+            userDTO.Password = string.Empty;
+
+            return new RegisterResponseDTO() { User = userDTO, IsRegistrationSuccessful = true };
         }
 
         public AuthResponseDTO GetAuthResponse(Guid userId, string emailAddress, string password, bool isAuthSuccessful = true, bool tfaEnabled = false, bool tfaChecked = true, bool emailVerified = true)

@@ -11,6 +11,7 @@ namespace Models
         [Required]
         [EmailAddress]
         [MaxLength(MaxEmailLength, ErrorMessage = MaxEmailLengthErrorMessage)]
+        [SQLite.Unique]
         public string? EmailAddress { get; set; }
 
         [Required]

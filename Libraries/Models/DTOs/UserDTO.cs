@@ -15,12 +15,10 @@ namespace Models.DTOs
         [Required]
         public string? Password { get; set; }
 
-
         [JsonIgnore]
         public string? PasswordHASH { get; set; }
 
-        // temporarity for MAUI testing
-        public bool EmailConfirmed { get; set; } = true;
+        public bool EmailConfirmed { get; set; }
 
         public string? EmailConfirmationToken { get; set; }
 
