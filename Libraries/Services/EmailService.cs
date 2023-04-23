@@ -42,7 +42,7 @@ namespace Services
 
             Send(_emailConfiguration.From, _emailConfiguration.Password, _emailConfiguration.SmtpServer, _emailConfiguration.Port,
                 recipientEmailAddress, "Confirm registration",
-                $"https://password-manager-client.azurewebsites.net/email-confirmation/{recipientEmailAddress}/{emailConfirmationToken}");
+                $"https://passwordmanagerwebapi.azurewebsites.net/email-confirmation/{recipientEmailAddress}/{emailConfirmationToken}");
         }
     }
 }
