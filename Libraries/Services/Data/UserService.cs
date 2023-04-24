@@ -59,14 +59,12 @@ namespace Services.Data
             return user.Adapt<UserDTO>();
         }
 
-        public async Task<UserDTO> UpdateAsync(Guid userId, UserDTO userDTO)
+        public async Task<UserDTO> UpdateAsync(UserDTO userDTO)
         {
-            var user = await _repositoryWrapper.UserRepository.GetByIdAsync(userId);
+            var user = await _repositoryWrapper.UserRepository.GetByIdAsync(userDTO.Id);
 
             if (user is null)
-            {
-                throw new UserNotFoundException(userId);
-            }
+                throw new UserNotFoundException(userDTO.EmailAddress);
 
             // TODO: Check update logic
             user.EmailAddress = userDTO.EmailAddress;
@@ -75,6 +73,8 @@ namespace Services.Data
             user.TwoFactorSecret = userDTO.TwoFactorSecret;
             user.EmailConfirmed = userDTO.EmailConfirmed;
             user.EmailConfirmationToken = userDTO.EmailConfirmationToken;
+
+            _repositoryWrapper.UserRepository.Update(user);
 
             await _repositoryWrapper.SaveChangesAsync();
 

@@ -20,6 +20,6 @@ namespace Services.Abstraction.Auth
         TfaSetupDTO GenerateTfaSetupDTO(string issuer, string accountTitle, string accountSecretKey);
         bool ValidateTfaCode(string secret, string code);
         bool TokenIsValid(string token);
-        Task ResendConfirmEmail(string email);
+        Task<bool> ResendConfirmEmail(string email);
     }
 }

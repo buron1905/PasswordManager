@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace PasswordManager.MAUI.Services
 {
-    public class MauiSyncService : MauiBaseDataService, ISyncService
+    public class MauiSyncService : MauiBaseDataService, IMauiSyncService
     {
 
         private readonly IDataServiceWrapper _dataServiceWrapper;
@@ -41,23 +41,36 @@ namespace PasswordManager.MAUI.Services
             return null;
         }
 
+        public async Task<LastChangeResponseDTO?> GetLastChangeDateTimeLocal(Guid userId)
+        {
+            var lastChangeUser = (await _dataServiceWrapper.UserService.GetByIdAsync(userId)).UDT;
+            var passwords = await _dataServiceWrapper.PasswordService.GetAllByUserIdAsync(userId);
+            var lastChangePassword = GetLastChangeDateTime(passwords);
+
+            var response = new LastChangeResponseDTO() { LastChangeUser = lastChangeUser, LastChangePassword = lastChangePassword };
+            return response;
+        }
+
         public async Task<SyncResponseDTO?> SyncAccount(SyncRequestDTO data)
         {
             if (IsNetworkAccess())
             {
-
-
-                Uri uri = new Uri(string.Format(AppConstants.ApiUrl, "Sync"));
+                Uri uri = new Uri(AppConstants.ApiUrl + AppConstants.SyncSuffix);
+                data.UserDTO.Password = "password";
                 string json = JsonSerializer.Serialize<SyncRequestDTO>(data);
                 StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, uri);
+                request.Content = content;
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", ActiveUserService.Instance.Token);
+
                 try
                 {
-                    HttpResponseMessage response = await _httpClient.PostAsync(uri, content);
+                    HttpResponseMessage response = await _httpClient.SendAsync(request);
                     if (response.IsSuccessStatusCode)
                     {
                         string contentResponse = await response.Content.ReadAsStringAsync();
-                        var syncResponseDTO = JsonSerializer.Deserialize<SyncResponseDTO>(contentResponse);
+                        var syncResponseDTO = JsonSerializer.Deserialize<SyncResponseDTO>(contentResponse, _serializerOptions);
                         await SyncAccountBasedOnReceivedData(syncResponseDTO);
                         return syncResponseDTO;
                     }
@@ -98,6 +111,41 @@ namespace PasswordManager.MAUI.Services
             {
                 await _dataServiceWrapper.PasswordService.UpdateAsync(userId, password);
             }
+        }
+
+        public static DateTime GetLastChangeDateTime(IEnumerable<PasswordDTO> passwords)
+        {
+            if (passwords.Count() == 0)
+                return DateTime.MinValue;
+
+            return passwords.Max(x => x.UDT);
+        }
+
+        public async Task<SyncResponseDTO?> DoSync()
+        {
+            if (IsNetworkAccess())
+            {
+                var lastChangeOnline = await GetLastChangeDateTime(ActiveUserService.Instance.ActiveUser.Id);
+                var lastChangeLocal = await GetLastChangeDateTimeLocal(ActiveUserService.Instance.ActiveUser.Id);
+                if (lastChangeLocal is not null && lastChangeOnline is not null)
+                {
+                    //if (lastChangeLocal.LastChangeUser != lastChangeOnline.LastChangeUser || lastChangeLocal.LastChangePassword != lastChangeOnline.LastChangePassword)
+                    {
+                        var localData = new SyncRequestDTO();
+                        localData.UserDTO = await _dataServiceWrapper.UserService.GetByIdAsync(ActiveUserService.Instance.ActiveUser.Id);
+                        localData.Passwords = await _dataServiceWrapper.PasswordService.GetAllByUserIdAsync(ActiveUserService.Instance.ActiveUser.Id);
+
+                        var response = await SyncAccount(localData);
+
+                        if (response is not null)
+                        {
+                            await SyncAccountBasedOnReceivedData(response);
+                            return response;
+                        }
+                    }
+                }
+            }
+            return null;
         }
     }
 }

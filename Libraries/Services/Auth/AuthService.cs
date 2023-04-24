@@ -86,14 +86,14 @@ namespace Services.Auth
         {
             var user = await _dataServiceWrapper.UserService.GetByIdAsync(userId);
             user.TwoFactorEnabled = true;
-            return await _dataServiceWrapper.UserService.UpdateAsync(userId, user);
+            return await _dataServiceWrapper.UserService.UpdateAsync(user);
         }
 
         public async Task<UserDTO?> SetTwoFactorDisabledAsync(Guid userId)
         {
             var user = await _dataServiceWrapper.UserService.GetByIdAsync(userId);
             user.TwoFactorEnabled = false;
-            return await _dataServiceWrapper.UserService.UpdateAsync(userId, user);
+            return await _dataServiceWrapper.UserService.UpdateAsync(user);
         }
 
         public TfaSetupDTO GenerateTfaSetupDTO(string issuer, string accountTitle, string accountSecretKey)
@@ -228,7 +228,7 @@ namespace Services.Auth
         {
             if (requestDTO is null)
                 return false;
-            return requestDTO.EmailAddress is not null || requestDTO.Password is not null;
+            return requestDTO.EmailAddress is not null && requestDTO.Password is not null;
         }
 
         private async Task<bool> AuthUser(string emailAddress, string password)
@@ -238,11 +238,11 @@ namespace Services.Auth
                 return false;
             //throw new UserNotFoundException(emailAddress);
 
-            if (!HashingService.Verify(password, user.PasswordHASH))
-                return false;
+            if (HashingService.Verify(password, user.PasswordHASH))
+                return true;
             //throw new PasswordNotFoundException();
 
-            return true;
+            return false;
         }
 
         public async Task<TfaSetupDTO?> GetTfaSetup(Guid userId, string password)
@@ -257,7 +257,7 @@ namespace Services.Auth
                 newTwoFactorSecret = Encoding.Unicode.GetString(await EncryptionService.EncryptAsync(newTwoFactorSecret,
                     password));
                 userDTO.TwoFactorSecret = newTwoFactorSecret;
-                userDTO = await _dataServiceWrapper.UserService.UpdateAsync(userId, userDTO);
+                userDTO = await _dataServiceWrapper.UserService.UpdateAsync(userDTO);
             }
 
             var secret = await DecryptString(password, userDTO.TwoFactorSecret!);
@@ -275,22 +275,25 @@ namespace Services.Auth
             if (userDTO is null) return false;
             if (userDTO.EmailConfirmed)
                 return true;
-            if (userDTO.EmailConfirmationToken is null) return false;
+            if (userDTO.EmailConfirmationToken is null) return true;
 
             if (userDTO.EmailConfirmationToken.Equals(token))
             {
                 userDTO.EmailConfirmed = true;
-                await _dataServiceWrapper.UserService.UpdateAsync(userDTO.Id, userDTO);
+                await _dataServiceWrapper.UserService.UpdateAsync(userDTO);
                 return true;
             }
             return false;
         }
 
-        public async Task ResendConfirmEmail(string email)
+        public async Task<bool> ResendConfirmEmail(string email)
         {
             var userDTO = await _dataServiceWrapper.UserService.GetByEmailAsync(email);
 
-            _emailService.SendRegistrationEmail(email, userDTO.EmailConfirmationToken);
+            if (userDTO is null) return false;
+
+            _emailService.SendRegistrationEmail(email, userDTO.EmailConfirmationToken!);
+            return true;
         }
 
         public async Task<AuthResponseDTO?> LoginTfaAsync(string code, string email, string password)

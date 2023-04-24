@@ -20,5 +20,8 @@ namespace Models
         public DateTime DDT { get; set; }
 
         public bool Deleted { get; set; }
+
+        [Required]
+        public DateTime UDTLocal { get; set; }
     }
 }

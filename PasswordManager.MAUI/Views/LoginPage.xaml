@@ -13,6 +13,8 @@
                 <controls:OutLinedEntry Text="{Binding EmailAddress}" Placeholder="Email Address" Keyboard="Email" Margin="0,10,0,10"/>
                 <Label x:Name="EmailAddressError" 
                     IsVisible="False" Style="{StaticResource LabelError}" />
+                <Label x:Name="EmailNotConfirmedError" Text="Email is not confirmed."
+                    IsVisible="False" Style="{StaticResource LabelError}" />
                 <controls:TogglePasswordEntry Placeholder="Password"  Margin="0,10,0,10"
                     Text="{Binding Password}"
                     HidePassword="True"/>

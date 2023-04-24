@@ -32,11 +32,9 @@ namespace PasswordManager.WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SyncRequestDTO requestDTO)
         {
-            var userGuid = JwtService.GetUserGuidFromClaims(HttpContext.GetUserClaims());
-
             var response = await _syncService.SyncAccount(requestDTO);
             if (response is null)
-                return BadRequest();
+                return BadRequest("Error when syncing");
 
             return Ok(response);
         }

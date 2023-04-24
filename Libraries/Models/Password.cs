@@ -33,5 +33,6 @@ namespace Models
 
         [ForeignKey(nameof(User))]
         public Guid UserId { get; set; }
+
     }
 }

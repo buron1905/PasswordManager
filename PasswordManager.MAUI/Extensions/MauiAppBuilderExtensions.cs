@@ -26,7 +26,8 @@ namespace PasswordManager.MAUI.Extensions
             builder.Services.AddSingleton<IMauiAuthService, MauiAuthService>();
             builder.Services.AddSingleton<IAuthService, AuthService>();
             builder.Services.AddSingleton<ITwoFactorAuthService, TwoFactorAuthService>();
-            builder.Services.AddSingleton<ISyncService, MauiSyncService>();
+            builder.Services.AddSingleton<IMauiSyncService, MauiSyncService>();
+            builder.Services.AddSingleton<ISyncService, SyncService>();
 
             // Transient
             builder.Services.AddTransient<IJwtService, JwtService>();

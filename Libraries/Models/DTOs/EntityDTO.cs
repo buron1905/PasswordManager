@@ -11,5 +11,7 @@
         public DateTime DDT { get; set; }
 
         public bool Deleted { get; set; }
+        public DateTime UDTLocal { get; set; }
+
     }
 }

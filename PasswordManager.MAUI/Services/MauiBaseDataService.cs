@@ -5,7 +5,7 @@ namespace PasswordManager.MAUI.Services
     public abstract class MauiBaseDataService
     {
         protected HttpClient _httpClient;
-        JsonSerializerOptions _serializerOptions;
+        protected JsonSerializerOptions _serializerOptions;
         protected readonly IConnectivity _connectivity;
 
         public MauiBaseDataService(HttpClient httpClient, IConnectivity connectivity)

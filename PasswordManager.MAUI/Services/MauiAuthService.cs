@@ -11,23 +11,17 @@ namespace PasswordManager.MAUI.Services
     {
         readonly IAuthService _offlineAuthService;
         readonly IDataServiceWrapper _dataServiceWrapper;
-        JsonSerializerOptions _serializerOptions;
 
         public MauiAuthService(HttpClient httpClient, IConnectivity connectivity, IAuthService offlineAuthService, IDataServiceWrapper dataServiceWrapper) : base(httpClient, connectivity)
         {
             _offlineAuthService = offlineAuthService;
             _dataServiceWrapper = dataServiceWrapper;
 
-            _serializerOptions = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = true
-            };
         }
 
         public async Task<bool> ConfirmEmailAsync(string email, string token)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("Email confirmation is only possible via web application.");
         }
 
         public async Task<string> DecryptString(string password, string textEncrypted)
@@ -68,9 +62,34 @@ namespace PasswordManager.MAUI.Services
         public async Task<AuthResponseDTO> LoginAsync(LoginRequestDTO requestDTO)
         {
             if (!IsNetworkAccess())
-                return await _offlineAuthService.LoginAsync(requestDTO);
+            {
+                // TODO: In offline login remove token
+                var authResponse = await _offlineAuthService.LoginAsync(requestDTO);
+                authResponse.JweToken = null;
+                return authResponse;
+            }
 
-            throw new NotImplementedException();
+            Uri uri = new Uri(AppConstants.ApiUrl + AppConstants.LoginSuffix);
+            string json = JsonSerializer.Serialize(requestDTO);
+            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            try
+            {
+                HttpResponseMessage response = await _httpClient.PostAsync(uri, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    string contentResponse = await response.Content.ReadAsStringAsync();
+                    var authResponseDTO = JsonSerializer.Deserialize<AuthResponseDTO>(contentResponse, _serializerOptions);
+
+                    return authResponseDTO;
+                }
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         public async Task<AuthResponseDTO> LoginTfaAsync(LoginTfaRequestDTO requestDTO)
@@ -149,7 +168,7 @@ namespace PasswordManager.MAUI.Services
             throw new NotImplementedException();
         }
 
-        Task IAuthService.ResendConfirmEmail(string email)
+        Task<bool> IAuthService.ResendConfirmEmail(string email)
         {
             throw new NotImplementedException();
         }

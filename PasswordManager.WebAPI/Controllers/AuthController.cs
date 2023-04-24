@@ -76,7 +76,8 @@ namespace PasswordManager.WebAPI.Controllers
             if (email is null)
                 return BadRequest("Invalid Resend Confirmation Email Request");
 
-            await _authService.ResendConfirmEmail(email);
+            if (!await _authService.ResendConfirmEmail(email))
+                return BadRequest("Invalid Resend Confirmation Email Request");
 
             return Ok();
         }

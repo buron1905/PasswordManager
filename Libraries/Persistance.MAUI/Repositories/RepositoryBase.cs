@@ -16,12 +16,7 @@ namespace Persistance.MAUI.Repositories
         async Task Init()
         {
             if (_connection is not null)
-            {
-                var userTable = await _connection.Table<User>().ToListAsync();
-                var passwordTable = await _connection.Table<Password>().ToListAsync();
-                var settingsTable = await _connection.Table<Settings>().ToListAsync();
                 return;
-            }
 
             //File.Delete(Constants.DatabasePath);
 
@@ -57,7 +52,6 @@ namespace Persistance.MAUI.Repositories
             await Init();
             entity.UDT = DateTime.UtcNow;
             await _connection.UpdateAsync(entity);
-            var test2 = await _connection.Table<T>().ToListAsync();
         }
 
         public async void Delete(T entity)

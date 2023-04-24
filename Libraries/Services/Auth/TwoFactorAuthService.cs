@@ -19,5 +19,10 @@ namespace Services.Auth
             return new TfaSetupDTO() { AuthenticatorKey = setupCode.ManualEntryKey, QrCodeSetupImageUrl = setupCode.QrCodeSetupImageUrl };
         }
 
+        public string GetCurrentPIN(string accountSecretKey)
+        {
+            var tfa = new TwoFactorAuthenticator();
+            return tfa.GetCurrentPIN(accountSecretKey);
+        }
     }
 }

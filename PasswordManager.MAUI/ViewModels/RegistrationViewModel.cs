@@ -70,7 +70,8 @@ namespace PasswordManager.MAUI.ViewModels
                 }
                 else
                 {
-                    usedEmailLabel.IsVisible = true;
+                    if (usedEmailLabel is not null)
+                        usedEmailLabel.IsVisible = true;
                     await AlertService.ShowToast("Registration Unsuccessful");
                 }
             }

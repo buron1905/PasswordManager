@@ -7,12 +7,10 @@ namespace PasswordManager.WebAPI.Middleware
     public class ErrorHandlerMiddleware
     {
         private readonly RequestDelegate _next;
-        //private readonly ILoggerManager _loggerManager;
 
-        public ErrorHandlerMiddleware(RequestDelegate next/*, ILoggerManager loggerManager*/)
+        public ErrorHandlerMiddleware(RequestDelegate next)
         {
             _next = next;
-            //_loggerManager = loggerManager;
         }
 
         public async Task Invoke(HttpContext context)
@@ -23,7 +21,6 @@ namespace PasswordManager.WebAPI.Middleware
             }
             catch (Exception error)
             {
-                //_loggerManager.LogError($"Something went wrong: {error}");
                 var response = context.Response;
                 if (!response.HasStarted)
                 {

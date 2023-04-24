@@ -2,6 +2,8 @@
 {
     public class AuthResponseDTO
     {
+        public UserDTO? User { get; set; }
+
         public bool IsAuthSuccessful { get; set; }
 
         public bool EmailVerified { get; set; }

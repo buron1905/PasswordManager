@@ -1,18 +1,15 @@
 ﻿using Models.DTOs;
 using Services.Abstraction.Data;
-using Services.Abstraction.Data.Persistance;
 
 namespace Services.Data
 {
     public class SyncService : ISyncService
     {
         private readonly IDataServiceWrapper _dataServiceWrapper;
-        private readonly IRepositoryWrapper _repositoryWrapper;
 
-        public SyncService(IDataServiceWrapper dataServiceWrapper, IRepositoryWrapper repositoryWrapper)
+        public SyncService(IDataServiceWrapper dataServiceWrapper)
         {
             _dataServiceWrapper = dataServiceWrapper;
-            _repositoryWrapper = repositoryWrapper;
         }
 
         public async Task<LastChangeResponseDTO?> GetLastChangeDateTime(Guid userId)
@@ -34,8 +31,8 @@ namespace Services.Data
                 var userDTO = await _dataServiceWrapper.UserService.GetByIdAsync(userId);
 
                 var offlinePasswords = data.Passwords.ToList();
-                var syncedOfflinePasswords = data.Passwords.Where(x => x.Synced).ToList();
-                var unSyncedOfflinePasswords = data.Passwords.Where(x => !x.Synced).ToList();
+                var syncedOfflinePasswords = data.Passwords.Where(x => x.UDT != default || x.UDT != DateTime.MinValue).ToList();
+                var unSyncedOfflinePasswords = data.Passwords.Where(x => x.UDT == default || x.UDT != DateTime.MinValue).ToList();
                 var onlinePasswords = (await _dataServiceWrapper.PasswordService.GetAllByUserIdAsync(data.UserDTO.Id)).ToList();
                 var newOnlinePasswords = onlinePasswords.Where(x => !offlinePasswords.Any(o => o.Id == x.Id)).ToList();
                 var responsePasswords = new List<PasswordDTO>();
@@ -66,7 +63,7 @@ namespace Services.Data
                 // Adding new online passwords
                 if (newOnlinePasswords.Count() > 0)
                 {
-
+                    response.SendingNewData = true;
                     responsePasswords.AddRange(newOnlinePasswords);
                 }
 
@@ -82,7 +79,7 @@ namespace Services.Data
                     }
 
                     // Server has newer data (this propagates also deletion)
-                    if (password.UDT > offlinePassword.UDT)
+                    if (password.UDT > offlinePassword.UDTLocal)
                     {
                         response.SendingNewData = true;
                         responsePasswords.Add(password);
@@ -90,10 +87,10 @@ namespace Services.Data
                     }
 
                     // offline DB has newer data
-                    if (password.UDT < offlinePassword.UDT)
+                    if (password.UDT < offlinePassword.UDTLocal)
                     {
                         // the newest change is saved
-                        if (password.UDT <= offlinePassword.UDTServerTime)
+                        if (password.UDT <= offlinePassword.UDT)
                         {
                             response.SendingNewData = true;
                             var newPassword = await _dataServiceWrapper.PasswordService.UpdateAsync(userId, offlinePassword);

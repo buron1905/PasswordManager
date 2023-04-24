@@ -102,8 +102,6 @@ namespace PasswordManager.MAUI.ViewModels
         {
             var userId = ActiveUserService.Instance.ActiveUser.Id;
 
-            await _syncService.GetLastChangeDateTime(userId);
-
             var passwords = (await _dataServiceWrapper.PasswordService.GetAllByUserIdAsync(userId)).ToList() ?? new List<PasswordDTO>();
 
             foreach (var password in passwords)
