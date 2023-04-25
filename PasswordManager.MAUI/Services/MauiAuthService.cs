@@ -11,12 +11,13 @@ namespace PasswordManager.MAUI.Services
     {
         readonly IAuthService _offlineAuthService;
         readonly IDataServiceWrapper _dataServiceWrapper;
+        private readonly ITwoFactorAuthService _twoFactorAuthService;
 
-        public MauiAuthService(HttpClient httpClient, IConnectivity connectivity, IAuthService offlineAuthService, IDataServiceWrapper dataServiceWrapper) : base(httpClient, connectivity)
+        public MauiAuthService(HttpClient httpClient, IConnectivity connectivity, ITwoFactorAuthService twoFactorAuthService, IAuthService offlineAuthService, IDataServiceWrapper dataServiceWrapper) : base(httpClient, connectivity)
         {
             _offlineAuthService = offlineAuthService;
             _dataServiceWrapper = dataServiceWrapper;
-
+            _twoFactorAuthService = twoFactorAuthService;
         }
 
         public async Task<bool> ConfirmEmailAsync(string email, string token)
@@ -57,6 +58,12 @@ namespace PasswordManager.MAUI.Services
         public AuthResponseDTO GetAuthResponse(UserDTO user, string emailAddress, string password, bool isAuthSuccessful = true, bool tfaEnabled = false, bool tfaChecked = true, bool emailVerified = true)
         {
             throw new NotImplementedException();
+        }
+
+        public string GetTfaCode()
+        {
+            var secret = ActiveUserService.Instance.ActiveUser.TwoFactorSecret;
+            return _twoFactorAuthService.GetCurrentPIN(secret);
         }
 
         public async Task<TfaSetupDTO> GetTfaSetup(Guid userId, string password)

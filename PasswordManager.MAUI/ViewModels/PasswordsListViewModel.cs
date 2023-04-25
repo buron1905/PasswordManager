@@ -23,11 +23,11 @@ namespace PasswordManager.MAUI.ViewModels
         bool _isRefreshing;
 
         private readonly IDataServiceWrapper _dataServiceWrapper;
-        private readonly ISyncService _syncService;
+        private readonly IMauiSyncService _syncService;
 
         #endregion
 
-        public PasswordsListViewModel(IDataServiceWrapper dataServiceWrapper, ISyncService syncService)
+        public PasswordsListViewModel(IDataServiceWrapper dataServiceWrapper, IMauiSyncService syncService)
         {
             Title = "Passwords";
             _dataServiceWrapper = dataServiceWrapper;
@@ -37,10 +37,24 @@ namespace PasswordManager.MAUI.ViewModels
         #region Commands
 
         [RelayCommand]
-        async Task Refresh()
+        async Task Refresh() // parameter for some reason disables refresh, therefore SyncAndRefresh
         {
             IsBusy = true;
+
             await RefreshPasswords();
+
+            IsBusy = false;
+            IsRefreshing = false;
+        }
+
+        [RelayCommand]
+        async Task SyncAndRefresh()
+        {
+            IsBusy = true;
+
+            await _syncService.DoSync();
+            await RefreshPasswords();
+
             IsBusy = false;
             IsRefreshing = false;
         }
@@ -105,8 +119,11 @@ namespace PasswordManager.MAUI.ViewModels
 
             foreach (var password in passwords)
             {
-                password.PasswordDecrypted = await EncryptionService.DecryptAsync(Convert.FromBase64String(password.PasswordEncrypted ?? string.Empty),
-                    ActiveUserService.Instance.CipherKey);
+                if (!string.IsNullOrWhiteSpace(password.PasswordEncrypted))
+                {
+                    password.PasswordDecrypted = await EncryptionService.DecryptAsync(Convert.FromBase64String(password.PasswordEncrypted ?? string.Empty),
+                        ActiveUserService.Instance.CipherKey);
+                }
             }
 
             AllPasswords = passwords;

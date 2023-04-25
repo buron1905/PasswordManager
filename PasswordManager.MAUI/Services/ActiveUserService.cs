@@ -10,6 +10,8 @@ namespace PasswordManager.MAUI.Services
         public UserDTO ActiveUser { get; set; }
         public string CipherKey { get; set; }
         public string Token { get; set; }
+        public DateTime TokenExpirationDateTime { get; set; }
+
 
         public bool IsActive
         {

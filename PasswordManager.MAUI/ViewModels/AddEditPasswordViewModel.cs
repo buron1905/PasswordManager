@@ -5,6 +5,7 @@ using PasswordManager.MAUI.Helpers;
 using PasswordManager.MAUI.Services;
 using PasswordManager.MAUI.Views;
 using Services.Abstraction.Data;
+using Services.Cryptography;
 
 namespace PasswordManager.MAUI.ViewModels
 {
@@ -47,15 +48,17 @@ namespace PasswordManager.MAUI.ViewModels
         [ObservableProperty]
         bool _favorite;
 
-        private readonly IDataServiceWrapper _dataServiceWrapper;
+        //private readonly IDataServiceWrapper _dataServiceWrapper;
+        private readonly IMauiPasswordService _passwordService;
 
         #endregion
 
-        public AddEditPasswordViewModel(IDataServiceWrapper dataServiceWrapper)
+        public AddEditPasswordViewModel(IDataServiceWrapper dataServiceWrapper, IMauiPasswordService passwordService)
         {
             Title = "Add password";
             IsNew = true;
-            _dataServiceWrapper = dataServiceWrapper;
+            //_dataServiceWrapper = dataServiceWrapper;
+            _passwordService = passwordService;
         }
 
         #region Commands
@@ -146,7 +149,7 @@ namespace PasswordManager.MAUI.ViewModels
             if (await AlertService.ShowYesNo($"Delete: {PasswordName}", $"Are you sure you want to delete this password?"))
             {
                 var userGuid = ActiveUserService.Instance.ActiveUser.Id;
-                await _dataServiceWrapper.PasswordService.DeleteAsync(userGuid, PasswordOriginal.Id);
+                await _passwordService.DeleteAsync(userGuid, PasswordOriginal.Id);
                 await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
                 await AlertService.ShowToast("Deleted");
             }
@@ -163,12 +166,16 @@ namespace PasswordManager.MAUI.ViewModels
             IsBusy = true;
 
             var userGuid = ActiveUserService.Instance.ActiveUser.Id;
+
+            if (!string.IsNullOrWhiteSpace(model.PasswordDecrypted))
+                model.PasswordEncrypted = Convert.ToBase64String(await EncryptionService.EncryptAsync(model.PasswordDecrypted, ActiveUserService.Instance.CipherKey));
+
             if (IsNew)
-                await _dataServiceWrapper.PasswordService.CreateAsync(userGuid, model);
+                await _passwordService.CreateAsync(userGuid, model);
             else
             {
                 model.Id = PasswordOriginal.Id;
-                await _dataServiceWrapper.PasswordService.UpdateAsync(userGuid, model);
+                await _passwordService.UpdateAsync(userGuid, model);
             }
 
             PasswordOriginal = model;
@@ -196,7 +203,7 @@ namespace PasswordManager.MAUI.ViewModels
         [RelayCommand]
         async Task Cancel()
         {
-            await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
+            await Shell.Current.GoToAsync($"///Home");
         }
 
         #endregion
@@ -218,7 +225,6 @@ namespace PasswordManager.MAUI.ViewModels
 
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
-
             if (query.Keys.Contains(nameof(PasswordDTO).ToString()) && query[nameof(PasswordDTO).ToString()] is PasswordDTO password)
             {
                 SetProperties(password);
@@ -265,7 +271,7 @@ namespace PasswordManager.MAUI.ViewModels
             Password = password.PasswordDecrypted;
             URL = password.URL;
             Notes = password.Notes;
-            Favorite = password.Favorite; ;
+            Favorite = password.Favorite;
         }
 
         #endregion

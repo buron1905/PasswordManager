@@ -18,7 +18,7 @@
         public const string TfaDisableSuffix = "Auth/tfa-disable/";
 
         // Passwords
-        public const string PasswordsSuffix = "Passwords/{}";
+        public const string PasswordsSuffix = "Passwords/{0}";
         public const string PasswordsGeneratorSuffix = "Passwords/generator/";
 
         // Settings

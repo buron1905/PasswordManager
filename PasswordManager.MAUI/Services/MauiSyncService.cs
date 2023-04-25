@@ -71,7 +71,6 @@ namespace PasswordManager.MAUI.Services
                     {
                         string contentResponse = await response.Content.ReadAsStringAsync();
                         var syncResponseDTO = JsonSerializer.Deserialize<SyncResponseDTO>(contentResponse, _serializerOptions);
-                        await SyncAccountBasedOnReceivedData(syncResponseDTO);
                         return syncResponseDTO;
                     }
                 }
@@ -121,6 +120,8 @@ namespace PasswordManager.MAUI.Services
             return passwords.Max(x => x.UDT);
         }
 
+
+        // TODO - this has to work with authorization and even with 2FA, when there is internet connection
         public async Task<SyncResponseDTO?> DoSync()
         {
             if (IsNetworkAccess())

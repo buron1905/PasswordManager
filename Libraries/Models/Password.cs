@@ -20,6 +20,7 @@ namespace Models
         public string? PasswordEncrypted { get; set; }
 
         [NotMapped]
+        [SQLite.Ignore]
         [MaxLength(MaxPasswordLength, ErrorMessage = MaxPasswordLengthErrorMessage)]
         public string? PasswordDecrypted { get; set; }
 

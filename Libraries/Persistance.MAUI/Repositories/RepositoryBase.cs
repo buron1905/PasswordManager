@@ -27,6 +27,11 @@ namespace Persistance.MAUI.Repositories
             await _connection.CreateTableAsync<Settings>();
         }
 
+        bool IsFromServer(T entity)
+        {
+            return entity.UDT == entity.UDTLocal;
+        }
+
         public async Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
         {
             await Init();
@@ -37,27 +42,36 @@ namespace Persistance.MAUI.Repositories
         {
             await Init();
 
-            if (entity.Id == Guid.Empty)
+            if (!IsFromServer(entity))
             {
                 entity.Id = Guid.NewGuid();
                 entity.IDT = DateTime.UtcNow;
-                entity.UDT = entity.IDT;
+                entity.UDTLocal = entity.IDT;
+                entity.UDT = DateTime.MinValue; // This will be updated to server time when syncing
             }
 
+            var tableBefore = await _connection.Table<T>().ToListAsync();
             await _connection.InsertOrReplaceAsync(entity);
+            var tableAfter = await _connection.Table<T>().ToListAsync();
         }
 
         public async void Update(T entity)
         {
             await Init();
-            entity.UDT = DateTime.UtcNow;
+            if (!IsFromServer(entity))
+                entity.UDTLocal = DateTime.UtcNow;
+
+            var tableBefore = await _connection.Table<T>().ToListAsync();
             await _connection.UpdateAsync(entity);
+            var tableAfter = await _connection.Table<T>().ToListAsync();
         }
 
         public async void Delete(T entity)
         {
             await Init();
+            var tableBefore = await _connection.Table<T>().ToListAsync();
             await _connection.Table<T>().DeleteAsync(x => x.Id == entity.Id);
+            var tableAfter = await _connection.Table<T>().ToListAsync();
         }
 
         public async void DeleteAll(Expression<Func<T, bool>> expression)

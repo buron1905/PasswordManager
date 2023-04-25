@@ -86,6 +86,7 @@ namespace PasswordManager.MAUI.ViewModels
 
                 ActiveUserService.Instance.Login(userDTO, Password);
                 ActiveUserService.Instance.Token = response.JweToken;
+                ActiveUserService.Instance.TokenExpirationDateTime = response.ExpirationDateTime;
 
                 if (response.IsTfaEnabled)
                 {

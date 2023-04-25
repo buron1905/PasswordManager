@@ -43,6 +43,7 @@ namespace PasswordManager.MAUI.ViewModels
 
             ActiveUserService.Instance.Login(response.User, ActiveUserService.Instance.CipherKey);
             ActiveUserService.Instance.Token = response.JweToken;
+            ActiveUserService.Instance.TokenExpirationDateTime = response.ExpirationDateTime;
 
             bool isDataFromServer = response.JweToken is not null;
             if (isDataFromServer)

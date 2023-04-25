@@ -34,11 +34,25 @@ namespace Persistance.Repositories
             return await _dataContext.Set<T>().AnyAsync(expression);
         }
 
+        bool IsFromLocalDB(T entity)
+        {
+            return entity.UDT != entity.UDTLocal;
+        }
+
         public void Create(T entity)
         {
-            entity.IDT = DateTime.UtcNow;
-            entity.UDT = entity.IDT;
+            if (!IsFromLocalDB(entity))
+            {
+                entity.IDT = DateTime.UtcNow;
+                entity.UDT = entity.IDT;
+            }
+            else
+            {
+                entity.UDT = DateTime.UtcNow;
+            }
+
             entity.UDTLocal = entity.UDT;
+
             _dataContext.Set<T>().Add(entity);
         }
 
@@ -59,6 +73,12 @@ namespace Persistance.Repositories
         public void DeleteAll(Expression<Func<T, bool>> expression)
         {
             var entities = _dataContext.Set<T>().Where(expression);
+            foreach (var entity in entities)
+            {
+                entity.DDT = DateTime.UtcNow;
+                entity.Deleted = true;
+            }
+
             _dataContext.Set<T>().RemoveRange(entities);
         }
     }

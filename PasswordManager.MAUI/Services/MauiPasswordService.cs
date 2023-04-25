@@ -1,26 +1,61 @@
 ﻿using Models;
 using Models.DTOs;
 using PasswordManager.MAUI.Helpers;
+using Services.Abstraction.Auth;
 using Services.Abstraction.Data;
-using System.Linq.Expressions;
+using Services.Abstraction.Data.Persistance;
+using System.Text;
+using System.Text.Json;
 
 namespace PasswordManager.MAUI.Services
 {
-    public class MauiPasswordService : MauiBaseDataService, IPasswordService
+    public class MauiPasswordService : MauiBaseDataService<Password>, IMauiPasswordService
     {
-        private readonly IDataServiceWrapper _dataServiceWrapper;
+        readonly IPasswordService _offlinePasswordService;
 
-        public MauiPasswordService(HttpClient httpClient, IConnectivity connectivity, IDataServiceWrapper dataServiceWrapper) : base(httpClient, connectivity)
+        public MauiPasswordService(HttpClient httpClient, IConnectivity connectivity, IPasswordService passwordService, IRepositoryWrapper repositoryWrapper,
+            IMauiAuthService authService) : base(httpClient, connectivity, repositoryWrapper, authService)
         {
-            _dataServiceWrapper = dataServiceWrapper;
+            _offlinePasswordService = passwordService;
         }
 
-        public Task<bool> AnyAsync(Expression<Func<Password, bool>> expression)
+        public async Task<PasswordDTO> CreateAsync(Guid userId, PasswordDTO passwordDTO)
         {
-            throw new NotImplementedException();
+            PasswordDTO passwordDTOToReturn = null;
+
+            if (IsNetworkAccess())
+            {
+                Uri uri = new Uri(string.Format(AppConstants.ApiUrl + AppConstants.PasswordsSuffix, string.Empty));
+                string json = JsonSerializer.Serialize(passwordDTO);
+                StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, uri);
+                request.Content = content;
+                request = await AddAuthorizationHeaderToRequest(request);
+
+                try
+                {
+                    HttpResponseMessage response = await _httpClient.SendAsync(request);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string contentResponse = await response.Content.ReadAsStringAsync();
+                        passwordDTOToReturn = JsonSerializer.Deserialize<PasswordDTO>(contentResponse, _serializerOptions);
+                    }
+                    else
+                        return null;
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+
+            passwordDTOToReturn = await _offlinePasswordService.CreateAsync(userId, passwordDTOToReturn ?? passwordDTO);
+
+            return passwordDTOToReturn;
         }
 
-        public Task<PasswordDTO> CreateAsync(Guid userId, PasswordDTO passwordDTO)
+        public async Task<PasswordDTO> UpdateAsync(Guid userId, PasswordDTO passwordDTO)
         {
             throw new NotImplementedException();
         }
@@ -29,7 +64,7 @@ namespace PasswordManager.MAUI.Services
         {
             if (IsNetworkAccess())
             {
-                Uri uri = new Uri(string.Format(AppConstants.ApiUrl, passwordId));
+                Uri uri = new Uri(string.Format(AppConstants.ApiUrl + AppConstants.PasswordsSuffix, passwordId));
 
                 try
                 {
@@ -45,33 +80,20 @@ namespace PasswordManager.MAUI.Services
                 }
             }
 
-            await _dataServiceWrapper.PasswordService.DeleteAsync(userId, passwordId);
-
+            //_repositoryWrapper.PasswordRepository.Delete(password);
         }
 
-        public Task<Password> FindSingleOrDefaultByCondition(Expression<Func<Password, bool>> expression)
+
+
+        public async Task<IEnumerable<PasswordDTO>> GetAllByUserIdAsync(Guid userId)
         {
-            throw new NotImplementedException();
+            return await _offlinePasswordService.GetAllByUserIdAsync(userId);
         }
 
-        public Task<IEnumerable<PasswordDTO>> GetAllByUserIdAsync(Guid userId)
+        public async Task<PasswordDTO> GetByIdAsync(Guid userId, Guid passwordId)
         {
-            throw new NotImplementedException();
+            return await _offlinePasswordService.GetByIdAsync(userId, passwordId);
         }
 
-        public Task<PasswordDTO> GetByIdAsync(Guid userId, Guid passwordId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task RemoveAll(Expression<Func<Password, bool>> expression)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<PasswordDTO> UpdateAsync(Guid userId, PasswordDTO passwordDTO)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

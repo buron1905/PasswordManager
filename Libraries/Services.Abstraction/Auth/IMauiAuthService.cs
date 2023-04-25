@@ -2,5 +2,6 @@
 {
     public interface IMauiAuthService : IAuthService
     {
+        string GetTfaCode();
     }
 }
