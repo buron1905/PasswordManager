@@ -11,8 +11,14 @@
         public const string RegisterSuffix = "Auth/register/";
         public const string RefreshTokenSuffix = "Auth/refresh-token/";
 
+        //// 2FA
+        public const string LoginWithTfaSuffix = "Auth/login-with-tfa/";
+        public const string LoginTfaSuffix = "Auth/tfa-login/";
+        public const string TfaSetupSuffix = "Auth/tfa-setup/";
+        public const string TfaDisableSuffix = "Auth/tfa-disable/";
+
         // Passwords
-        public const string PasswordsSuffix = "Passwords/";
+        public const string PasswordsSuffix = "Passwords/{}";
         public const string PasswordsGeneratorSuffix = "Passwords/generator/";
 
         // Settings

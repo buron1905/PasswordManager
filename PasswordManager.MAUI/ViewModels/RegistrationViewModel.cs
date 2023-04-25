@@ -5,6 +5,7 @@ using PasswordManager.MAUI.Helpers;
 using PasswordManager.MAUI.Services;
 using PasswordManager.MAUI.Views;
 using Services.Abstraction.Auth;
+using Services.Abstraction.Data;
 using Services.Abstraction.Exceptions;
 
 namespace PasswordManager.MAUI.ViewModels
@@ -23,14 +24,16 @@ namespace PasswordManager.MAUI.ViewModels
         string _confirmPassword;
 
         IAuthService _authService;
+        IMauiSyncService _syncService;
         IConnectivity _connectivity;
 
         #endregion
 
-        public RegistrationViewModel(IMauiAuthService authService, IConnectivity connectivity)
+        public RegistrationViewModel(IMauiAuthService authService, IMauiSyncService syncService, IConnectivity connectivity)
         {
             Title = "Register";
             _authService = authService;
+            _syncService = syncService;
             _connectivity = connectivity;
         }
 
@@ -63,10 +66,14 @@ namespace PasswordManager.MAUI.ViewModels
 
                 if (result is not null && result.IsRegistrationSuccessful)
                 {
-                    await AlertService.ShowToast("Successfully registered");
-                    await Shell.Current.GoToAsync($"{nameof(RegistrationSuccessfulPage)}");
+                    var syncUserResult = await _syncService.SyncExistingAndNewUser(result.User);
+                    if (syncUserResult is not null && syncUserResult.SyncSuccessful)
+                    {
+                        await AlertService.ShowToast("Successfully registered");
+                        await Shell.Current.GoToAsync($"{nameof(RegistrationSuccessfulPage)}");
 
-                    EmailAddress = Password = ConfirmPassword = string.Empty;
+                        EmailAddress = Password = ConfirmPassword = string.Empty;
+                    }
                 }
                 else
                 {

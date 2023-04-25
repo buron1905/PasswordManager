@@ -9,7 +9,6 @@ using Services.Abstraction.Exceptions;
 using Services.Cryptography;
 using Services.TMP;
 using System.Security.Claims;
-using System.Text;
 
 namespace Services.Auth
 {
@@ -40,9 +39,9 @@ namespace Services.Auth
             if (!await AuthUser(requestDTO.EmailAddress!, requestDTO.Password!))
                 return null;
 
-            //get user guid
             var userDTO = await _dataServiceWrapper.UserService.GetByEmailAsync(requestDTO.EmailAddress!);
-            var response = GetAuthResponse(userDTO.Id, requestDTO.EmailAddress!, requestDTO.Password!, true, userDTO.TwoFactorEnabled, !userDTO.TwoFactorEnabled, emailVerified: userDTO.EmailConfirmed);
+
+            var response = GetAuthResponse(userDTO, requestDTO.EmailAddress!, requestDTO.Password!, true, userDTO.TwoFactorEnabled, !userDTO.TwoFactorEnabled, emailVerified: userDTO.EmailConfirmed);
 
             return response;
         }
@@ -72,7 +71,7 @@ namespace Services.Auth
 
             var emailAddress = JwtService.GetUserEmailFromClaims(claims);
 
-            var response = GetAuthResponse(userId, emailAddress, password, true, userDTO.TwoFactorEnabled, true, userDTO.EmailConfirmed);
+            var response = GetAuthResponse(userDTO, emailAddress, password, true, userDTO.TwoFactorEnabled, true, userDTO.EmailConfirmed);
 
             return response;
         }
@@ -103,7 +102,7 @@ namespace Services.Auth
 
         public async Task<string> DecryptString(string password, string textEncrypted)
         {
-            var textDecrypted = await EncryptionService.DecryptAsync(Encoding.Unicode.GetBytes(textEncrypted),
+            var textDecrypted = await EncryptionService.DecryptAsync(Convert.FromBase64String(textEncrypted),
                 password);
 
             return textDecrypted;
@@ -166,7 +165,7 @@ namespace Services.Auth
                 PasswordHASH = HashingService.HashPassword(requestDTO.Password!),
                 TwoFactorEnabled = false,
                 EmailConfirmationToken = Guid.NewGuid().ToString(),
-                TwoFactorSecret = Encoding.Unicode.GetString(await EncryptionService.EncryptAsync(Guid.NewGuid().ToString().Trim().Replace("-", "").Substring(0, 10), requestDTO.Password!))
+                TwoFactorSecret = Convert.ToBase64String(await EncryptionService.EncryptAsync(Guid.NewGuid().ToString().Trim().Replace("-", "").Substring(0, 10), requestDTO.Password!))
             };
 
             userDTO = await _dataServiceWrapper.UserService.CreateAsync(userDTO);
@@ -178,14 +177,15 @@ namespace Services.Auth
             return new RegisterResponseDTO() { User = userDTO, IsRegistrationSuccessful = true };
         }
 
-        public AuthResponseDTO GetAuthResponse(Guid userId, string emailAddress, string password, bool isAuthSuccessful = true, bool tfaEnabled = false, bool tfaChecked = true, bool emailVerified = true)
+        public AuthResponseDTO GetAuthResponse(UserDTO user, string emailAddress, string password, bool isAuthSuccessful = true, bool tfaEnabled = false, bool tfaChecked = true, bool emailVerified = true)
         {
             var expires = DateTime.UtcNow.AddMinutes(_appSettings?.JweTokenMinutesTTL ?? 5);
-            var claims = _jwtService.GetClaims(userId, emailAddress, password, expires, tfaChecked, emailVerified);
+            var claims = _jwtService.GetClaims(user.Id, emailAddress, password, expires, tfaChecked, emailVerified);
             var tokenString = _jwtService.GenerateJweToken(claims, JWTKeys._privateSigningKey, JWTKeys._publicEncryptionKey, expires);
 
             return new AuthResponseDTO
             {
+                User = user,
                 IsAuthSuccessful = isAuthSuccessful,
                 EmailVerified = emailVerified,
                 IsTfaEnabled = tfaEnabled,
@@ -210,7 +210,9 @@ namespace Services.Auth
             if (!await AuthUser(emailAddress!, password!))
                 return null;
 
-            var response = GetAuthResponse(new Guid(userId!), emailAddress!, password!, tfaChecked: tfaChecked, emailVerified: emailConfirmed);
+            var user = await _dataServiceWrapper.UserService.GetByIdAsync(new Guid(userId!));
+
+            var response = GetAuthResponse(user, emailAddress!, password!, tfaChecked: tfaChecked, emailVerified: emailConfirmed);
 
             return response;
         }
@@ -254,7 +256,7 @@ namespace Services.Auth
             if (userDTO.TwoFactorSecret is null)
             {
                 var newTwoFactorSecret = Guid.NewGuid().ToString().Trim().Replace("-", "").Substring(0, 10);
-                newTwoFactorSecret = Encoding.Unicode.GetString(await EncryptionService.EncryptAsync(newTwoFactorSecret,
+                newTwoFactorSecret = Convert.ToBase64String(await EncryptionService.EncryptAsync(newTwoFactorSecret,
                     password));
                 userDTO.TwoFactorSecret = newTwoFactorSecret;
                 userDTO = await _dataServiceWrapper.UserService.UpdateAsync(userDTO);
@@ -311,7 +313,30 @@ namespace Services.Auth
             if (!valid)
                 return null;
 
-            var response = GetAuthResponse(userDTO.Id, email, password, true, true, true, userDTO.EmailConfirmed);
+            var response = GetAuthResponse(userDTO, email, password, true, userDTO.TwoFactorEnabled, true, userDTO.EmailConfirmed);
+
+            return response;
+        }
+
+        public async Task<AuthResponseDTO?> LoginWithTfaAsync(LoginWithTfaRequestDTO requestDTO)
+        {
+            if (!IsRequestValid(requestDTO))
+                return null;
+
+            if (!await AuthUser(requestDTO.EmailAddress!, requestDTO.Password!))
+                return null;
+
+            var userDTO = await _dataServiceWrapper.UserService.GetByEmailAsync(requestDTO.EmailAddress);
+            if (userDTO is null) return null;
+
+            var secret = await DecryptString(requestDTO.Password, userDTO.TwoFactorSecret);
+
+            var valid = _twoFactorAuthService.ValidateTwoFactorPin(secret, requestDTO.Code!);
+
+            if (!valid)
+                return null;
+
+            var response = GetAuthResponse(userDTO, userDTO.EmailAddress, requestDTO.Password, true, userDTO.TwoFactorEnabled, true, userDTO.EmailConfirmed);
 
             return response;
         }

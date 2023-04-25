@@ -5,6 +5,7 @@ using Models.DTOs;
 using PasswordManager.WebAPI.Extensions;
 using PasswordManager.WebAPI.Helpers.Attributes;
 using Services.Abstraction.Auth;
+using Services.Abstraction.Data;
 using Services.Auth;
 
 namespace PasswordManager.WebAPI.Controllers
@@ -15,14 +16,16 @@ namespace PasswordManager.WebAPI.Controllers
 
         private readonly AppSettings _appSettings;
         private readonly IAuthService _authService;
+        private readonly IDataServiceWrapper _dataServiceWrapper;
         private readonly IJwtService _jwtService;
 
         #endregion
 
-        public AuthController(IOptions<AppSettings> appSettings, IAuthService authService, IJwtService jwtService)
+        public AuthController(IOptions<AppSettings> appSettings, IAuthService authService, IDataServiceWrapper dataServiceWrapper, IJwtService jwtService)
         {
             _appSettings = appSettings.Value;
             _authService = authService;
+            _dataServiceWrapper = dataServiceWrapper;
             _jwtService = jwtService;
         }
 
@@ -102,6 +105,19 @@ namespace PasswordManager.WebAPI.Controllers
 
         #region TFA
 
+        [HttpPost("login-with-tfa")]
+        public async Task<IActionResult> LoginWithTfa([FromBody] LoginWithTfaRequestDTO requestDTO)
+        {
+            var response = await _authService.LoginWithTfaAsync(requestDTO);
+
+            if (response == null)
+                return Unauthorized(new AuthResponseDTO { IsAuthSuccessful = false, ErrorMessage = "Invalid Authentication" });
+
+            SetTokenCookie(response.JweToken!);
+
+            return Ok(response);
+        }
+
         [HttpPost("tfa-login")]
         public async Task<IActionResult> LoginTfa([FromBody] LoginTfaRequestDTO requestDTO)
         {
@@ -145,7 +161,9 @@ namespace PasswordManager.WebAPI.Controllers
             if (result is null)
                 return BadRequest();
 
-            var response = _authService.GetAuthResponse(userId, email, password, true, true, true);
+            var user = await _dataServiceWrapper.UserService.GetByIdAsync(userId);
+
+            var response = _authService.GetAuthResponse(user, email, password, true, true, true);
             SetTokenCookie(response.JweToken!);
 
             return Ok(result);

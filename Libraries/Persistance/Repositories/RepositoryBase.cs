@@ -37,17 +37,22 @@ namespace Persistance.Repositories
         public void Create(T entity)
         {
             entity.IDT = DateTime.UtcNow;
+            entity.UDT = entity.IDT;
+            entity.UDTLocal = entity.UDT;
             _dataContext.Set<T>().Add(entity);
         }
 
         public void Update(T entity)
         {
             entity.UDT = DateTime.UtcNow;
+            entity.UDTLocal = entity.UDT;
             _dataContext.Set<T>().Update(entity);
         }
 
         public void Delete(T entity)
         {
+            entity.DDT = DateTime.UtcNow;
+            entity.Deleted = true;
             _dataContext.Set<T>().Remove(entity);
         }
 

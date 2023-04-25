@@ -53,52 +53,57 @@ namespace PasswordManager.MAUI.ViewModels
             {
                 var response = await _authService.LoginAsync(model);
 
-                if (response is not null)
-                {
-                    if (!response.EmailVerified)
-                    {
-                        await AlertService.ShowToast("Email is not confirmed.");
-                        if (emailNotConfirmedLabel is not null)
-                            emailNotConfirmedLabel.IsVisible = true;
-                        IsBusy = false;
-                        return;
-                    }
-
-                    UserDTO userDTO = null;
-                    try
-                    {
-                        userDTO = await _dataServiceWrapper.UserService.GetByEmailAsync(model.EmailAddress);
-                    }
-                    catch (Exception)
-                    {
-                        // user on local device does not exist
-                    }
-
-                    ActiveUserService.Instance.Login(userDTO, Password);
-                    ActiveUserService.Instance.Token = response.JweToken;
-
-                    if (response.IsTfaEnabled)
-                    {
-                        await Shell.Current.GoToAsync(nameof(LoginTfaPage)); // v tomto synchronizovat
-                        IsBusy = false;
-                        return;
-                    }
-
-                    if (response.JweToken is not null)
-                    {
-                        var result = await _syncService.DoSync();
-                    }
-
-                    //await Shell.Current.GoToAsync(nameof(LoadingPage));
-
-                    await Shell.Current.GoToAsync($"//Home", true);
-                    await AlertService.ShowToast("Logged in");
-                    Password = string.Empty;
-                }
-                else
+                if (response is null)
                 {
                     await AlertService.ShowToast("Wrong credentials.");
+                    IsBusy = false;
+                    return;
                 }
+
+                if (!response.EmailVerified)
+                {
+                    await AlertService.ShowToast("Email is not confirmed.");
+                    if (emailNotConfirmedLabel is not null)
+                        emailNotConfirmedLabel.IsVisible = true;
+                    IsBusy = false;
+                    return;
+                }
+
+                bool isDataFromServer = response.JweToken is not null;
+
+                if (isDataFromServer)
+                {
+                    var syncUserResult = await _syncService.SyncExistingAndNewUser(response.User);
+                    if (syncUserResult is null || !syncUserResult.SyncSuccessful)
+                    {
+                        await AlertService.ShowToast("Error syncing user information. Try again or restart the app.", CommunityToolkit.Maui.Core.ToastDuration.Long);
+                        IsBusy = false;
+                        return;
+                    }
+                }
+
+                var userDTO = response.User;
+
+                ActiveUserService.Instance.Login(userDTO, Password);
+                ActiveUserService.Instance.Token = response.JweToken;
+
+                if (response.IsTfaEnabled)
+                {
+                    // Synchronization is done in LoginTfaPage, because full authorization is needed
+                    await Shell.Current.GoToAsync(nameof(LoginTfaPage));
+                    IsBusy = false;
+                    return;
+                }
+
+                if (isDataFromServer)
+                {
+                    // Sync
+                    var syncResult = await _syncService.DoSync();
+                }
+
+                await Shell.Current.GoToAsync($"//Home", true);
+                await AlertService.ShowToast("Logged in");
+                Password = string.Empty;
             }
             catch (Exception ex)
             {

@@ -54,6 +54,11 @@ namespace PasswordManager.MAUI.Services
             throw new NotImplementedException();
         }
 
+        public AuthResponseDTO GetAuthResponse(UserDTO user, string emailAddress, string password, bool isAuthSuccessful = true, bool tfaEnabled = false, bool tfaChecked = true, bool emailVerified = true)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<TfaSetupDTO> GetTfaSetup(Guid userId, string password)
         {
             throw new NotImplementedException();
@@ -63,7 +68,7 @@ namespace PasswordManager.MAUI.Services
         {
             if (!IsNetworkAccess())
             {
-                // TODO: In offline login remove token
+                // In offline login token removed
                 var authResponse = await _offlineAuthService.LoginAsync(requestDTO);
                 authResponse.JweToken = null;
                 return authResponse;
@@ -94,12 +99,54 @@ namespace PasswordManager.MAUI.Services
 
         public async Task<AuthResponseDTO> LoginTfaAsync(LoginTfaRequestDTO requestDTO)
         {
-            throw new NotImplementedException();
+            if (!IsNetworkAccess())
+            {
+                // In offline login token removed
+                var authResponse = await _offlineAuthService.LoginTfaAsync(requestDTO);
+                authResponse.JweToken = null;
+                return authResponse;
+            }
+
+            return null;
         }
 
         public async Task<AuthResponseDTO> LoginTfaAsync(string code, string email, string password)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<AuthResponseDTO> LoginWithTfaAsync(LoginWithTfaRequestDTO requestDTO)
+        {
+            if (!IsNetworkAccess())
+            {
+                // In offline login token removed
+                var authResponse = await _offlineAuthService.LoginWithTfaAsync(requestDTO);
+                authResponse.JweToken = null;
+                return authResponse;
+            }
+
+            Uri uri = new Uri(AppConstants.ApiUrl + AppConstants.LoginWithTfaSuffix);
+            string json = JsonSerializer.Serialize(requestDTO);
+            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            try
+            {
+                HttpResponseMessage response = await _httpClient.PostAsync(uri, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    string contentResponse = await response.Content.ReadAsStringAsync();
+                    var authResponseDTO = JsonSerializer.Deserialize<AuthResponseDTO>(contentResponse, _serializerOptions);
+
+                    return authResponseDTO;
+                }
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
         }
 
         public async Task<AuthResponseDTO> RefreshTokenAsync(string token)
@@ -123,8 +170,6 @@ namespace PasswordManager.MAUI.Services
                 {
                     string contentResponse = await response.Content.ReadAsStringAsync();
                     var registerResponseDTO = JsonSerializer.Deserialize<RegisterResponseDTO>(contentResponse, _serializerOptions);
-
-                    await _dataServiceWrapper.UserService.CreateAsync(registerResponseDTO.User);
 
                     return registerResponseDTO;
                 }

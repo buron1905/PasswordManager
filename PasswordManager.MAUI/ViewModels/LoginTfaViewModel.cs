@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Models.DTOs;
 using PasswordManager.MAUI.Services;
 using Services.Abstraction.Auth;
+using Services.Abstraction.Data;
 
 namespace PasswordManager.MAUI.ViewModels
 {
@@ -13,14 +14,16 @@ namespace PasswordManager.MAUI.ViewModels
         [ObservableProperty]
         string _code;
 
-        IAuthService _authService;
+        IMauiAuthService _authService;
+        IMauiSyncService _syncService;
 
         #endregion
 
-        public LoginTfaViewModel(IAuthService authService)
+        public LoginTfaViewModel(IMauiAuthService authService, IMauiSyncService syncService)
         {
             Title = "Two-Factor Authentication";
             _authService = authService;
+            _syncService = syncService;
         }
 
         #region Commands
@@ -29,13 +32,30 @@ namespace PasswordManager.MAUI.ViewModels
         async Task Verify()
         {
             IsBusy = true;
-            var response = await _authService.LoginTfaAsync(new LoginTfaRequestDTO() { Code = Code, Token = ActiveUserService.Instance.Token });
+            var response = await _authService.LoginWithTfaAsync(new LoginWithTfaRequestDTO() { Code = Code, EmailAddress = ActiveUserService.Instance.ActiveUser.EmailAddress, Password = ActiveUserService.Instance.CipherKey });
 
             if (response is null)
             {
                 await AlertService.ShowToast("Wrong Code.");
                 IsBusy = false;
                 return;
+            }
+
+            ActiveUserService.Instance.Login(response.User, ActiveUserService.Instance.CipherKey);
+            ActiveUserService.Instance.Token = response.JweToken;
+
+            bool isDataFromServer = response.JweToken is not null;
+            if (isDataFromServer)
+            {
+                var syncUserResult = await _syncService.SyncExistingAndNewUser(response.User);
+                if (syncUserResult is null || !syncUserResult.SyncSuccessful)
+                {
+                    await AlertService.ShowToast("Error syncing user information. Try again or restart the app.", CommunityToolkit.Maui.Core.ToastDuration.Long);
+                    IsBusy = false;
+                    return;
+                }
+
+                var syncResult = await _syncService.DoSync();
             }
 
             await Shell.Current.GoToAsync($"//Home", true);

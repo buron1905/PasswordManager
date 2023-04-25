@@ -147,5 +147,22 @@ namespace PasswordManager.MAUI.Services
             }
             return null;
         }
+
+        public async Task<SyncResponseDTO> SyncExistingAndNewUser(UserDTO newUserDTO)
+        {
+            var response = new SyncResponseDTO() { SyncSuccessful = true };
+
+            if (!await _dataServiceWrapper.UserService.AnyAsync(x => x.Id == newUserDTO.Id))
+            {
+                response.UserDTO = await _dataServiceWrapper.UserService.CreateAsync(newUserDTO);
+                response.SendingNewData = true;
+            }
+            else
+            {
+                response.UserDTO = await _dataServiceWrapper.UserService.UpdateAsync(newUserDTO);
+            }
+
+            return response;
+        }
     }
 }

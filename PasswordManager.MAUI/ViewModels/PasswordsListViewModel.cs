@@ -6,7 +6,6 @@ using PasswordManager.MAUI.Views;
 using Services.Abstraction.Data;
 using Services.Cryptography;
 using System.Collections.ObjectModel;
-using System.Text;
 
 namespace PasswordManager.MAUI.ViewModels
 {
@@ -106,7 +105,7 @@ namespace PasswordManager.MAUI.ViewModels
 
             foreach (var password in passwords)
             {
-                password.PasswordDecrypted = await EncryptionService.DecryptAsync(Encoding.Unicode.GetBytes(password.PasswordEncrypted ?? string.Empty),
+                password.PasswordDecrypted = await EncryptionService.DecryptAsync(Convert.FromBase64String(password.PasswordEncrypted ?? string.Empty),
                     ActiveUserService.Instance.CipherKey);
             }
 

@@ -12,6 +12,7 @@ namespace Services.Data
             _dataServiceWrapper = dataServiceWrapper;
         }
 
+        // TODO jen na zaklade hesel
         public async Task<LastChangeResponseDTO?> GetLastChangeDateTime(Guid userId)
         {
             var lastChangeUser = (await _dataServiceWrapper.UserService.GetByIdAsync(userId)).UDT;
@@ -22,6 +23,7 @@ namespace Services.Data
             return response;
         }
 
+        // SyncPasswords - jen pro hesla, uzivatel se da menit jen online, a pri authResponse se jeho DTO posila a synchronizuje s pouzitou lokalni DB
         public async Task<SyncResponseDTO?> SyncAccount(SyncRequestDTO data)
         {
             var response = new SyncResponseDTO();
