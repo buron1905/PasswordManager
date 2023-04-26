@@ -16,16 +16,16 @@ namespace PasswordManager.WebAPI.Controllers
 
         private readonly AppSettings _appSettings;
         private readonly IAuthService _authService;
-        private readonly IDataServiceWrapper _dataServiceWrapper;
+        private readonly IUserService _userService;
         private readonly IJwtService _jwtService;
 
         #endregion
 
-        public AuthController(IOptions<AppSettings> appSettings, IAuthService authService, IDataServiceWrapper dataServiceWrapper, IJwtService jwtService)
+        public AuthController(IOptions<AppSettings> appSettings, IUserService userService, IAuthService authService, IJwtService jwtService)
         {
             _appSettings = appSettings.Value;
+            _userService = userService;
             _authService = authService;
-            _dataServiceWrapper = dataServiceWrapper;
             _jwtService = jwtService;
         }
 
@@ -166,7 +166,7 @@ namespace PasswordManager.WebAPI.Controllers
             if (result is null)
                 return BadRequest();
 
-            var user = await _dataServiceWrapper.UserService.GetByIdAsync(userId);
+            var user = await _userService.GetByIdAsync(userId);
 
             var response = _authService.GetAuthResponse(user, email, password, tfaEnabled: user.TwoFactorEnabled, emailVerified: user.EmailConfirmed);
             SetTokenCookie(response.JweToken!);

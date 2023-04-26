@@ -6,6 +6,5 @@ namespace Services.Abstraction.Data.Persistance
     {
         Task<Settings> GetSettingsByUser(Guid userId);
         Task<Settings?> GetByIdAsync(Guid settingsId);
-        Task<Settings?> GetSettingsWithUserAsync(Guid settingsId);
     }
 }

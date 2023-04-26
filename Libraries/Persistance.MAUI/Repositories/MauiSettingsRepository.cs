@@ -1,14 +1,11 @@
 ﻿using Models;
 using Services.Abstraction.Data.Persistance;
 
-namespace Persistance.Repositories
+namespace Persistance.MAUI.Repositories
 {
-    public class SettingsRepository : RepositoryBase<Settings>, ISettingsRepository
+    public class MauiSettingsRepository : MauiRepositoryBase<Settings>, ISettingsRepository
     {
-        public SettingsRepository(DataContext repositoryContext)
-            : base(repositoryContext)
-        {
-        }
+        public MauiSettingsRepository() { }
 
         public async Task<Settings?> GetSettingsByUser(Guid ownerId)
         {

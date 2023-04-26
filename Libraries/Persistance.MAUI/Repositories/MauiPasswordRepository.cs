@@ -1,14 +1,11 @@
 ﻿using Models;
 using Services.Abstraction.Data.Persistance;
 
-namespace Persistance.Repositories
+namespace Persistance.MAUI.Repositories
 {
-    public class PasswordRepository : RepositoryBase<Password>, IPasswordRepository
+    public class MauiPasswordRepository : MauiRepositoryBase<Password>, IPasswordRepository
     {
-        public PasswordRepository(DataContext repositoryContext)
-            : base(repositoryContext)
-        {
-        }
+        public MauiPasswordRepository() { }
 
         public async Task<IEnumerable<Password>> GetAllByUserIdAsync(Guid userId)
         {

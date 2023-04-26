@@ -18,16 +18,21 @@ namespace PasswordManager.WebAPI.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
-            services.AddScoped<IDataServiceWrapper, DataServiceWrapper>();
-
-
-            services.AddTransient<ISyncService, SyncService>();
             services.AddTransient<IJwtService, JwtService>();
             services.AddTransient<IEmailService, EmailService>();
+
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<ITwoFactorAuthService, TwoFactorAuthService>();
+
+            services.AddTransient<ISyncService, SyncService>();
+
+            services.AddTransient<IUserService, UserService>();
             services.AddTransient<IPasswordService, PasswordService>();
+            services.AddTransient<ISettingsService, SettingsService>();
+
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IPasswordRepository, PasswordRepository>();
+            services.AddTransient<ISettingsRepository, SettingsRepository>();
 
             return services;
         }

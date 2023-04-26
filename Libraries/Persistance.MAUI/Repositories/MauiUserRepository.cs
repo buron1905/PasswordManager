@@ -1,15 +1,12 @@
 ﻿using Models;
 using Services.Abstraction.Data.Persistance;
 
-namespace Persistance.Repositories
+namespace Persistance.MAUI.Repositories
 {
-    public class UserRepository : RepositoryBase<User>, IUserRepository
+    public class MauiUserRepository : MauiRepositoryBase<User>, IUserRepository
     {
 
-        public UserRepository(DataContext dataContext)
-            : base(dataContext)
-        {
-        }
+        public MauiUserRepository() { }
 
         public async Task<IEnumerable<User>> GetAllAsync()
         {

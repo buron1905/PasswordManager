@@ -17,19 +17,24 @@ namespace PasswordManager.MAUI.Extensions
         public static MauiAppBuilder RegisterAppServices(this MauiAppBuilder builder)
         {
             // Singleton
-            builder.Services.AddSingleton<IConnectivity>(Connectivity.Current);
+            builder.Services.AddSingleton(Connectivity.Current);
             builder.Services.AddSingleton<HttpClient>();
 
-            //// From WebAPI
-            builder.Services.AddSingleton<IRepositoryWrapper, RepositoryWrapper>();
-            builder.Services.AddSingleton<IDataServiceWrapper, DataServiceWrapper>();
             builder.Services.AddSingleton<IMauiAuthService, MauiAuthService>();
             builder.Services.AddSingleton<IAuthService, AuthService>();
-            builder.Services.AddSingleton<IMauiPasswordService, MauiPasswordService>();
-            builder.Services.AddSingleton<IPasswordService, PasswordService>();
             builder.Services.AddSingleton<ITwoFactorAuthService, TwoFactorAuthService>();
             builder.Services.AddSingleton<IMauiSyncService, MauiSyncService>();
             builder.Services.AddSingleton<ISyncService, SyncService>();
+
+            builder.Services.AddSingleton<IMauiPasswordService, MauiPasswordService>();
+
+            builder.Services.AddTransient<IUserService, UserService>();
+            builder.Services.AddTransient<IPasswordService, PasswordService>();
+            builder.Services.AddTransient<ISettingsService, SettingsService>();
+
+            builder.Services.AddTransient<IUserRepository, MauiUserRepository>();
+            builder.Services.AddTransient<IPasswordRepository, MauiPasswordRepository>();
+            builder.Services.AddTransient<ISettingsRepository, MauiSettingsRepository>();
 
             // Transient
             builder.Services.AddTransient<IJwtService, JwtService>();
@@ -41,18 +46,21 @@ namespace PasswordManager.MAUI.Extensions
         public static MauiAppBuilder RegisterViewModels(this MauiAppBuilder builder)
         {
             // Singleton
+
+            // Transient
             builder.Services.AddTransient<LoadingViewModel>();
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<LoginTfaViewModel>();
+
             builder.Services.AddTransient<RegistrationViewModel>();
             builder.Services.AddTransient<RegistrationSuccessfulViewModel>();
+
+            builder.Services.AddTransient<AddEditPasswordViewModel>();
             builder.Services.AddTransient<PasswordsListViewModel>();
             builder.Services.AddTransient<GeneratePasswordViewModel>();
+
             builder.Services.AddTransient<SettingsViewModel>();
             builder.Services.AddTransient<TfaSettingsViewModel>();
-
-            // Transient
-            builder.Services.AddTransient<AddEditPasswordViewModel>();
 
             return builder;
         }
@@ -60,18 +68,21 @@ namespace PasswordManager.MAUI.Extensions
         public static MauiAppBuilder RegisterViews(this MauiAppBuilder builder)
         {
             // Singleton
+
+            // Transient
             builder.Services.AddTransient<LoadingPage>();
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<LoginTfaPage>();
+
             builder.Services.AddTransient<RegistrationPage>();
             builder.Services.AddTransient<RegistrationSuccessfulPage>();
+
+            builder.Services.AddTransient<AddEditPasswordPage>();
             builder.Services.AddTransient<PasswordsListPage>();
             builder.Services.AddTransient<GeneratePasswordPage>();
+
             builder.Services.AddTransient<SettingsPage>();
             builder.Services.AddTransient<TfaSettingsPage>();
-
-            // Transient
-            builder.Services.AddTransient<AddEditPasswordPage>();
 
             return builder;
         }

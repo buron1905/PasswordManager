@@ -6,6 +6,5 @@ namespace Services.Abstraction.Data.Persistance
     {
         Task<IEnumerable<Password>> GetAllByUserIdAsync(Guid userId);
         Task<Password?> GetByIdAsync(Guid passwordId);
-        Task<Password?> GetPasswordWithUserAsync(Guid passwordId);
     }
 }

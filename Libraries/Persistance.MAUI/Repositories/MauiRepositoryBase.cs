@@ -5,11 +5,11 @@ using System.Linq.Expressions;
 
 namespace Persistance.MAUI.Repositories
 {
-    public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : Entity, new()
+    public abstract class MauiRepositoryBase<T> : IRepositoryBase<T> where T : Entity, new()
     {
         SQLiteAsyncConnection? _connection;
 
-        public RepositoryBase()
+        public MauiRepositoryBase()
         {
         }
 
@@ -38,7 +38,7 @@ namespace Persistance.MAUI.Repositories
             return await _connection.Table<T>().CountAsync(expression) > 0;
         }
 
-        public async void Create(T entity)
+        public async Task Create(T entity)
         {
             await Init();
 
@@ -55,7 +55,7 @@ namespace Persistance.MAUI.Repositories
             var tableAfter = await _connection.Table<T>().ToListAsync();
         }
 
-        public async void Update(T entity)
+        public async Task Update(T entity)
         {
             await Init();
             if (!IsFromServer(entity))
@@ -66,7 +66,7 @@ namespace Persistance.MAUI.Repositories
             var tableAfter = await _connection.Table<T>().ToListAsync();
         }
 
-        public async void Delete(T entity)
+        public async Task Delete(T entity)
         {
             await Init();
             var tableBefore = await _connection.Table<T>().ToListAsync();
@@ -74,7 +74,7 @@ namespace Persistance.MAUI.Repositories
             var tableAfter = await _connection.Table<T>().ToListAsync();
         }
 
-        public async void DeleteAll(Expression<Func<T, bool>> expression)
+        public async Task DeleteAll(Expression<Func<T, bool>> expression)
         {
             await Init();
             await _connection.Table<T>().DeleteAsync(expression);

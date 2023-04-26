@@ -21,16 +21,14 @@ namespace PasswordManager.MAUI.ViewModels
 
         IMauiAuthService _authService;
         IMauiSyncService _syncService;
-        IDataServiceWrapper _dataServiceWrapper;
 
         #endregion
 
-        public LoginViewModel(IMauiAuthService authService, IMauiSyncService syncService, IDataServiceWrapper dataServiceWrapper)
+        public LoginViewModel(IMauiAuthService authService, IMauiSyncService syncService)
         {
             Title = "Login";
             _authService = authService;
             _syncService = syncService;
-            _dataServiceWrapper = dataServiceWrapper;
         }
 
         #region Commands

@@ -1,5 +1,4 @@
-﻿using Models;
-using Models.DTOs;
+﻿using Models.DTOs;
 using Services.Abstraction.Auth;
 using Services.Abstraction.Data.Persistance;
 using Services.Data;
@@ -31,14 +30,14 @@ namespace PasswordManager.MAUI.Services
         }
     }
 
-    public abstract class MauiBaseDataService<T> : DataServiceBase<Password>
+    public abstract class MauiBaseDataService<T> : DataServiceBase<T>
     {
         protected HttpClient _httpClient;
         protected JsonSerializerOptions _serializerOptions;
         protected readonly IConnectivity _connectivity;
         protected IMauiAuthService _authService;
 
-        public MauiBaseDataService(HttpClient httpClient, IConnectivity connectivity, IRepositoryWrapper repositoryWrapper, IMauiAuthService authService) : base(repositoryWrapper)
+        public MauiBaseDataService(HttpClient httpClient, IConnectivity connectivity, IRepositoryBase<T> repositoryBase, IMauiAuthService authService) : base(repositoryBase)
         {
             _httpClient = httpClient;
             _connectivity = connectivity;

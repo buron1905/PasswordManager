@@ -13,8 +13,8 @@ namespace PasswordManager.MAUI.Services
     {
         readonly IPasswordService _offlinePasswordService;
 
-        public MauiPasswordService(HttpClient httpClient, IConnectivity connectivity, IPasswordService passwordService, IRepositoryWrapper repositoryWrapper,
-            IMauiAuthService authService) : base(httpClient, connectivity, repositoryWrapper, authService)
+        public MauiPasswordService(HttpClient httpClient, IConnectivity connectivity, IPasswordService passwordService, IPasswordRepository passwordRepository,
+            IMauiAuthService authService) : base(httpClient, connectivity, passwordRepository, authService)
         {
             _offlinePasswordService = passwordService;
         }

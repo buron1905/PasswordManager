@@ -53,7 +53,7 @@ namespace PasswordManager.MAUI.ViewModels
 
         #endregion
 
-        public AddEditPasswordViewModel(IDataServiceWrapper dataServiceWrapper, IMauiPasswordService passwordService)
+        public AddEditPasswordViewModel(IMauiPasswordService passwordService)
         {
             Title = "Add password";
             IsNew = true;

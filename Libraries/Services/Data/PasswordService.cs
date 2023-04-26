@@ -9,14 +9,19 @@ namespace Services.Data
 {
     public class PasswordService : DataServiceBase<Password>, IPasswordService
     {
-        public PasswordService(IRepositoryWrapper repositoryWrapper)
-            : base(repositoryWrapper)
+        IPasswordRepository _passwordRepository;
+        IUserRepository _userRepository;
+
+        public PasswordService(IPasswordRepository passwordRepository, IUserRepository userRepository)
+            : base(passwordRepository)
         {
+            _passwordRepository = passwordRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<IEnumerable<PasswordDTO>> GetAllByUserIdAsync(Guid userId)
         {
-            var passwords = await _repositoryWrapper.PasswordRepository.GetAllByUserIdAsync(userId);
+            var passwords = await _passwordRepository.GetAllByUserIdAsync(userId);
 
             //TODO: PasswordEncrypted to PasswordDecrypted - now in Controller
 
@@ -28,14 +33,14 @@ namespace Services.Data
         // Maybe use FindByCondition
         public async Task<PasswordDTO> GetByIdAsync(Guid userId, Guid passwordId)
         {
-            var user = await _repositoryWrapper.UserRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetByIdAsync(userId);
 
             if (user is null)
             {
                 throw new UserNotFoundException(userId);
             }
 
-            var password = await _repositoryWrapper.PasswordRepository.GetByIdAsync(passwordId);
+            var password = await _passwordRepository.GetByIdAsync(passwordId);
 
             if (password is null)
             {
@@ -54,7 +59,7 @@ namespace Services.Data
 
         public async Task<PasswordDTO> CreateAsync(Guid userId, PasswordDTO passwordDTO)
         {
-            var user = await _repositoryWrapper.UserRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetByIdAsync(userId);
 
             if (user is null)
             {
@@ -68,23 +73,22 @@ namespace Services.Data
             //TODO: use encryption service - now in controller
             //password.PasswordEncrypted = password.PasswordDecrypted;
 
-            _repositoryWrapper.PasswordRepository.Create(password);
-
-            await _repositoryWrapper.SaveChangesAsync();
+            // This automatically fills the ID
+            await _passwordRepository.Create(password);
 
             return password.Adapt<PasswordDTO>();
         }
 
         public async Task<PasswordDTO> UpdateAsync(Guid userId, PasswordDTO passwordDTO)
         {
-            var user = await _repositoryWrapper.UserRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetByIdAsync(userId);
 
             if (user is null)
             {
                 throw new UserNotFoundException(userId);
             }
 
-            var password = await _repositoryWrapper.PasswordRepository.GetByIdAsync(passwordDTO.Id);
+            var password = await _passwordRepository.GetByIdAsync(passwordDTO.Id);
 
             if (password is null)
             {
@@ -107,23 +111,21 @@ namespace Services.Data
             password.UDT = passwordDTO.UDT;
             password.IDT = passwordDTO.IDT;
 
-            _repositoryWrapper.PasswordRepository.Update(password);
-
-            await _repositoryWrapper.SaveChangesAsync();
+            await _passwordRepository.Update(password);
 
             return password.Adapt<PasswordDTO>();
         }
 
         public async Task DeleteAsync(Guid userId, Guid passwordId)
         {
-            var user = await _repositoryWrapper.UserRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetByIdAsync(userId);
 
             if (user is null)
             {
                 throw new UserNotFoundException(userId);
             }
 
-            var password = await _repositoryWrapper.PasswordRepository.GetByIdAsync(passwordId);
+            var password = await _passwordRepository.GetByIdAsync(passwordId);
 
             if (password is null)
             {
@@ -135,9 +137,7 @@ namespace Services.Data
                 throw new PasswordDoesNotBelongToUserException(user.Id, password.Id);
             }
 
-            _repositoryWrapper.PasswordRepository.Delete(password);
-
-            await _repositoryWrapper.SaveChangesAsync();
+            await _passwordRepository.Delete(password);
         }
     }
 }

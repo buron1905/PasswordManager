@@ -1,7 +1,6 @@
 ﻿using Models.DTOs;
 using PasswordManager.MAUI.Helpers;
 using Services.Abstraction.Auth;
-using Services.Abstraction.Data;
 using System.Text;
 using System.Text.Json;
 
@@ -10,13 +9,11 @@ namespace PasswordManager.MAUI.Services
     public class MauiAuthService : MauiBaseDataService, IMauiAuthService
     {
         readonly IAuthService _offlineAuthService;
-        readonly IDataServiceWrapper _dataServiceWrapper;
         private readonly ITwoFactorAuthService _twoFactorAuthService;
 
-        public MauiAuthService(HttpClient httpClient, IConnectivity connectivity, ITwoFactorAuthService twoFactorAuthService, IAuthService offlineAuthService, IDataServiceWrapper dataServiceWrapper) : base(httpClient, connectivity)
+        public MauiAuthService(HttpClient httpClient, IConnectivity connectivity, ITwoFactorAuthService twoFactorAuthService, IAuthService offlineAuthService) : base(httpClient, connectivity)
         {
             _offlineAuthService = offlineAuthService;
-            _dataServiceWrapper = dataServiceWrapper;
             _twoFactorAuthService = twoFactorAuthService;
         }
 

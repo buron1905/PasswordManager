@@ -9,21 +9,26 @@ namespace Services.Data
 {
     public class SettingsService : DataServiceBase<Settings>, ISettingsService
     {
-        public SettingsService(IRepositoryWrapper repositoryWrapper)
-            : base(repositoryWrapper)
+        ISettingsRepository _settingsRepository;
+        IUserRepository _userRepository;
+
+        public SettingsService(ISettingsRepository settingsRepository, IUserRepository userRepository)
+            : base(settingsRepository)
         {
+            _settingsRepository = settingsRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<SettingsDTO> GetSettingsByUser(Guid userId)
         {
-            var user = await _repositoryWrapper.UserRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetByIdAsync(userId);
 
             if (user is null)
             {
                 throw new UserNotFoundException(userId);
             }
 
-            var settings = await _repositoryWrapper.SettingsRepository.GetSettingsByUser(userId);
+            var settings = await _settingsRepository.GetSettingsByUser(userId);
 
             if (settings is null)
             {
@@ -41,14 +46,14 @@ namespace Services.Data
         // Maybe use FindByCondition
         public async Task<SettingsDTO> GetByIdAsync(Guid userId, Guid settingsId)
         {
-            var user = await _repositoryWrapper.UserRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetByIdAsync(userId);
 
             if (user is null)
             {
                 throw new UserNotFoundException(userId);
             }
 
-            var settings = await _repositoryWrapper.SettingsRepository.GetByIdAsync(settingsId);
+            var settings = await _settingsRepository.GetByIdAsync(settingsId);
 
             if (settings is null)
             {
@@ -65,7 +70,7 @@ namespace Services.Data
 
         public async Task<SettingsDTO> CreateAsync(Guid userId, SettingsDTO settingsDTO)
         {
-            var user = await _repositoryWrapper.UserRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetByIdAsync(userId);
 
             if (user is null)
             {
@@ -76,23 +81,21 @@ namespace Services.Data
 
             settings.UserId = user.Id;
 
-            _repositoryWrapper.SettingsRepository.Create(settings);
-
-            await _repositoryWrapper.SaveChangesAsync();
+            await _settingsRepository.Create(settings);
 
             return settings.Adapt<SettingsDTO>();
         }
 
         public async Task<SettingsDTO> UpdateAsync(Guid userId, SettingsDTO settingsDTO)
         {
-            var user = await _repositoryWrapper.UserRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetByIdAsync(userId);
 
             if (user is null)
             {
                 throw new UserNotFoundException(userId);
             }
 
-            var settings = await _repositoryWrapper.SettingsRepository.GetByIdAsync(settingsDTO.Id);
+            var settings = await _settingsRepository.GetByIdAsync(settingsDTO.Id);
 
             if (settings is null)
             {
@@ -108,21 +111,19 @@ namespace Services.Data
             settings.UserId = user.Id;
             settings.SavePassword = settingsDTO.SavePassword;
 
-            await _repositoryWrapper.SaveChangesAsync();
-
             return settings.Adapt<SettingsDTO>();
         }
 
         public async Task DeleteAsync(Guid userId, Guid settingsId)
         {
-            var user = await _repositoryWrapper.UserRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetByIdAsync(userId);
 
             if (user is null)
             {
                 throw new UserNotFoundException(userId);
             }
 
-            var settings = await _repositoryWrapper.SettingsRepository.GetByIdAsync(settingsId);
+            var settings = await _settingsRepository.GetByIdAsync(settingsId);
 
             if (settings is null)
             {
@@ -134,9 +135,7 @@ namespace Services.Data
                 throw new SettingsDoesNotBelongToUserException(user.Id, settings.Id);
             }
 
-            _repositoryWrapper.SettingsRepository.Delete(settings);
-
-            await _repositoryWrapper.SaveChangesAsync();
+            await _settingsRepository.Delete(settings);
         }
     }
 }

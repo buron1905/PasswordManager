@@ -8,12 +8,13 @@ namespace PasswordManager.MAUI.Services
 {
     public class MauiSyncService : MauiBaseDataService, IMauiSyncService
     {
+        private readonly IUserService _userService;
+        private readonly IPasswordService _passwordService;
 
-        private readonly IDataServiceWrapper _dataServiceWrapper;
-
-        public MauiSyncService(HttpClient httpClient, IConnectivity connectivity, IDataServiceWrapper dataServiceWrapper) : base(httpClient, connectivity)
+        public MauiSyncService(HttpClient httpClient, IConnectivity connectivity, IUserService userService, IPasswordService passwordService) : base(httpClient, connectivity)
         {
-            _dataServiceWrapper = dataServiceWrapper;
+            _userService = userService;
+            _passwordService = passwordService;
         }
 
         public async Task<LastChangeResponseDTO?> GetLastChangeDateTime(Guid userId)
@@ -43,8 +44,8 @@ namespace PasswordManager.MAUI.Services
 
         public async Task<LastChangeResponseDTO?> GetLastChangeDateTimeLocal(Guid userId)
         {
-            var lastChangeUser = (await _dataServiceWrapper.UserService.GetByIdAsync(userId)).UDT;
-            var passwords = await _dataServiceWrapper.PasswordService.GetAllByUserIdAsync(userId);
+            var lastChangeUser = (await _userService.GetByIdAsync(userId)).UDT;
+            var passwords = await _passwordService.GetAllByUserIdAsync(userId);
             var lastChangePassword = GetLastChangeDateTime(passwords);
 
             var response = new LastChangeResponseDTO() { LastChangeUser = lastChangeUser, LastChangePassword = lastChangePassword };
@@ -92,23 +93,23 @@ namespace PasswordManager.MAUI.Services
 
             var userId = ActiveUserService.Instance.ActiveUser.Id;
 
-            if (data.UserDTO.Id != userId)
+            if (data.UserDTO?.Id != userId)
                 return;
 
-            var offlinePasswords = await _dataServiceWrapper.PasswordService.GetAllByUserIdAsync(ActiveUserService.Instance.ActiveUser.Id);
+            var offlinePasswords = await _passwordService.GetAllByUserIdAsync(ActiveUserService.Instance.ActiveUser.Id);
             var newPasswords = data.Passwords.Where(x => !offlinePasswords.Any(o => o.Id == x.Id)).ToList();
             var updatedPasswords = data.Passwords.Where(x => offlinePasswords.Any(o => o.Id == x.Id)).ToList();
 
             // new passwords
             foreach (var password in newPasswords)
             {
-                await _dataServiceWrapper.PasswordService.CreateAsync(userId, password);
+                await _passwordService.CreateAsync(userId, password);
             }
 
             // updated passwords
             foreach (var password in updatedPasswords)
             {
-                await _dataServiceWrapper.PasswordService.UpdateAsync(userId, password);
+                await _passwordService.UpdateAsync(userId, password);
             }
         }
 
@@ -133,8 +134,8 @@ namespace PasswordManager.MAUI.Services
                     //if (lastChangeLocal.LastChangeUser != lastChangeOnline.LastChangeUser || lastChangeLocal.LastChangePassword != lastChangeOnline.LastChangePassword)
                     {
                         var localData = new SyncRequestDTO();
-                        localData.UserDTO = await _dataServiceWrapper.UserService.GetByIdAsync(ActiveUserService.Instance.ActiveUser.Id);
-                        localData.Passwords = await _dataServiceWrapper.PasswordService.GetAllByUserIdAsync(ActiveUserService.Instance.ActiveUser.Id);
+                        localData.UserDTO = await _userService.GetByIdAsync(ActiveUserService.Instance.ActiveUser.Id);
+                        localData.Passwords = await _passwordService.GetAllByUserIdAsync(ActiveUserService.Instance.ActiveUser.Id);
 
                         var response = await SyncAccount(localData);
 
@@ -153,14 +154,12 @@ namespace PasswordManager.MAUI.Services
         {
             var response = new SyncResponseDTO() { SyncSuccessful = true };
 
-            if (!await _dataServiceWrapper.UserService.AnyAsync(x => x.Id == newUserDTO.Id))
-            {
-                response.UserDTO = await _dataServiceWrapper.UserService.CreateAsync(newUserDTO);
-                response.SendingNewData = true;
-            }
+            if (await _userService.AnyAsync(x => x.Id == newUserDTO.Id))
+                response.UserDTO = await _userService.UpdateAsync(newUserDTO);
             else
             {
-                response.UserDTO = await _dataServiceWrapper.UserService.UpdateAsync(newUserDTO);
+                response.UserDTO = await _userService.CreateAsync(newUserDTO);
+                response.SendingNewData = true;
             }
 
             return response;

@@ -4,7 +4,6 @@ using Models.DTOs;
 using Services.Abstraction;
 using Services.Abstraction.Auth;
 using Services.Abstraction.Data;
-using Services.Abstraction.Data.Persistance;
 using Services.Abstraction.Exceptions;
 using Services.Cryptography;
 using Services.TMP;
@@ -14,17 +13,15 @@ namespace Services.Auth
 {
     public class AuthService : IAuthService
     {
-        private readonly IDataServiceWrapper _dataServiceWrapper;
-        private readonly IRepositoryWrapper _repositoryWrapper;
+        private readonly IUserService _userService;
         private readonly ITwoFactorAuthService _twoFactorAuthService;
         private readonly IJwtService _jwtService;
         private readonly IEmailService _emailService;
         private readonly AppSettings? _appSettings;
 
-        public AuthService(IDataServiceWrapper dataServiceWrapper, IRepositoryWrapper repositoryWrapper, ITwoFactorAuthService twoFactorAuthService, IJwtService jwtService, IEmailService emailService, IOptions<AppSettings>? appSettings = null)
+        public AuthService(IUserService userService, ITwoFactorAuthService twoFactorAuthService, IJwtService jwtService, IEmailService emailService, IOptions<AppSettings>? appSettings = null)
         {
-            _dataServiceWrapper = dataServiceWrapper;
-            _repositoryWrapper = repositoryWrapper;
+            _userService = userService;
             _twoFactorAuthService = twoFactorAuthService;
             _jwtService = jwtService;
             _emailService = emailService;
@@ -39,7 +36,7 @@ namespace Services.Auth
             if (!await AuthUser(requestDTO.EmailAddress!, requestDTO.Password!))
                 return null;
 
-            var userDTO = await _dataServiceWrapper.UserService.GetByEmailAsync(requestDTO.EmailAddress!);
+            var userDTO = await _userService.GetByEmailAsync(requestDTO.EmailAddress!);
 
             var response = GetAuthResponse(userDTO, requestDTO.EmailAddress!, requestDTO.Password!, true, userDTO.TwoFactorEnabled, !userDTO.TwoFactorEnabled, emailVerified: userDTO.EmailConfirmed);
 
@@ -59,7 +56,7 @@ namespace Services.Auth
 
             var userId = JwtService.GetUserGuidFromClaims(claims);
             var password = JwtService.GetUserPasswordFromClaims(claims);
-            var userDTO = await _dataServiceWrapper.UserService.GetByIdAsync(userId);
+            var userDTO = await _userService.GetByIdAsync(userId);
             if (userDTO is null) return null;
 
             var secret = await DecryptString(password, userDTO.TwoFactorSecret);
@@ -83,16 +80,16 @@ namespace Services.Auth
 
         public async Task<UserDTO?> SetTwoFactorEnabledAsync(Guid userId, string password)
         {
-            var user = await _dataServiceWrapper.UserService.GetByIdAsync(userId);
+            var user = await _userService.GetByIdAsync(userId);
             user.TwoFactorEnabled = true;
-            return await _dataServiceWrapper.UserService.UpdateAsync(user);
+            return await _userService.UpdateAsync(user);
         }
 
         public async Task<UserDTO?> SetTwoFactorDisabledAsync(Guid userId)
         {
-            var user = await _dataServiceWrapper.UserService.GetByIdAsync(userId);
+            var user = await _userService.GetByIdAsync(userId);
             user.TwoFactorEnabled = false;
-            return await _dataServiceWrapper.UserService.UpdateAsync(user);
+            return await _userService.UpdateAsync(user);
         }
 
         public TfaSetupDTO GenerateTfaSetupDTO(string issuer, string accountTitle, string accountSecretKey)
@@ -110,7 +107,7 @@ namespace Services.Auth
 
         public async Task<TfaSetupDTO?> EnableTfa(Guid userId, string password, TfaSetupDTO tfaSetupDTO)
         {
-            var userDTO = await _dataServiceWrapper.UserService.GetByIdAsync(userId);
+            var userDTO = await _userService.GetByIdAsync(userId);
             if (userDTO is null)
                 return null;
 
@@ -132,7 +129,7 @@ namespace Services.Auth
 
         public async Task<TfaSetupDTO?> DisableTfa(Guid userId, string password, TfaSetupDTO tfaSetupDTO)
         {
-            var userDTO = await _dataServiceWrapper.UserService.GetByIdAsync(userId);
+            var userDTO = await _userService.GetByIdAsync(userId);
             if (userDTO is null)
                 return null;
 
@@ -156,7 +153,7 @@ namespace Services.Auth
             if (!IsRequestValid(requestDTO))
                 return null;
 
-            if (await _repositoryWrapper.UserRepository.AnyAsync(user => user.EmailAddress.Equals(requestDTO.EmailAddress!)))
+            if (await _userService.AnyAsync(user => user.EmailAddress.Equals(requestDTO.EmailAddress!)))
                 throw new AppException("Email is already used by another user.");
 
             var userDTO = new UserDTO()
@@ -168,7 +165,7 @@ namespace Services.Auth
                 TwoFactorSecret = Convert.ToBase64String(await EncryptionService.EncryptAsync(Guid.NewGuid().ToString().Trim().Replace("-", "").Substring(0, 10), requestDTO.Password!))
             };
 
-            userDTO = await _dataServiceWrapper.UserService.CreateAsync(userDTO);
+            userDTO = await _userService.CreateAsync(userDTO);
 
             _emailService.SendRegistrationEmail(userDTO.EmailAddress, userDTO.EmailConfirmationToken);
 
@@ -210,7 +207,7 @@ namespace Services.Auth
             if (!await AuthUser(emailAddress!, password!))
                 return null;
 
-            var user = await _dataServiceWrapper.UserService.GetByIdAsync(new Guid(userId!));
+            var user = await _userService.GetByIdAsync(new Guid(userId!));
 
             var response = GetAuthResponse(user, emailAddress!, password!, tfaChecked: tfaChecked, emailVerified: emailConfirmed);
 
@@ -235,7 +232,7 @@ namespace Services.Auth
 
         private async Task<bool> AuthUser(string emailAddress, string password)
         {
-            var user = await _dataServiceWrapper.UserService.GetByEmailAsync(emailAddress);
+            var user = await _userService.GetByEmailAsync(emailAddress);
             if (user is null)
                 return false;
             //throw new UserNotFoundException(emailAddress);
@@ -249,7 +246,7 @@ namespace Services.Auth
 
         public async Task<TfaSetupDTO?> GetTfaSetup(Guid userId, string password)
         {
-            var userDTO = await _dataServiceWrapper.UserService.GetByIdAsync(userId);
+            var userDTO = await _userService.GetByIdAsync(userId);
             if (userDTO is null)
                 return null;
 
@@ -259,7 +256,7 @@ namespace Services.Auth
                 newTwoFactorSecret = Convert.ToBase64String(await EncryptionService.EncryptAsync(newTwoFactorSecret,
                     password));
                 userDTO.TwoFactorSecret = newTwoFactorSecret;
-                userDTO = await _dataServiceWrapper.UserService.UpdateAsync(userDTO);
+                userDTO = await _userService.UpdateAsync(userDTO);
             }
 
             var secret = await DecryptString(password, userDTO.TwoFactorSecret!);
@@ -272,7 +269,7 @@ namespace Services.Auth
 
         public async Task<bool> ConfirmEmailAsync(string email, string token)
         {
-            var userDTO = await _dataServiceWrapper.UserService.GetByEmailAsync(email);
+            var userDTO = await _userService.GetByEmailAsync(email);
 
             if (userDTO is null) return false;
             if (userDTO.EmailConfirmed)
@@ -282,7 +279,7 @@ namespace Services.Auth
             if (userDTO.EmailConfirmationToken.Equals(token))
             {
                 userDTO.EmailConfirmed = true;
-                await _dataServiceWrapper.UserService.UpdateAsync(userDTO);
+                await _userService.UpdateAsync(userDTO);
                 return true;
             }
             return false;
@@ -290,7 +287,7 @@ namespace Services.Auth
 
         public async Task<bool> ResendConfirmEmail(string email)
         {
-            var userDTO = await _dataServiceWrapper.UserService.GetByEmailAsync(email);
+            var userDTO = await _userService.GetByEmailAsync(email);
 
             if (userDTO is null) return false;
 
@@ -303,7 +300,7 @@ namespace Services.Auth
             if (code is null || email is null || password is null)
                 return null;
 
-            var userDTO = await _dataServiceWrapper.UserService.GetByEmailAsync(email);
+            var userDTO = await _userService.GetByEmailAsync(email);
             if (userDTO is null) return null;
 
             var secret = await DecryptString(password, userDTO.TwoFactorSecret);
@@ -326,7 +323,7 @@ namespace Services.Auth
             if (!await AuthUser(requestDTO.EmailAddress!, requestDTO.Password!))
                 return null;
 
-            var userDTO = await _dataServiceWrapper.UserService.GetByEmailAsync(requestDTO.EmailAddress);
+            var userDTO = await _userService.GetByEmailAsync(requestDTO.EmailAddress);
             if (userDTO is null) return null;
 
             var secret = await DecryptString(requestDTO.Password, userDTO.TwoFactorSecret);

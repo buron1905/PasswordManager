@@ -22,15 +22,15 @@ namespace PasswordManager.MAUI.ViewModels
         [ObservableProperty]
         bool _isRefreshing;
 
-        private readonly IDataServiceWrapper _dataServiceWrapper;
+        private readonly IPasswordService _passwordService;
         private readonly IMauiSyncService _syncService;
 
         #endregion
 
-        public PasswordsListViewModel(IDataServiceWrapper dataServiceWrapper, IMauiSyncService syncService)
+        public PasswordsListViewModel(IPasswordService passwordService, IMauiSyncService syncService)
         {
             Title = "Passwords";
-            _dataServiceWrapper = dataServiceWrapper;
+            _passwordService = passwordService;
             _syncService = syncService;
         }
 
@@ -73,7 +73,7 @@ namespace PasswordManager.MAUI.ViewModels
             if (await AlertService.ShowYesNo($"{password.PasswordName}", $"Are you sure you want to delete this password?"))
             {
                 var userGuid = ActiveUserService.Instance.ActiveUser.Id;
-                await _dataServiceWrapper.PasswordService.DeleteAsync(userGuid, password.Id);
+                await _passwordService.DeleteAsync(userGuid, password.Id);
                 AllPasswords.Remove(password);
                 FilteredPasswords.Remove(password);
             }
@@ -115,7 +115,7 @@ namespace PasswordManager.MAUI.ViewModels
         {
             var userId = ActiveUserService.Instance.ActiveUser.Id;
 
-            var passwords = (await _dataServiceWrapper.PasswordService.GetAllByUserIdAsync(userId)).ToList() ?? new List<PasswordDTO>();
+            var passwords = (await _passwordService.GetAllByUserIdAsync(userId)).ToList() ?? new List<PasswordDTO>();
 
             foreach (var password in passwords)
             {
