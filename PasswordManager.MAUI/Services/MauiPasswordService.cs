@@ -57,7 +57,38 @@ namespace PasswordManager.MAUI.Services
 
         public async Task<PasswordDTO> UpdateAsync(Guid userId, PasswordDTO passwordDTO)
         {
-            throw new NotImplementedException();
+            PasswordDTO passwordDTOToReturn = null;
+
+            if (IsNetworkAccess())
+            {
+                Uri uri = new Uri(string.Format(AppConstants.ApiUrl + AppConstants.PasswordsSuffix, string.Empty));
+                string json = JsonSerializer.Serialize(passwordDTO);
+                StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, uri);
+                request.Content = content;
+                request = await AddAuthorizationHeaderToRequest(request);
+
+                try
+                {
+                    HttpResponseMessage response = await _httpClient.SendAsync(request);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string contentResponse = await response.Content.ReadAsStringAsync();
+                        passwordDTOToReturn = JsonSerializer.Deserialize<PasswordDTO>(contentResponse, _serializerOptions);
+                    }
+                    else
+                        return null;
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+
+            passwordDTOToReturn = await _offlinePasswordService.CreateAsync(userId, passwordDTOToReturn ?? passwordDTO);
+
+            return passwordDTOToReturn;
         }
 
         public async Task DeleteAsync(Guid userId, Guid passwordId)

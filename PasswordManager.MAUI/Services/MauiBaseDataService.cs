@@ -69,7 +69,7 @@ namespace PasswordManager.MAUI.Services
                 {
                     EmailAddress = ActiveUserService.Instance.ActiveUser.EmailAddress,
                     Password = ActiveUserService.Instance.CipherKey,
-                    Code = _authService.GetTfaCode()
+                    Code = await _authService.GetTfaCode()
                 };
                 var authResponse = await _authService.LoginWithTfaAsync(loginRequest);
                 if (authResponse is not null)

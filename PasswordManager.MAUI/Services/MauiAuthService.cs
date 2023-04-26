@@ -24,7 +24,7 @@ namespace PasswordManager.MAUI.Services
 
         public async Task<string> DecryptString(string password, string textEncrypted)
         {
-            throw new NotImplementedException();
+            return await _offlineAuthService.DecryptString(password, textEncrypted);
         }
 
         public async Task<TfaSetupDTO> DisableTfa(Guid userId, string password, TfaSetupDTO tfaSetupDTO)
@@ -57,9 +57,9 @@ namespace PasswordManager.MAUI.Services
             throw new NotImplementedException();
         }
 
-        public string GetTfaCode()
+        public async Task<string> GetTfaCode()
         {
-            var secret = ActiveUserService.Instance.ActiveUser.TwoFactorSecret;
+            var secret = await DecryptString(ActiveUserService.Instance.CipherKey, ActiveUserService.Instance.ActiveUser.TwoFactorSecret);
             return _twoFactorAuthService.GetCurrentPIN(secret);
         }
 
