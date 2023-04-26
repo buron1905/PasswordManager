@@ -11,7 +11,7 @@ namespace Models.DTOs
         [MaxLength(MaxEmailLength, ErrorMessage = MaxEmailLengthErrorMessage)]
         public string? EmailAddress { get; set; }
 
-        [Required]
+        [MaxLength(MaxPasswordLength, ErrorMessage = MaxPasswordLengthErrorMessage)]
         public string? Password { get; set; }
 
         public string? PasswordHASH { get; set; }

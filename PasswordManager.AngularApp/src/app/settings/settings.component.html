@@ -32,7 +32,7 @@
             <hr>
             <h3 class="mt-4">Disable</h3>
             <p>
-              Type the code provided by the Google Authenticator app to disable two-factor authentication:
+              Type the code provided by your authenticator app to disable two-factor authentication:
             </p>
             <div class="col-lg-4">
               <form [formGroup]="tfaForm" (ngSubmit)="disableTfa()">
@@ -60,12 +60,12 @@
             <h3 class="">Current Settings</h3>
             <p class="text-danger">Two-Factor Authentication is disabled.</p>
             <h3 class="">Step 1</h3>
-            <p class="m-0">Scan the following QR code or enter key using the Google Authenticator app:</p>
+            <p class="m-0">Scan the following QR code or enter key using your authenticator app (e.g. Google Authenticator):</p>
             <img [src]="qrCodeSetupImageUrl">
             <p class="m-0">Manual key: <span>{{authKey}}</span></p>
             <h3 class="mt-4">Step 2</h3>
             <p>
-              Type the code provided by the Google Authenticator app to verify your configuration:
+              Type the code provided by your authenticator app to verify your configuration:
             </p>
             <div class="col-lg-4">
               <form [formGroup]="tfaForm" (ngSubmit)="enableTfa()">

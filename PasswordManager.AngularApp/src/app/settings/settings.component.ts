@@ -21,6 +21,7 @@ export class SettingsComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private authService: AuthService, private toastrService: ToastrService) {
     this.tfaForm = this.fb.group({
+      isTfaEnabled: [false, [Validators.required]],
       code: ['', [Validators.required]]
     });
   }
@@ -37,6 +38,7 @@ export class SettingsComponent implements OnInit {
         this.authKey = data.authenticatorKey;
         this.qrCodeSetupImageUrl = data.qrCodeSetupImageUrl;
         this.loading = false;
+        this.tfaForm.patchValue({ isTfaEnabled: !this.tfaEnabled });
       },
       error => {
         this.loading = false;
@@ -53,13 +55,14 @@ export class SettingsComponent implements OnInit {
 
     this.loading = true;
 
-    this.authService.enableTfa(this.tfaForm.value).subscribe(
+    this.authService.setupTfa(this.tfaForm.value).subscribe(
       data => {
         this.submitted = false;
         this.tfaEnabled = data.isTfaEnabled;
         this.authKey = data.authenticatorKey;
         this.qrCodeSetupImageUrl = data.qrCodeSetupImageUrl;
         this.tfaForm.patchValue({ code: '' });
+        this.tfaForm.patchValue({ isTfaEnabled: !data.isTfaEnabled });
         this.loading = false;
         this.toastrService.success('Enabled');
       },
@@ -74,19 +77,21 @@ export class SettingsComponent implements OnInit {
   disableTfa(): void {
     this.submitted = true;
     this.wrongCode = false;
+
     if (this.tfaForm.invalid) {
       return;
     }
 
     this.loading = true;
 
-    this.authService.disableTfa(this.tfaForm.value).subscribe(
+    this.authService.setupTfa(this.tfaForm.value).subscribe(
       data => {
         this.submitted = false;
         this.tfaEnabled = data.isTfaEnabled;
         this.authKey = data.authenticatorKey;
         this.qrCodeSetupImageUrl = data.qrCodeSetupImageUrl;
         this.tfaForm.patchValue({ code: '' });
+        this.tfaForm.patchValue({ isTfaEnabled: !data.isTfaEnabled });
         this.loading = false;
         this.toastrService.success('Disabled');
       },

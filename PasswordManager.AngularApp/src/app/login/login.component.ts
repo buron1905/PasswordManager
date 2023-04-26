@@ -50,7 +50,8 @@ export class LoginComponent implements OnInit {
 
         if (data.isTfaEnabled) {
           const modalTfaLogin = this.modalService.open(ModalTfaLoginComponent);
-          modalTfaLogin.componentInstance.token = data.jweToken;
+          modalTfaLogin.componentInstance.emailAddressInput = this.emailAddress.value;
+          modalTfaLogin.componentInstance.passwordInput = this.password.value;
           modalTfaLogin.result.then((result) => {
             if (result == true) {
               this.authService.login(data);

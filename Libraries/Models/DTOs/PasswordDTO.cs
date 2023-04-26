@@ -10,14 +10,13 @@ namespace Models.DTOs
         [MaxLength(MaxPasswordNameLength, ErrorMessage = MaxPasswordNameLengthErrorMessage)]
         public string? PasswordName { get; set; }
 
-        [Required]
         [MaxLength(MaxUserNameLength, ErrorMessage = MaxUserNameLengthErrorMessage)]
         public string? UserName { get; set; }
 
-        //[Required]
         public string? PasswordEncrypted { get; set; }
 
         [NotMapped]
+        [MaxLength(MaxPasswordLength, ErrorMessage = MaxPasswordLengthErrorMessage)]
         public string? PasswordDecrypted { get; set; }
 
         [MaxLength(MaxURLLength, ErrorMessage = MaxURLLengthErrorMessage)]

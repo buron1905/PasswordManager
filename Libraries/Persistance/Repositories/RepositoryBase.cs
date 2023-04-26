@@ -68,6 +68,7 @@ namespace Persistance.Repositories
             entity.DDT = DateTime.UtcNow;
             entity.Deleted = true;
             _dataContext.Set<T>().Remove(entity);
+            // TODO- _dataContext.SaveChangesAsync
         }
 
         public void DeleteAll(Expression<Func<T, bool>> expression)

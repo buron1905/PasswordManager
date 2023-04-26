@@ -22,8 +22,7 @@ export class RegisterComponent implements OnInit {
     this.registerForm = this.fb.group({
       emailAddress: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(255)]],
-      confirmPassword: ['', [Validators.required]],
-      acceptTerms: [false, Validators.requiredTrue],
+      confirmPassword: ['', [Validators.required]]
       },
       {
         validators: Validation.match('password', 'confirmPassword')
@@ -70,10 +69,6 @@ export class RegisterComponent implements OnInit {
 
   get confirmPassword() {
     return this.registerForm.get('confirmPassword');
-  }
-
-  get acceptTerms() {
-    return this.registerForm.get('acceptTerms');
   }
 
   togglePassword(): void {

@@ -6,17 +6,15 @@ namespace Models
 {
     public class Password : Entity
     {
-        public bool Synced { get; set; }
 
         [Required]
+        [SQLite.NotNull]
         [MaxLength(MaxPasswordNameLength, ErrorMessage = MaxPasswordNameLengthErrorMessage)]
         public string? PasswordName { get; set; }
 
-        [Required]
         [MaxLength(MaxUserNameLength, ErrorMessage = MaxUserNameLengthErrorMessage)]
         public string? UserName { get; set; }
 
-        [Required]
         public string? PasswordEncrypted { get; set; }
 
         [NotMapped]
@@ -30,6 +28,8 @@ namespace Models
         [MaxLength(MaxNotesLength, ErrorMessage = MaxNotesLengthErrorMessage)]
         public string? Notes { get; set; }
 
+        [Required]
+        [SQLite.NotNull]
         public bool Favorite { get; set; }
 
         [ForeignKey(nameof(User))]

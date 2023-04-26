@@ -105,8 +105,8 @@ namespace PasswordManager.WebAPI.Controllers
 
         #region TFA
 
-        [HttpPost("login-with-tfa")]
-        public async Task<IActionResult> LoginWithTfa([FromBody] LoginWithTfaRequestDTO requestDTO)
+        [HttpPost("tfa-login")]
+        public async Task<IActionResult> TfaLogin([FromBody] LoginWithTfaRequestDTO requestDTO)
         {
             var response = await _authService.LoginWithTfaAsync(requestDTO);
 
@@ -118,8 +118,8 @@ namespace PasswordManager.WebAPI.Controllers
             return Ok(response);
         }
 
-        [HttpPost("tfa-login")]
-        public async Task<IActionResult> LoginTfa([FromBody] LoginTfaRequestDTO requestDTO)
+        [HttpPost("tfa-login-with-token")]
+        public async Task<IActionResult> TfaLoginWithToken([FromBody] LoginTfaRequestDTO requestDTO)
         {
             var response = await _authService.LoginTfaAsync(requestDTO);
 
@@ -149,21 +149,26 @@ namespace PasswordManager.WebAPI.Controllers
 
         [Authorize]
         [HttpPost("tfa-setup")]
-        public async Task<IActionResult> EnableTfaSetup([FromBody] TfaSetupDTO tfaSetupDTO)
+        public async Task<IActionResult> TfaSetup([FromBody] TfaSetupDTO tfaSetupDTO)
         {
             var claims = HttpContext.GetUserClaims();
             var userId = JwtService.GetUserGuidFromClaims(claims);
             var email = JwtService.GetUserEmailFromClaims(claims);
             var password = JwtService.GetUserPasswordFromClaims(claims);
 
-            var result = await _authService.EnableTfa(userId, password, tfaSetupDTO);
+            TfaSetupDTO result = null!;
+
+            if (tfaSetupDTO.IsTfaEnabled)
+                result = await _authService.EnableTfa(userId, password, tfaSetupDTO);
+            else
+                result = await _authService.DisableTfa(userId, password, tfaSetupDTO);
 
             if (result is null)
                 return BadRequest();
 
             var user = await _dataServiceWrapper.UserService.GetByIdAsync(userId);
 
-            var response = _authService.GetAuthResponse(user, email, password, true, true, true);
+            var response = _authService.GetAuthResponse(user, email, password, tfaEnabled: user.TwoFactorEnabled, emailVerified: user.EmailConfirmed);
             SetTokenCookie(response.JweToken!);
 
             return Ok(result);

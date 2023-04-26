@@ -11,10 +11,12 @@ namespace Models
         [Required]
         [EmailAddress]
         [MaxLength(MaxEmailLength, ErrorMessage = MaxEmailLengthErrorMessage)]
-        [SQLite.Unique]
+        [SQLite.NotNull]
+        [SQLite.Indexed(Unique = true)]
         public string? EmailAddress { get; set; }
 
         [Required]
+        [SQLite.NotNull]
         public string? PasswordHASH { get; set; }
 
         public bool EmailConfirmed { get; set; }

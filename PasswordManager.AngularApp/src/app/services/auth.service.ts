@@ -20,7 +20,6 @@ export class AuthService {
   private registerPath = `${environment.apiUrl}/auth/register`;
   private tfaLoginPath = `${environment.apiUrl}/auth/tfa-login`;
   private tfaSetupPath = `${environment.apiUrl}/auth/tfa-setup`;
-  private tfaDisablePath = `${environment.apiUrl}/auth/tfa-disable`;
   private verifyEmailPath = `${environment.apiUrl}/auth/email-confirm`;
   
   constructor(private http: HttpClient, private router: Router, private jwtHelper: JwtHelperService) { }
@@ -46,12 +45,8 @@ export class AuthService {
     return this.http.get<TfaSetup>(`${this.tfaSetupPath}`);
   }
 
-  enableTfa(data: AbstractControl<any, any>): Observable<TfaSetup> {
+  setupTfa(data: AbstractControl<any, any>): Observable<TfaSetup> {
     return this.http.post<TfaSetup>(this.tfaSetupPath, data);
-  }
-
-  disableTfa(data: AbstractControl<any, any>): Observable<TfaSetup> {
-    return this.http.post<TfaSetup>(this.tfaDisablePath, data);
   }
 
   logout(redirect: boolean = true): void {

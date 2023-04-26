@@ -52,7 +52,6 @@ export class PasswordsComponent implements OnInit {
   }
 
   delete(guid: string): void {
-
     const modalDeletePassword = this.modalService.open(ModalDeletePasswordComponent);
     modalDeletePassword.componentInstance.passwordsGuids = new Array<string>(guid);
     modalDeletePassword.result.then((result) => {
@@ -73,11 +72,9 @@ export class PasswordsComponent implements OnInit {
         );
       }
     });
-
   }
 
   deleteSelected(): void {
-
     let passwordsArray: Array<string> = new Array();
 
     (document.querySelectorAll('.rowCheckbox') as NodeListOf<HTMLInputElement>).forEach((checkbox) => {
@@ -106,7 +103,6 @@ export class PasswordsComponent implements OnInit {
           );
         }
       });
-
     }
   }
 

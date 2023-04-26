@@ -9,7 +9,8 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['./modal-tfa-login.component.css']
 })
 export class ModalTfaLoginComponent implements OnInit {
-  @Input() public token: string;
+  @Input() public emailAddressInput: string;
+  @Input() public passwordInput: string;
 
   tfaForm: FormGroup;
   loading = false;
@@ -18,17 +19,19 @@ export class ModalTfaLoginComponent implements OnInit {
 
   constructor(public activeModal: NgbActiveModal, private fb: FormBuilder, private authService: AuthService) {
     this.tfaForm = this.fb.group({
-      token: ['', [Validators.required]],
+      emailAddress: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
       code: ['', [Validators.required]]
     });
   }
 
   ngOnInit() {
-    if (this.token) {
-      this.tfaForm.patchValue({ token: this.token });
+    if (this.emailAddressInput && this.passwordInput) {
+      this.tfaForm.patchValue({ emailAddress: this.emailAddressInput });
+      this.tfaForm.patchValue({ password: this.passwordInput });
     }
     else {
-      console.log("Error receiving token in component.")
+      console.log("Error receiving email and password in component.")
     }
   }
 
@@ -38,6 +41,14 @@ export class ModalTfaLoginComponent implements OnInit {
   
   get f(): { [key: string]: AbstractControl } {
     return this.tfaForm.controls;
+  }
+
+  get emailAddress() {
+    return this.tfaForm.get('emailAddress');
+  }
+
+  get password() {
+    return this.tfaForm.get('password');
   }
 
   get code() {
