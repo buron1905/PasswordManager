@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 
 namespace Services.TMP
 {
-    public static class JWTKeys
+    public static class EncryptionKeys
     {
         // TODO move securely keys
         public static RSA _encryptionKey = RSA.Create(3072); // public key for encryption, private key for decryption
