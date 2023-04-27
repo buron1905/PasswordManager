@@ -73,7 +73,7 @@ namespace PasswordManager.MAUI.ViewModels
             if (await AlertService.ShowYesNo($"{password.PasswordName}", $"Are you sure you want to delete this password?"))
             {
                 var userGuid = ActiveUserService.Instance.ActiveUser.Id;
-                await _passwordService.DeleteAsync(userGuid, password.Id);
+                await _passwordService.DeleteAsync(userGuid, password);
                 AllPasswords.Remove(password);
                 FilteredPasswords.Remove(password);
             }
@@ -98,7 +98,7 @@ namespace PasswordManager.MAUI.ViewModels
 
             var filteredList = AllPasswords.Where(x =>
                 x.PasswordName.Trim().ToLowerInvariant().Contains(searchText)
-                || x.UserName.Trim().ToLowerInvariant().Contains(searchText)
+                || (x.UserName?.Trim().ToLowerInvariant().Contains(searchText) ?? false) // false because username can be null
                 ).OrderBy(x => x.PasswordName).ThenBy(x => x.UserName).ToList();
 
             FilteredPasswords.Clear();
@@ -115,7 +115,7 @@ namespace PasswordManager.MAUI.ViewModels
         {
             var userId = ActiveUserService.Instance.ActiveUser.Id;
 
-            var passwords = (await _passwordService.GetAllByUserIdAsync(userId)).ToList() ?? new List<PasswordDTO>();
+            var passwords = (await _passwordService.GetAllByUserIdAsync(userId)).Where(x => !x.Deleted).ToList() ?? new List<PasswordDTO>();
 
             foreach (var password in passwords)
             {

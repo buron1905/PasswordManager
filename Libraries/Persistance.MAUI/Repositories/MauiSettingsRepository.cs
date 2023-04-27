@@ -12,7 +12,7 @@ namespace Persistance.MAUI.Repositories
             return await FindSingleOrDefaultByCondition(settings => settings.UserId.Equals(ownerId));
         }
 
-        public async Task<Settings?> GetByIdAsync(Guid settingsId)
+        public async Task<Settings?> FindByIdAsync(Guid settingsId)
         {
             return await FindSingleOrDefaultByCondition(settings => settings.Id.Equals(settingsId));
         }

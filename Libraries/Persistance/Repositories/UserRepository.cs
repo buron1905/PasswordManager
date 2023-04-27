@@ -16,7 +16,7 @@ namespace Persistance.Repositories
             return (await FindAll()).OrderBy(u => u.EmailAddress);
         }
 
-        public async Task<User?> GetByIdAsync(Guid userId)
+        public async Task<User?> FindByIdAsync(Guid userId)
         {
             return await FindSingleOrDefaultByCondition(user => user.Id.Equals(userId));
         }

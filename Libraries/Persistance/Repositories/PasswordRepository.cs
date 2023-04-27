@@ -15,7 +15,7 @@ namespace Persistance.Repositories
             return await FindByCondition(a => a.UserId.Equals(userId));
         }
 
-        public async Task<Password?> GetByIdAsync(Guid passwordId)
+        public async Task<Password?> FindByIdAsync(Guid passwordId)
         {
             return await FindSingleOrDefaultByCondition(password => password.Id.Equals(passwordId));
         }

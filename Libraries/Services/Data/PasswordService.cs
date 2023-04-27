@@ -23,8 +23,6 @@ namespace Services.Data
         {
             var passwords = await _passwordRepository.GetAllByUserIdAsync(userId);
 
-            //TODO: PasswordEncrypted to PasswordDecrypted - now in Controller
-
             var passwordsDTO = passwords.Adapt<IEnumerable<PasswordDTO>>();
 
             return passwordsDTO;
@@ -33,14 +31,14 @@ namespace Services.Data
         // Maybe use FindByCondition
         public async Task<PasswordDTO> GetByIdAsync(Guid userId, Guid passwordId)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.FindByIdAsync(userId);
 
             if (user is null)
             {
                 throw new UserNotFoundException(userId);
             }
 
-            var password = await _passwordRepository.GetByIdAsync(passwordId);
+            var password = await _passwordRepository.FindByIdAsync(passwordId);
 
             if (password is null)
             {
@@ -59,7 +57,7 @@ namespace Services.Data
 
         public async Task<PasswordDTO> CreateAsync(Guid userId, PasswordDTO passwordDTO)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.FindByIdAsync(userId);
 
             if (user is null)
             {
@@ -69,9 +67,6 @@ namespace Services.Data
             var password = passwordDTO.Adapt<Password>();
 
             password.UserId = user.Id;
-            //password.User = user;
-            //TODO: use encryption service - now in controller
-            //password.PasswordEncrypted = password.PasswordDecrypted;
 
             // This automatically fills the ID
             await _passwordRepository.Create(password);
@@ -81,14 +76,14 @@ namespace Services.Data
 
         public async Task<PasswordDTO> UpdateAsync(Guid userId, PasswordDTO passwordDTO)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.FindByIdAsync(userId);
 
             if (user is null)
             {
                 throw new UserNotFoundException(userId);
             }
 
-            var password = await _passwordRepository.GetByIdAsync(passwordDTO.Id);
+            var password = await _passwordRepository.FindByIdAsync(passwordDTO.Id);
 
             if (password is null)
             {
@@ -109,33 +104,43 @@ namespace Services.Data
             password.Notes = passwordDTO.Notes;
             password.Favorite = passwordDTO.Favorite;
             password.UDT = passwordDTO.UDT;
+            password.UDTLocal = passwordDTO.UDTLocal;
             password.IDT = passwordDTO.IDT;
+            password.DDT = passwordDTO.DDT;
+            password.Deleted = passwordDTO.Deleted;
 
             await _passwordRepository.Update(password);
 
             return password.Adapt<PasswordDTO>();
         }
 
-        public async Task DeleteAsync(Guid userId, Guid passwordId)
+        public async Task DeleteAsync(Guid userId, PasswordDTO passwordDTO)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.FindByIdAsync(userId);
 
             if (user is null)
             {
                 throw new UserNotFoundException(userId);
             }
 
-            var password = await _passwordRepository.GetByIdAsync(passwordId);
+            var password = await _passwordRepository.FindByIdAsync(passwordDTO.Id); //?? await _passwordRepository.GetByIdAmongDeletedAsync(passwordId);
 
             if (password is null)
             {
-                throw new PasswordNotFoundException(passwordId);
+                throw new PasswordNotFoundException(passwordDTO.Id);
             }
 
             if (password.UserId != user.Id)
             {
                 throw new PasswordDoesNotBelongToUserException(user.Id, password.Id);
             }
+
+            // additional info for syncing
+            password.IDT = passwordDTO.IDT;
+            password.UDT = passwordDTO.UDT;
+            password.UDTLocal = passwordDTO.UDTLocal;
+            password.DDT = passwordDTO.DDT;
+            password.Deleted = passwordDTO.Deleted;
 
             await _passwordRepository.Delete(password);
         }

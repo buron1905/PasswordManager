@@ -27,9 +27,15 @@ namespace Persistance.MAUI.Repositories
             await _connection.CreateTableAsync<Settings>();
         }
 
-        bool IsFromServer(T entity)
+        bool IsFromServerOrUpToDate(T entity)
         {
-            return entity.UDT == entity.UDTLocal;
+            return entity.Id != Guid.Empty
+                && entity.UDT == entity.UDTLocal;
+        }
+
+        bool IsOnlyLocal(T entity)
+        {
+            return entity.UDT == DateTime.MinValue && entity.UDTLocal != DateTime.MinValue;
         }
 
         public async Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
@@ -42,7 +48,7 @@ namespace Persistance.MAUI.Repositories
         {
             await Init();
 
-            if (!IsFromServer(entity))
+            if (!IsFromServerOrUpToDate(entity))
             {
                 entity.Id = Guid.NewGuid();
                 entity.IDT = DateTime.UtcNow;
@@ -58,7 +64,7 @@ namespace Persistance.MAUI.Repositories
         public async Task Update(T entity)
         {
             await Init();
-            if (!IsFromServer(entity))
+            if (!IsFromServerOrUpToDate(entity))
                 entity.UDTLocal = DateTime.UtcNow;
 
             var tableBefore = await _connection.Table<T>().ToListAsync();
@@ -69,9 +75,21 @@ namespace Persistance.MAUI.Repositories
         public async Task Delete(T entity)
         {
             await Init();
-            var tableBefore = await _connection.Table<T>().ToListAsync();
-            await _connection.Table<T>().DeleteAsync(x => x.Id == entity.Id);
-            var tableAfter = await _connection.Table<T>().ToListAsync();
+
+            if ((IsFromServerOrUpToDate(entity) && entity.Deleted)
+                || IsOnlyLocal(entity))
+            {
+                var tableBefore = await _connection.Table<T>().ToListAsync();
+                await _connection.Table<T>().DeleteAsync(x => x.Id == entity.Id);
+                var tableAfter = await _connection.Table<T>().ToListAsync();
+            }
+            else
+            {
+                entity.UDTLocal = DateTime.UtcNow;
+                entity.DDT = entity.UDTLocal;
+                entity.Deleted = true;
+                await _connection.UpdateAsync(entity);
+            }
         }
 
         public async Task DeleteAll(Expression<Func<T, bool>> expression)

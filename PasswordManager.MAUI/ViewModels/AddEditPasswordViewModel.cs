@@ -149,7 +149,7 @@ namespace PasswordManager.MAUI.ViewModels
             if (await AlertService.ShowYesNo($"Delete: {PasswordName}", $"Are you sure you want to delete this password?"))
             {
                 var userGuid = ActiveUserService.Instance.ActiveUser.Id;
-                await _passwordService.DeleteAsync(userGuid, PasswordOriginal.Id);
+                await _passwordService.DeleteAsync(userGuid, PasswordOriginal);
                 await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
                 await AlertService.ShowToast("Deleted");
             }

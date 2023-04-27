@@ -69,8 +69,9 @@ namespace PasswordManager.WebAPI.Controllers
         {
             var userGuid = JwtService.GetUserGuidFromClaims(HttpContext.GetUserClaims());
 
-            passwordDTO.PasswordEncrypted = Convert.ToBase64String(await EncryptionService.EncryptAsync(passwordDTO.PasswordDecrypted,
-                JwtService.GetUserPasswordFromClaims(HttpContext.GetUserClaims())));
+            if (!string.IsNullOrWhiteSpace(passwordDTO.PasswordDecrypted))
+                passwordDTO.PasswordEncrypted = Convert.ToBase64String(await EncryptionService.EncryptAsync(passwordDTO.PasswordDecrypted,
+                    JwtService.GetUserPasswordFromClaims(HttpContext.GetUserClaims())));
 
             var password = await _passwordService.UpdateAsync(userGuid, passwordDTO);
 
@@ -82,7 +83,7 @@ namespace PasswordManager.WebAPI.Controllers
         {
             var userGuid = JwtService.GetUserGuidFromClaims(HttpContext.GetUserClaims());
 
-            await _passwordService.DeleteAsync(userGuid, guid);
+            await _passwordService.DeleteAsync(userGuid, await _passwordService.GetByIdAsync(userGuid, guid));
 
             return Ok();
         }
@@ -94,7 +95,7 @@ namespace PasswordManager.WebAPI.Controllers
 
             foreach (var guid in guids)
             {
-                await _passwordService.DeleteAsync(userGuid, guid);
+                await _passwordService.DeleteAsync(userGuid, await _passwordService.GetByIdAsync(userGuid, guid));
             }
 
             return Ok();

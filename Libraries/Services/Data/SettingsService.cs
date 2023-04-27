@@ -21,7 +21,7 @@ namespace Services.Data
 
         public async Task<SettingsDTO> GetSettingsByUser(Guid userId)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.FindByIdAsync(userId);
 
             if (user is null)
             {
@@ -46,14 +46,14 @@ namespace Services.Data
         // Maybe use FindByCondition
         public async Task<SettingsDTO> GetByIdAsync(Guid userId, Guid settingsId)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.FindByIdAsync(userId);
 
             if (user is null)
             {
                 throw new UserNotFoundException(userId);
             }
 
-            var settings = await _settingsRepository.GetByIdAsync(settingsId);
+            var settings = await _settingsRepository.FindByIdAsync(settingsId);
 
             if (settings is null)
             {
@@ -70,7 +70,7 @@ namespace Services.Data
 
         public async Task<SettingsDTO> CreateAsync(Guid userId, SettingsDTO settingsDTO)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.FindByIdAsync(userId);
 
             if (user is null)
             {
@@ -88,14 +88,14 @@ namespace Services.Data
 
         public async Task<SettingsDTO> UpdateAsync(Guid userId, SettingsDTO settingsDTO)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.FindByIdAsync(userId);
 
             if (user is null)
             {
                 throw new UserNotFoundException(userId);
             }
 
-            var settings = await _settingsRepository.GetByIdAsync(settingsDTO.Id);
+            var settings = await _settingsRepository.FindByIdAsync(settingsDTO.Id);
 
             if (settings is null)
             {
@@ -116,14 +116,14 @@ namespace Services.Data
 
         public async Task DeleteAsync(Guid userId, Guid settingsId)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.FindByIdAsync(userId);
 
             if (user is null)
             {
                 throw new UserNotFoundException(userId);
             }
 
-            var settings = await _settingsRepository.GetByIdAsync(settingsId);
+            var settings = await _settingsRepository.FindByIdAsync(settingsId);
 
             if (settings is null)
             {

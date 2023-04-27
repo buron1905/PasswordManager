@@ -96,7 +96,6 @@ namespace PasswordManager.MAUI.ViewModels
 
                 if (isDataFromServer)
                 {
-                    // Sync
                     var syncResult = await _syncService.DoSync();
                 }
 

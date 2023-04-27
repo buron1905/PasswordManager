@@ -28,7 +28,7 @@ namespace Services.Data
 
         public async Task<UserDTO> GetByIdAsync(Guid userId)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.FindByIdAsync(userId);
 
             if (user is null)
             {
@@ -62,7 +62,7 @@ namespace Services.Data
 
         public async Task<UserDTO> UpdateAsync(UserDTO userDTO)
         {
-            var user = await _userRepository.GetByIdAsync(userDTO.Id);
+            var user = await _userRepository.FindByIdAsync(userDTO.Id);
 
             if (user is null)
                 throw new UserNotFoundException(userDTO.EmailAddress);
@@ -82,7 +82,7 @@ namespace Services.Data
 
         public async Task DeleteAsync(Guid userId)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.FindByIdAsync(userId);
 
             if (user is null)
             {

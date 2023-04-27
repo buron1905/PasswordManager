@@ -62,6 +62,7 @@ namespace Persistance.Repositories
             entity.UDT = DateTime.UtcNow;
             entity.UDTLocal = entity.UDT;
             _dataContext.Set<T>().Update(entity);
+
             await _dataContext.SaveChangesAsync();
         }
 

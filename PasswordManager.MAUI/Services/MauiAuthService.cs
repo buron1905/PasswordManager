@@ -232,5 +232,33 @@ namespace PasswordManager.MAUI.Services
             throw new NotImplementedException();
         }
 
+        public async Task<HttpRequestMessage> AddAuthorizationHeaderToRequest(HttpRequestMessage request)
+        {
+            if (!string.IsNullOrWhiteSpace(ActiveUserService.Instance.Token) && ActiveUserService.Instance.TokenExpirationDateTime > DateTime.UtcNow)
+            {
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", ActiveUserService.Instance.Token);
+                return request;
+            }
+
+            if (IsNetworkAccess())
+            {
+                var loginRequest = new LoginWithTfaRequestDTO
+                {
+                    EmailAddress = ActiveUserService.Instance.ActiveUser.EmailAddress,
+                    Password = ActiveUserService.Instance.CipherKey,
+                    Code = await GetTfaCode()
+                };
+                var authResponse = await LoginWithTfaAsync(loginRequest);
+                if (authResponse is not null)
+                {
+                    ActiveUserService.Instance.Token = authResponse.JweToken;
+                    ActiveUserService.Instance.TokenExpirationDateTime = authResponse.ExpirationDateTime;
+                    request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", ActiveUserService.Instance.Token);
+                }
+            }
+
+            return request;
+        }
+
     }
 }

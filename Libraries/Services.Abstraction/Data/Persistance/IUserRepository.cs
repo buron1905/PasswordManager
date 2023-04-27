@@ -6,7 +6,7 @@ namespace Services.Abstraction.Data.Persistance
     {
 
         Task<IEnumerable<User>> GetAllAsync();
-        Task<User?> GetByIdAsync(Guid userId);
+        Task<User?> FindByIdAsync(Guid userId);
 
     }
 }
