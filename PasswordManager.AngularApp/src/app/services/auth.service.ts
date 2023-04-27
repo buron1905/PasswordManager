@@ -12,6 +12,7 @@ import { EmailConfirmationModel } from '../models/email-confirmation.model';
 import { RegisterResponseModel } from '../models/register-response.model';
 import { EncryptionService } from '../services/encryption.service';
 import { RegisterModel } from '../models/register.model';
+import { LoginTfaModel } from '../models/login-tfa.model';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,7 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router, private encryptionService: EncryptionService, private jwtHelper: JwtHelperService) { }
 
 
-  authenticate(data: LoginModel): Observable<AuthResponseModel> {
+  login(data: LoginModel): Observable<AuthResponseModel> {
     data.password = this.encryptionService.encryptRsa(data.password);
     return this.http.post<AuthResponseModel>(this.loginPath, data);
   }
@@ -38,11 +39,12 @@ export class AuthService {
     return this.http.post<RegisterResponseModel>(this.registerPath, data);
   }
 
-  login(data: AuthResponseModel) : void {
+  loginLocal(data: AuthResponseModel) : void {
     localStorage.setItem('expirationDateTime', data.expirationDateTime);
   }
 
-  loginTfa(data: AbstractControl<any, any>): Observable<AuthResponseModel> {
+  loginTfa(data: LoginTfaModel): Observable<AuthResponseModel> {
+    data.password = this.encryptionService.encryptRsa(data.password);
     return this.http.post<AuthResponseModel>(this.tfaLoginPath, data);
   }
   

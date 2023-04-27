@@ -120,6 +120,8 @@ namespace PasswordManager.WebAPI.Controllers
         [HttpPost("tfa-login")]
         public async Task<IActionResult> TfaLogin([FromBody] LoginWithTfaRequestDTO requestDTO)
         {
+            requestDTO.Password = EncryptionService.DecryptRsa(requestDTO.Password, EncryptionKeys.privateRsaKey);
+
             var response = await _authService.LoginWithTfaAsync(requestDTO);
 
             if (response == null)

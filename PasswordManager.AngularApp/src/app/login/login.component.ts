@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
 
     var loginFormValue: LoginModel = { ...this.loginForm.value };
 
-    this.authService.authenticate(loginFormValue).subscribe(
+    this.authService.login(loginFormValue).subscribe(
       data => {
         this.loading = false;
 
@@ -58,7 +58,7 @@ export class LoginComponent implements OnInit {
           modalTfaLogin.componentInstance.passwordInput = this.password.value;
           modalTfaLogin.result.then((result) => {
             if (result == true) {
-              this.authService.login(data);
+              this.authService.loginLocal(data);
               this.toastrService.success('Login successful');
               this.router.navigate(['/passwords']);
             }
@@ -68,7 +68,7 @@ export class LoginComponent implements OnInit {
           });
         }
         else {
-          this.authService.login(data);
+          this.authService.loginLocal(data);
           this.toastrService.success('Login successful');
           this.router.navigate(['/passwords']);
         }

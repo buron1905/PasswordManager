@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { LoginTfaModel } from '../models/login-tfa.model';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -63,7 +64,9 @@ export class ModalTfaLoginComponent implements OnInit {
     }
     this.loading = true;
 
-    this.authService.loginTfa(this.tfaForm.value).subscribe(
+    var tfaFormValue: LoginTfaModel = { ...this.tfaForm.value };
+
+    this.authService.loginTfa(tfaFormValue).subscribe(
       data => {
         if (data.isAuthSuccessful) {
           this.sendResponse(true);
