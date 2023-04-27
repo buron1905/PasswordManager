@@ -76,6 +76,7 @@ namespace PasswordManager.MAUI.ViewModels
                 await _passwordService.DeleteAsync(userGuid, password);
                 AllPasswords.Remove(password);
                 FilteredPasswords.Remove(password);
+                await _syncService.DoSync();
             }
         }
 

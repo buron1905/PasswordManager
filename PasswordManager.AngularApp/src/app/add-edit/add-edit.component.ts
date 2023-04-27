@@ -34,6 +34,11 @@ export class AddEditComponent implements OnInit {
 
     this.passwordForm = this.fb.group({
       id: ['00000000-0000-0000-0000-000000000000', [this.isAddMode ? Validators.nullValidator : Validators.required]],
+      idt: ['0001-01-01T00:00:00', [this.isAddMode ? Validators.nullValidator : Validators.required]],
+      udt: ['0001-01-01T00:00:00', [this.isAddMode ? Validators.nullValidator : Validators.required]],
+      udtLocal: ['0001-01-01T00:00:00', [this.isAddMode ? Validators.nullValidator : Validators.required]],
+      ddt: ['0001-01-01T00:00:00', [this.isAddMode ? Validators.nullValidator : Validators.required]],
+      deleted: [false, [this.isAddMode ? Validators.nullValidator : Validators.required]],
       passwordName: ['', [Validators.required]],
       userName: ['', [Validators.maxLength(512)]],
       passwordDecrypted: ['', [Validators.maxLength(1024)]],

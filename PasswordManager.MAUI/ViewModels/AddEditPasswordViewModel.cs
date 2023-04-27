@@ -71,10 +71,8 @@ namespace PasswordManager.MAUI.ViewModels
             //int.TryParse(PasswordId, out var parsedId);
             //PasswordOriginal = await DatabaseService.GetPassword(Password.Id);
 
-            //PasswordName = PasswordOriginal.PasswordName;
-            //UserName = PasswordOriginal.UserName;
-            //Password = PasswordOriginal.PasswordDecrypted;
-            //Description = PasswordOriginal.Notes;
+            //PasswordOriginal = await _passwordService.GetByIdAsync(ActiveUserService.Instance.ActiveUser.Id, PasswordOriginal.Id);
+
             //TODO get new data
 
             if (!PropertiesAreSameAsInOriginalPassword())
@@ -175,6 +173,7 @@ namespace PasswordManager.MAUI.ViewModels
             else
             {
                 model.Id = PasswordOriginal.Id;
+                model.UDTLocal = DateTime.UtcNow; // otherwise synced password will not have updated UDT
                 await _passwordService.UpdateAsync(userGuid, model);
             }
 
@@ -250,7 +249,14 @@ namespace PasswordManager.MAUI.ViewModels
                 PasswordDecrypted = Password,
                 URL = URL,
                 Notes = Notes,
-                Favorite = Favorite
+                Favorite = Favorite,
+                Id = PasswordOriginal.Id,
+                IDT = PasswordOriginal.IDT,
+                UDT = PasswordOriginal.UDT,
+                UDTLocal = PasswordOriginal.UDTLocal,
+                DDT = PasswordOriginal.DDT,
+                Deleted = PasswordOriginal.Deleted,
+                PasswordEncrypted = PasswordOriginal.PasswordEncrypted
             };
         }
 

@@ -146,6 +146,7 @@ namespace Services.Data
                                 responsePasswords.Add(updatedPassword);
                             }
 
+                            password.Id = Guid.Empty;
                             var newPasswordConflicting = await _passwordService.CreateAsync(userId, password);
                             responsePasswords.Add(newPasswordConflicting);
 

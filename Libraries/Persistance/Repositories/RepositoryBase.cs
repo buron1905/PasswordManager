@@ -34,14 +34,14 @@ namespace Persistance.Repositories
             return await _dataContext.Set<T>().AnyAsync(expression);
         }
 
-        bool IsFromLocalDB(T entity)
+        bool IsFromOfflineDB(T entity)
         {
             return entity.UDT != entity.UDTLocal;
         }
 
         public async Task Create(T entity)
         {
-            if (!IsFromLocalDB(entity))
+            if (!IsFromOfflineDB(entity))
             {
                 entity.IDT = DateTime.UtcNow;
                 entity.UDT = entity.IDT;
