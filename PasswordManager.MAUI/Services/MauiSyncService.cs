@@ -63,7 +63,7 @@ namespace PasswordManager.MAUI.Services
             if (IsNetworkAccess())
             {
                 Uri uri = new Uri(AppConstants.ApiUrl + AppConstants.SyncSuffix);
-                data.UserDTO.Password = "password";
+                data.UserDTO.Password = "password"; // TODO: remove this line
                 string json = JsonSerializer.Serialize(data);
                 StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
