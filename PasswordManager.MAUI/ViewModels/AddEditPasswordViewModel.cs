@@ -166,7 +166,7 @@ namespace PasswordManager.MAUI.ViewModels
             var userGuid = ActiveUserService.Instance.ActiveUser.Id;
 
             if (!string.IsNullOrWhiteSpace(model.PasswordDecrypted))
-                model.PasswordEncrypted = Convert.ToBase64String(await EncryptionService.EncryptAsync(model.PasswordDecrypted, ActiveUserService.Instance.CipherKey));
+                model.PasswordEncrypted = Convert.ToBase64String(await EncryptionService.EncryptAesAsync(model.PasswordDecrypted, ActiveUserService.Instance.CipherKey));
 
             if (IsNew)
                 await _passwordService.CreateAsync(userGuid, model);

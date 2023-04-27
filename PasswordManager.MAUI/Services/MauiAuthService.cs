@@ -1,6 +1,8 @@
 ﻿using Models.DTOs;
 using PasswordManager.MAUI.Helpers;
 using Services.Abstraction.Auth;
+using Services.Cryptography;
+using Services.TMP;
 using System.Text;
 using System.Text.Json;
 
@@ -72,11 +74,15 @@ namespace PasswordManager.MAUI.Services
         {
             if (!IsNetworkAccess())
             {
-                // In offline login token removed
                 var authResponse = await _offlineAuthService.LoginAsync(requestDTO);
+
+                // In offline login token removed
                 authResponse.JweToken = null;
                 return authResponse;
             }
+
+
+            requestDTO.Password = EncryptionService.EncryptRsa(requestDTO.Password, EncryptionKeys.privateRsaKey);
 
             Uri uri = new Uri(AppConstants.ApiUrl + AppConstants.LoginSuffix);
             string json = JsonSerializer.Serialize(requestDTO);

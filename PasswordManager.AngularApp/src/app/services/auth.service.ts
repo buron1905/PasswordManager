@@ -10,6 +10,8 @@ import { AuthResponseModel } from '../models/auth-response.model';
 import { TfaSetup } from '../models/tfa-setup.model';
 import { EmailConfirmationModel } from '../models/email-confirmation.model';
 import { RegisterResponseModel } from '../models/register-response.model';
+import { EncryptionService } from '../services/encryption.service';
+import { RegisterModel } from '../models/register.model';
 
 @Injectable({
   providedIn: 'root'
@@ -22,14 +24,17 @@ export class AuthService {
   private tfaSetupPath = `${environment.apiUrl}/auth/tfa-setup`;
   private verifyEmailPath = `${environment.apiUrl}/auth/email-confirm`;
   
-  constructor(private http: HttpClient, private router: Router, private jwtHelper: JwtHelperService) { }
+  constructor(private http: HttpClient, private router: Router, private encryptionService: EncryptionService, private jwtHelper: JwtHelperService) { }
 
 
-  authenticate(data: AbstractControl<any, any>): Observable<AuthResponseModel> {
+  authenticate(data: LoginModel): Observable<AuthResponseModel> {
+    data.password = this.encryptionService.encryptRsa(data.password);
     return this.http.post<AuthResponseModel>(this.loginPath, data);
   }
 
-  register(data: AbstractControl<any, any>): Observable<RegisterResponseModel> {
+  register(data: RegisterModel): Observable<RegisterResponseModel> {
+    data.password = this.encryptionService.encryptRsa(data.password);
+    data.confirmPassword = this.encryptionService.encryptRsa(data.confirmPassword);
     return this.http.post<RegisterResponseModel>(this.registerPath, data);
   }
 

@@ -1,22 +1,94 @@
-﻿using System.Security.Cryptography;
+﻿using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.OpenSsl;
+using Org.BouncyCastle.Security;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Services.Cryptography
 {
     public static class EncryptionService
     {
-        public static async Task<byte[]> EncryptAsync(string clearText, string passphrase)
+        public static async Task<byte[]> EncryptAesAsync(string plainTextData, string plainTextKey)
         {
             var IV = GenerateRandomIV();
             var salt = GenerateRandomSalt();
-            var key = DeriveKeyFromPassword(passphrase, salt);
+            var key = DeriveKeyFromPassword(plainTextKey, salt);
 
-            return await EncryptStringToBytes_Aes(clearText, key, IV, salt);
+            return await EncryptStringToBytes_Aes(plainTextData, key, IV, salt);
         }
 
-        public static async Task<string> DecryptAsync(byte[] encrypted, string passphrase)
+        public static async Task<string> DecryptAesAsync(byte[] encryptedData, string plainTextKey)
         {
-            return await DecryptStringFromBytes_Aes(encrypted, passphrase);
+            return await DecryptStringFromBytes_Aes(encryptedData, plainTextKey);
+        }
+
+        public static string? EncryptRsa(string plainTextData, string plainTextKey)
+        {
+            try
+            {
+                if (plainTextData == null || plainTextData.Length <= 0)
+                    throw new ArgumentNullException("plainTextData");
+                if (string.IsNullOrEmpty(plainTextKey))
+                    throw new ArgumentNullException("plainTextKey");
+
+                var rsaProvider = GetProviderWithRsaPublicKey(plainTextKey);
+                var result = rsaProvider.Encrypt(Encoding.UTF8.GetBytes(plainTextData), true);
+
+                return Convert.ToBase64String(result);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public static string? DecryptRsa(string encryptedData, string plainTextKey)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(encryptedData))
+                    throw new ArgumentNullException("encrypted64BaseData");
+                if (string.IsNullOrEmpty(plainTextKey))
+                    throw new ArgumentNullException("plainTextKey");
+
+                var rsaProvider = GetProviderWithRsaPrivateKey(plainTextKey);
+                var result = rsaProvider.Decrypt(Convert.FromBase64String(encryptedData), true);
+
+                return Encoding.UTF8.GetString(result);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        // Implementation from https://github.com/Technosaviour/RSA-net-core/tree/RSA-Angular-net-core
+        private static RSACryptoServiceProvider GetProviderWithRsaPrivateKey(string pemString)
+        {
+            using (TextReader privateKeyTextReader = new StringReader(pemString))
+            {
+                AsymmetricCipherKeyPair readKeyPair = (AsymmetricCipherKeyPair)new PemReader(privateKeyTextReader).ReadObject();
+
+                RSAParameters rsaParams = DotNetUtilities.ToRSAParameters((RsaPrivateCrtKeyParameters)readKeyPair.Private);
+                RSACryptoServiceProvider csp = new RSACryptoServiceProvider();
+                csp.ImportParameters(rsaParams);
+                return csp;
+            }
+        }
+
+        private static RSACryptoServiceProvider GetProviderWithRsaPublicKey(string pemString)
+        {
+            using (TextReader publicKeyTextReader = new StringReader(pemString))
+            {
+                RsaKeyParameters publicKeyParam = (RsaKeyParameters)new PemReader(publicKeyTextReader).ReadObject();
+
+                RSAParameters rsaParams = DotNetUtilities.ToRSAParameters(publicKeyParam);
+
+                RSACryptoServiceProvider csp = new RSACryptoServiceProvider();
+                csp.ImportParameters(rsaParams);
+                return csp;
+            }
         }
 
         static byte[] GenerateRandomIV()
@@ -132,6 +204,55 @@ namespace Services.Cryptography
             }
 
             return plaintext;
+        }
+
+        public static byte[]? RSAEncrypt(byte[] DataToEncrypt, RSAParameters RSAKeyInfo, bool DoOAEPPadding)
+        {
+            try
+            {
+                byte[] encryptedData;
+                //Create a new instance of RSACryptoServiceProvider.
+                using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
+                {
+                    RSA.ImportParameters(RSAKeyInfo);
+
+                    encryptedData = RSA.Encrypt(DataToEncrypt, DoOAEPPadding);
+                }
+                return encryptedData;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static byte[] RSADecrypt(byte[] DataToDecrypt, RSAParameters RSAKeyInfo, bool DoOAEPPadding)
+        {
+            try
+            {
+                byte[] decryptedData;
+                //Create a new instance of RSACryptoServiceProvider.
+                using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
+                {
+                    //Import the RSA Key information. This needs
+                    //to include the private key information.
+                    RSA.ImportParameters(RSAKeyInfo);
+
+                    //Decrypt the passed byte array and specify OAEP padding.  
+                    //OAEP padding is only available on Microsoft Windows XP or
+                    //later.  
+                    decryptedData = RSA.Decrypt(DataToDecrypt, DoOAEPPadding);
+                }
+                return decryptedData;
+            }
+            //Catch and display a CryptographicException  
+            //to the console.
+            catch (CryptographicException e)
+            {
+                Console.WriteLine(e.ToString());
+
+                return null;
+            }
         }
 
     }

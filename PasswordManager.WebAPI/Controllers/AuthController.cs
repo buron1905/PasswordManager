@@ -7,6 +7,8 @@ using PasswordManager.WebAPI.Helpers.Attributes;
 using Services.Abstraction.Auth;
 using Services.Abstraction.Data;
 using Services.Auth;
+using Services.Cryptography;
+using Services.TMP;
 
 namespace PasswordManager.WebAPI.Controllers
 {
@@ -34,6 +36,8 @@ namespace PasswordManager.WebAPI.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO loginDTO)
         {
+            loginDTO.Password = EncryptionService.DecryptRsa(loginDTO.Password, EncryptionKeys.privateRsaKey);
+
             var response = await _authService.LoginAsync(loginDTO);
 
             if (response == null)
@@ -51,6 +55,14 @@ namespace PasswordManager.WebAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDTO registerDTO)
         {
+            registerDTO.Password = EncryptionService.DecryptRsa(registerDTO.Password, EncryptionKeys.privateRsaKey);
+            registerDTO.ConfirmPassword = EncryptionService.DecryptRsa(registerDTO.ConfirmPassword, EncryptionKeys.privateRsaKey);
+
+            if (!registerDTO.Password.Equals(registerDTO.ConfirmPassword))
+            {
+                return BadRequest(new AuthResponseDTO { IsAuthSuccessful = false, ErrorMessage = "Passwords do not match" });
+            }
+
             var response = await _authService.RegisterAsync(registerDTO);
 
             if (response == null)

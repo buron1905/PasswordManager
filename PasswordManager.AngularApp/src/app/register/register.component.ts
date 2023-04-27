@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import Validation from '../utils/validation';
 import { ToastrService } from 'ngx-toastr';
+import { RegisterModel } from '../models/register.model';
 
 @Component({
   selector: 'app-register',
@@ -41,7 +42,9 @@ export class RegisterComponent implements OnInit {
     }
     this.loading = true;
 
-    this.authService.register(this.registerForm.value).subscribe(
+    var registerFormValue: RegisterModel = { ...this.registerForm.value };
+
+    this.authService.register(registerFormValue).subscribe(
       data => {
         this.toastrService.success('Registration successful');
         this.router.navigate(['/registration-successful']);
@@ -52,7 +55,6 @@ export class RegisterComponent implements OnInit {
           this.emailIsAlreadyUsed = true;
       }
     );
-    console.log(this.registerForm.value);
   }
   
   get f(): { [key: string]: AbstractControl } {

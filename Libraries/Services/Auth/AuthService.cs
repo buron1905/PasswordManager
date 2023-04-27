@@ -99,7 +99,7 @@ namespace Services.Auth
 
         public async Task<string> DecryptString(string password, string textEncrypted)
         {
-            var textDecrypted = await EncryptionService.DecryptAsync(Convert.FromBase64String(textEncrypted),
+            var textDecrypted = await EncryptionService.DecryptAesAsync(Convert.FromBase64String(textEncrypted),
                 password);
 
             return textDecrypted;
@@ -162,7 +162,7 @@ namespace Services.Auth
                 PasswordHASH = HashingService.HashPassword(requestDTO.Password!),
                 TwoFactorEnabled = false,
                 EmailConfirmationToken = Guid.NewGuid().ToString(),
-                TwoFactorSecret = Convert.ToBase64String(await EncryptionService.EncryptAsync(Guid.NewGuid().ToString().Trim().Replace("-", "").Substring(0, 10), requestDTO.Password!))
+                TwoFactorSecret = Convert.ToBase64String(await EncryptionService.EncryptAesAsync(Guid.NewGuid().ToString().Trim().Replace("-", "").Substring(0, 10), requestDTO.Password!))
             };
 
             userDTO = await _userService.CreateAsync(userDTO);
@@ -253,7 +253,7 @@ namespace Services.Auth
             if (userDTO.TwoFactorSecret is null)
             {
                 var newTwoFactorSecret = Guid.NewGuid().ToString().Trim().Replace("-", "").Substring(0, 10);
-                newTwoFactorSecret = Convert.ToBase64String(await EncryptionService.EncryptAsync(newTwoFactorSecret,
+                newTwoFactorSecret = Convert.ToBase64String(await EncryptionService.EncryptAesAsync(newTwoFactorSecret,
                     password));
                 userDTO.TwoFactorSecret = newTwoFactorSecret;
                 userDTO = await _userService.UpdateAsync(userDTO);

@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { AuthService } from './services/auth.service';
+import { EncryptionService } from './services/encryption.service';
 import { AuthGuardService } from './services/auth-guard.service';
 import { ErrorInterceptorService } from './services/error-interceptor.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -78,6 +79,7 @@ export function tokenGetter() {
     AuthService,
     AuthGuardService,
     PasswordService,
+    EncryptionService,
     {
       provide: HTTP_INTERCEPTORS ,
       useClass: ErrorInterceptorService,

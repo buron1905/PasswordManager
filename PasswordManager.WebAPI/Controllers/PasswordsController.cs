@@ -29,7 +29,7 @@ namespace PasswordManager.WebAPI.Controllers
             foreach (var password in passwords)
             {
                 if (!string.IsNullOrWhiteSpace(password.PasswordEncrypted))
-                    password.PasswordDecrypted = await EncryptionService.DecryptAsync(Convert.FromBase64String(password.PasswordEncrypted),
+                    password.PasswordDecrypted = await EncryptionService.DecryptAesAsync(Convert.FromBase64String(password.PasswordEncrypted),
                         JwtService.GetUserPasswordFromClaims(HttpContext.GetUserClaims()));
             }
 
@@ -44,7 +44,7 @@ namespace PasswordManager.WebAPI.Controllers
             var password = await _passwordService.GetByIdAsync(userGuid, guid);
 
             if (!string.IsNullOrWhiteSpace(password.PasswordEncrypted))
-                password.PasswordDecrypted = await EncryptionService.DecryptAsync(Convert.FromBase64String(password.PasswordEncrypted),
+                password.PasswordDecrypted = await EncryptionService.DecryptAesAsync(Convert.FromBase64String(password.PasswordEncrypted),
                     JwtService.GetUserPasswordFromClaims(HttpContext.GetUserClaims()));
 
             return Ok(password);
@@ -56,7 +56,7 @@ namespace PasswordManager.WebAPI.Controllers
             var userGuid = JwtService.GetUserGuidFromClaims(HttpContext.GetUserClaims());
 
             if (!string.IsNullOrWhiteSpace(passwordDTO.PasswordDecrypted))
-                passwordDTO.PasswordEncrypted = Convert.ToBase64String(await EncryptionService.EncryptAsync(passwordDTO.PasswordDecrypted,
+                passwordDTO.PasswordEncrypted = Convert.ToBase64String(await EncryptionService.EncryptAesAsync(passwordDTO.PasswordDecrypted,
                     JwtService.GetUserPasswordFromClaims(HttpContext.GetUserClaims())));
 
             var password = await _passwordService.CreateAsync(userGuid, passwordDTO);
@@ -70,7 +70,7 @@ namespace PasswordManager.WebAPI.Controllers
             var userGuid = JwtService.GetUserGuidFromClaims(HttpContext.GetUserClaims());
 
             if (!string.IsNullOrWhiteSpace(passwordDTO.PasswordDecrypted))
-                passwordDTO.PasswordEncrypted = Convert.ToBase64String(await EncryptionService.EncryptAsync(passwordDTO.PasswordDecrypted,
+                passwordDTO.PasswordEncrypted = Convert.ToBase64String(await EncryptionService.EncryptAesAsync(passwordDTO.PasswordDecrypted,
                     JwtService.GetUserPasswordFromClaims(HttpContext.GetUserClaims())));
 
             var password = await _passwordService.UpdateAsync(userGuid, passwordDTO);

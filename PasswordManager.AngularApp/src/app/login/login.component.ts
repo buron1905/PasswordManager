@@ -5,6 +5,7 @@ import { AuthService } from '../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { ModalTfaLoginComponent } from '../modal-tfa-login/modal-tfa-login.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { LoginModel } from '../models/login.model';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,8 @@ export class LoginComponent implements OnInit {
   wrongCredentials = false;
   toggledPassword = false;
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private toastrService: ToastrService, private modalService: NgbModal) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router,
+     private toastrService: ToastrService, private modalService: NgbModal) {
     this.loginForm = this.fb.group({
       emailAddress: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
@@ -38,7 +40,9 @@ export class LoginComponent implements OnInit {
     }
     this.loading = true;
 
-    this.authService.authenticate(this.loginForm.value).subscribe(
+    var loginFormValue: LoginModel = { ...this.loginForm.value };
+
+    this.authService.authenticate(loginFormValue).subscribe(
       data => {
         this.loading = false;
 
