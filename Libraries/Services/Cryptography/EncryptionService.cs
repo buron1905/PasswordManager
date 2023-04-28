@@ -138,7 +138,6 @@ namespace Services.Cryptography
                     encrypted = msEncrypt.ToArray();
                 }
 
-                // save IV along with encrypted data
                 byte[] ivAndEncryptedData = new byte[16 + 32 + encrypted.Length];
                 Array.Copy(aesAlg.IV, 0, ivAndEncryptedData, 0, 16);
                 Array.Copy(salt, 0, ivAndEncryptedData, 16, 32);
@@ -318,7 +317,6 @@ namespace Services.Cryptography
                     cipherBytes = memoryStream.ToArray();
                 }
             }
-
             // save IV and salt along with encrypted data
             byte[] cipherBytesWithSaltAndIV = new byte[16 + 32 + cipherBytes.Length];
             Array.Copy(salt, 0, cipherBytesWithSaltAndIV, 0, 32);

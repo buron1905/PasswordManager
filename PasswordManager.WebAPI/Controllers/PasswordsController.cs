@@ -59,7 +59,7 @@ namespace PasswordManager.WebAPI.Controllers
             var decryptedPassword = await EncryptionService.Decrypt(passwordDTO.PasswordDecrypted, userKey);
 
             var e1 = await EncryptionService.Encrypt("text123#%", userKey);
-            var d1 = await EncryptionService.Decrypt("text123#%", userKey);
+            var d1 = await EncryptionService.Decrypt(e1, userKey);
 
             var e = Convert.ToBase64String(await EncryptionService.EncryptUsingAesAsync("text123#%", userKey));
             var d = await EncryptionService.DecryptUsingAesAsync(Convert.FromBase64String(e), userKey);
