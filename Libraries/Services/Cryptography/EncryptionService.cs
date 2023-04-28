@@ -276,7 +276,7 @@ namespace Services.Cryptography
                 {
                     using (CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
                     {
-                        using (var streamReader = new StreamReader(cryptoStream))
+                        using (StreamReader streamReader = new StreamReader(cryptoStream))
                         {
                             plainText = await streamReader.ReadToEndAsync();
                         }
@@ -291,7 +291,7 @@ namespace Services.Cryptography
         {
             var IV = GenerateRandomIV();
             var salt = GenerateRandomSalt();
-            var key = DeriveKeyFromPassword(plainText, salt);
+            var key = DeriveKeyFromPassword(password, salt);
 
             byte[] cipherBytes;
 
@@ -311,14 +311,14 @@ namespace Services.Cryptography
                     {
                         using (var streamWriter = new StreamWriter(cryptoStream))
                         {
-                            streamWriter.Write(plainText);
+                            await streamWriter.WriteAsync(plainText);
                         }
                     }
                     cipherBytes = memoryStream.ToArray();
                 }
             }
-            // save IV and salt along with encrypted data
-            byte[] cipherBytesWithSaltAndIV = new byte[16 + 32 + cipherBytes.Length];
+            //save IV and salt along with encrypted data
+            byte[] cipherBytesWithSaltAndIV = new byte[32 + 16 + cipherBytes.Length];
             Array.Copy(salt, 0, cipherBytesWithSaltAndIV, 0, 32);
             Array.Copy(IV, 0, cipherBytesWithSaltAndIV, 32, 16);
             Array.Copy(cipherBytes, 0, cipherBytesWithSaltAndIV, 48, cipherBytes.Length);
@@ -330,6 +330,6 @@ namespace Services.Cryptography
     }
 }
 
-// Encrypt method was inspired by https://www.appsloveworld.com/csharp/100/310/encrypting-in-angular-and-decrypt-on-c
-// Encrypt and decrypt methods were inspired by https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.aes?view=net-7.0
+// AES encrypt method was inspired by https://www.appsloveworld.com/csharp/100/310/encrypting-in-angular-and-decrypt-on-c
+// AES encrypt and decrypt methods were inspired by https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.aes?view=net-7.0
 // RSA based on https://github.com/Technosaviour/RSA-net-core/tree/RSA-Angular-net-core

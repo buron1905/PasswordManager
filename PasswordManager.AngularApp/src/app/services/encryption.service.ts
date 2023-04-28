@@ -53,103 +53,54 @@ NwIDAQAB
   }
 
   encrypt(plainTextData: string, password: string): string {
-    var iv = CryptoJS.lib.WordArray.random(128 / 8);
-    var salt = CryptoJS.lib.WordArray.random(32);
-    var key = this.generateKey(password, salt);
+    var ivWords = CryptoJS.lib.WordArray.random(128 / 8);
+    var saltWords = CryptoJS.lib.WordArray.random(32);
+    var key = this.generateKey(password, saltWords);
     
     //will attach link where you can find these
-    var encrypted = CryptoJS.AES.encrypt(plainTextData, key, {
+    var cipherText = CryptoJS.AES.encrypt(plainTextData, key, {
       padding: CryptoJS.pad.Pkcs7,
       mode: CryptoJS.mode.CBC,
-      iv: iv
+      iv: ivWords
     });
     
-    //Convert Lib.WordArray to ByteArray so we can combine them like Concat
-    var saltwords = this.wordArrayToByteArray(salt);
-    var ivwords = this.wordArrayToByteArray(iv);
-    var cryptedText = this.wordArrayToByteArray(encrypted.ciphertext);
+    //Convert Lib.WordArray to ByteArray so we can combine them with concat
+    var saltBytes = this.wordArrayToByteArray(saltWords);
+    var ivBytes = this.wordArrayToByteArray(ivWords);
+    var cryptedTextBytes = this.wordArrayToByteArray(cipherText.ciphertext);
     // combine everything together in ByteArray.
-    var header = saltwords.concat(ivwords).concat(cryptedText);
+    var headerBytes = saltBytes.concat(ivBytes).concat(cryptedTextBytes);
     //Now convert to WordArray.
-    var headerWords = this.byteArrayToWordArray(header);
+    var cipherWords = this.byteArrayToWordArray(headerBytes);
     //Encode this to sent to server
-    var encodedString = CryptoJS.enc.Base64.stringify(headerWords);
-    return encodedString;
+    var encryptedString = CryptoJS.enc.Base64.stringify(cipherWords);
+    return encryptedString;
   }
 
-  encryptUsingAes(plainTextData: string, password: string): string {
-    var hash = CryptoJS.SHA256(password);
+  decrypt(encryptedData: string, password: string): string {
+    var decodedWords = CryptoJS.enc.Base64.parse(encryptedData);
+    // Convert byteArray so it can be split
+    var decodedBytes = this.wordArrayToByteArray(decodedWords);
+    // Split the bytes into salt, iv and ciphertext
+    var saltBytes = decodedBytes.slice(0, 32);
+    var ivBytes = this.byteArrayToWordArray(decodedBytes.slice(32, 32 + 16));
+    var cipherBytes = decodedBytes.slice(32 + 16)
 
-    //var hash1 = CryptoJS.enc.Utf8.parse(CryptoJS.SHA256(plainTextKey));
-    //var hash2 = CryptoJS.enc.Base64.parse(CryptoJS.SHA256(plainTextKey));
-    //var hash3 = CryptoJS.SHA256(plainTextKey).toString();
-    //var hash5 = CryptoJS.SHA256(plainTextKey).toString(CryptoJS.enc.Utf8);
-    //var hash6 = CryptoJS.SHA256(plainTextKey).toString(CryptoJS.enc.Hex);
-    const iv = CryptoJS.enc.Utf8.parse("1203199320052021");
-    const encrypted = CryptoJS.AES.encrypt(plainTextData, hash, {
-      keySize: 256 / 32,
-      iv: iv,
+    // Generate key from password and salt
+    var key = this.generateKey(password, this.byteArrayToWordArray(saltBytes));
+
+    var cryptedWordsString = CryptoJS.enc.Base64.stringify(this.byteArrayToWordArray(cipherBytes));
+
+    var decrypted = CryptoJS.AES.decrypt(cryptedWordsString, key, {
+      padding: CryptoJS.pad.Pkcs7,
       mode: CryptoJS.mode.CBC,
-      padding: CryptoJS.pad.Pkcs7
+      iv: ivBytes
     });
 
-    var usedKey = encrypted.key.toString(CryptoJS.enc.Base64);
-    var usedIV = encrypted.iv.toString(CryptoJS.enc.Base64);
-
-    var cipherText2 = encrypted.toString();
-    var cipherText = CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
-
-    return encrypted.toString();
-  }
-   //const ivAndSalt = IV.concat(salt);
-   //const ivAndEncryptedData = ivAndSalt.concat(encrypted.ciphertext);
-
-    //const base64Data = encrypted.toString();
-   //const base64Data = ivAndEncryptedData.toString(CryptoJS.enc.Base64);
-   //const base64Data = window.btoa(ivAndEncryptedData);
-
-  decryptUsingAes(cipherText: string, plainTextKey: string): string {
-
-    const bytes = CryptoJS.AES.decrypt(cipherText, plainTextKey);
-    const plainText = bytes.toString(CryptoJS.enc.Utf8);
-
-    return plainText;
+    return decrypted.toString(CryptoJS.enc.Utf8);
   }
 
-    // Concatenate IV and encrypted data
-    //const ivAndEncryptedData = CryptoJS.lib.WordArray.create(IV.words.length + salt.words.length + encrypted.ciphertext.words.length);
-
-//ivAndEncryptedData.set(IV.words, 0);
-    //ivAndEncryptedData.set(salt.words, IV.words.length);
-    //ivAndEncryptedData.set(encrypted.ciphertext.words, IV.words.length + salt.words.length);
-
-   //const base64Data = window.btoa(String.fromCharCode.apply(null, ivAndEncryptedData));
-   //const base64Data = CryptoJS.enc.Base64.stringify(ivAndEncryptedData);
-   //var decoder = new TextDecoder('utf8');
-   //var b64encoded = btoa(decoder.decode(u8));
-
-
-
-
-
-  //encryptUsingAES256(text): any {
-  //  const encrypted = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(text), this.key, {
-  //    keySize: 128 / 8,
-  //    iv: this.iv,
-  //    mode: CryptoJS.mode.CBC,
-  //    padding: CryptoJS.pad.Pkcs7
-  //  });
-  //  return encrypted.toString();
-  //}
-  //decryptUsingAES256(decString) {
-  //  const decrypted = CryptoJS.AES.decrypt(decString, this.key, {
-  //    keySize: 128 / 8,
-  //    iv: this.iv,
-  //    mode: CryptoJS.mode.CBC,
-  //    padding: CryptoJS.pad.Pkcs7
-  //  });
-  //  return decrypted.toString(CryptoJS.enc.Utf8);
-  //}
+  //conversion methods
 
   wordArrayToByteArray(wordArray) {
     if (wordArray.hasOwnProperty("sigBytes") && wordArray.hasOwnProperty("words")) {
@@ -168,6 +119,7 @@ NwIDAQAB
     }
     return [].concat.apply([], result);
   }
+
   byteArrayToWordArray(ba) {
     var wa = [],
       i;
@@ -190,3 +142,5 @@ NwIDAQAB
   }
 
 }
+
+// aes and conversion methods from inspired from https://www.appsloveworld.com/csharp/100/310/encrypting-in-angular-and-decrypt-on-c
