@@ -82,7 +82,7 @@ namespace PasswordManager.MAUI.Services
             }
 
 
-            requestDTO.Password = EncryptionService.EncryptRsa(requestDTO.Password, EncryptionKeys.privateRsaKey);
+            requestDTO.Password = EncryptionService.EncryptUsingRsa(requestDTO.Password, EncryptionKeys.privateRsaKey);
 
             Uri uri = new Uri(AppConstants.ApiUrl + AppConstants.LoginSuffix);
             string json = JsonSerializer.Serialize(requestDTO);

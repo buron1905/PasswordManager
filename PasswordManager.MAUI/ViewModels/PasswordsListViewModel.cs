@@ -122,7 +122,7 @@ namespace PasswordManager.MAUI.ViewModels
             {
                 if (!string.IsNullOrWhiteSpace(password.PasswordEncrypted))
                 {
-                    password.PasswordDecrypted = await EncryptionService.DecryptAesAsync(Convert.FromBase64String(password.PasswordEncrypted ?? string.Empty),
+                    password.PasswordDecrypted = await EncryptionService.DecryptUsingAesAsync(Convert.FromBase64String(password.PasswordEncrypted ?? string.Empty),
                         ActiveUserService.Instance.CipherKey);
                 }
             }

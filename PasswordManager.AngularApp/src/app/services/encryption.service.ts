@@ -45,23 +45,75 @@ NwIDAQAB
     return '';
   }
 
-  encryptAesAsync(plainTextData: string, plainTextKey: string): string {
-    const IV = CryptoJS.enc.Utf8.parse("1203199320052021");
-    const salt = CryptoJS.enc.Utf8.parse("12031993200520211203199320052021");
-    //const IV = CryptoJS.lib.WordArray.random(16);
-    //const salt = CryptoJS.lib.WordArray.random(32);
-    const key = CryptoJS.PBKDF2(plainTextKey, salt, { keySize: 256 / 32, iterations: 10000, hasher: CryptoJS.algo.SHA512 });
+  generateKey(password: string, salt: CryptoJS.lib.WordArray): string {
+    return CryptoJS.PBKDF2(password, salt, {
+      keySize: 256 / 32,
+      iterations: 1000,
+    });
+  }
 
-    const encrypted = CryptoJS.AES.encrypt(plainTextData, key, { iv: IV, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 });
+  encrypt(plainTextData: string, password: string): string {
+    var iv = CryptoJS.lib.WordArray.random(128 / 8);
+    var salt = CryptoJS.lib.WordArray.random(16);
+    var key = this.generateKey(password, salt);
+    
+    //will attach link where you can find these
+    var encrypted = CryptoJS.AES.encrypt(plainTextData, key, {
+      padding: CryptoJS.pad.Pkcs7,
+      mode: CryptoJS.mode.CBC,
+      iv: iv
+    });
+    
+    //Convert Lib.WordArray to ByteArray so we can combine them like Concat
+    var saltwords = this.wordArrayToByteArray(salt);
+    var ivwords = this.wordArrayToByteArray(iv);
+    var cryptedText = this.wordArrayToByteArray(encrypted.ciphertext);
+    // combine everything together in ByteArray.
+    var header = saltwords.concat(ivwords).concat(cryptedText);
+    //Now convert to WordArray.
+    var headerWords = this.byteArrayToWordArray(header);
+    //Encode this to sent to server
+    var encodedString = CryptoJS.enc.Base64.stringify(headerWords);
+    return encodedString;
+  }
 
+  encryptUsingAes(plainTextData: string, password: string): string {
+    var hash = CryptoJS.SHA256(password);
+
+    //var hash1 = CryptoJS.enc.Utf8.parse(CryptoJS.SHA256(plainTextKey));
+    //var hash2 = CryptoJS.enc.Base64.parse(CryptoJS.SHA256(plainTextKey));
+    //var hash3 = CryptoJS.SHA256(plainTextKey).toString();
+    //var hash5 = CryptoJS.SHA256(plainTextKey).toString(CryptoJS.enc.Utf8);
+    //var hash6 = CryptoJS.SHA256(plainTextKey).toString(CryptoJS.enc.Hex);
+    const iv = CryptoJS.enc.Utf8.parse("1203199320052021");
+    const encrypted = CryptoJS.AES.encrypt(plainTextData, hash, {
+      keySize: 256 / 32,
+      iv: iv,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7
+    });
+
+    var usedKey = encrypted.key.toString(CryptoJS.enc.Base64);
+    var usedIV = encrypted.iv.toString(CryptoJS.enc.Base64);
+
+    var cipherText2 = encrypted.toString();
+    var cipherText = CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
+
+    return encrypted.toString();
+  }
    //const ivAndSalt = IV.concat(salt);
    //const ivAndEncryptedData = ivAndSalt.concat(encrypted.ciphertext);
 
-    const base64Data = encrypted.toString();
+    //const base64Data = encrypted.toString();
    //const base64Data = ivAndEncryptedData.toString(CryptoJS.enc.Base64);
    //const base64Data = window.btoa(ivAndEncryptedData);
 
-    return base64Data;
+  decryptUsingAes(cipherText: string, plainTextKey: string): string {
+
+    const bytes = CryptoJS.AES.decrypt(cipherText, plainTextKey);
+    const plainText = bytes.toString(CryptoJS.enc.Utf8);
+
+    return plainText;
   }
 
     // Concatenate IV and encrypted data
@@ -98,5 +150,43 @@ NwIDAQAB
   //  });
   //  return decrypted.toString(CryptoJS.enc.Utf8);
   //}
+
+  wordArrayToByteArray(wordArray) {
+    if (wordArray.hasOwnProperty("sigBytes") && wordArray.hasOwnProperty("words")) {
+      length = wordArray.sigBytes;
+      wordArray = wordArray.words;
+    }
+
+    var result = [],
+      bytes,
+      i = 0;
+    while (length > 0) {
+      bytes = this.wordToByteArray(wordArray[i], Math.min(4, length));
+      length -= bytes.length;
+      result.push(bytes);
+      i++;
+    }
+    return [].concat.apply([], result);
+  }
+  byteArrayToWordArray(ba) {
+    var wa = [],
+      i;
+    for (i = 0; i < ba.length; i++) {
+      wa[(i / 4) | 0] |= ba[i] << (24 - 8 * i);
+    }
+
+    return CryptoJS.lib.WordArray.create(wa);
+  }
+  
+  wordToByteArray(word, length) {
+    var ba = [],
+      xFF = 0xff;
+    if (length > 0) ba.push(word >>> 24);
+    if (length > 1) ba.push((word >>> 16) & xFF);
+    if (length > 2) ba.push((word >>> 8) & xFF);
+    if (length > 3) ba.push(word & xFF);
+
+    return ba;
+  }
 
 }

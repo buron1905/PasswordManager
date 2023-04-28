@@ -9,7 +9,7 @@ namespace Services.Cryptography
 {
     public static class EncryptionService
     {
-        public static async Task<byte[]> EncryptAesAsync(string plainTextData, string plainTextKey)
+        public static async Task<byte[]> EncryptUsingAesAsync(string plainTextData, string plainTextKey)
         {
             var IV = GenerateRandomIV();
             var salt = GenerateRandomSalt();
@@ -18,12 +18,12 @@ namespace Services.Cryptography
             return await EncryptStringToBytes_Aes(plainTextData, key, IV, salt);
         }
 
-        public static async Task<string> DecryptAesAsync(byte[] encryptedData, string plainTextKey)
+        public static async Task<string> DecryptUsingAesAsync(byte[] encryptedData, string plainTextKey)
         {
             return await DecryptStringFromBytes_Aes(encryptedData, plainTextKey);
         }
 
-        public static string? EncryptRsa(string plainTextData, string plainTextKey)
+        public static string? EncryptUsingRsa(string plainTextData, string plainTextKey)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace Services.Cryptography
             }
         }
 
-        public static string? DecryptRsa(string encryptedData, string plainTextKey)
+        public static string? DecryptUsingRsa(string encryptedData, string plainTextKey)
         {
             try
             {
@@ -103,23 +103,12 @@ namespace Services.Cryptography
         static byte[] GenerateRandomSalt()
         {
             byte[] salt = new byte[32];
-            using (var rng = new RNGCryptoServiceProvider())
-            {
-                rng.GetBytes(salt);
-            }
+            RandomNumberGenerator.Fill(salt);
+            //using (var rng = new RNGCryptoServiceProvider())
+            //{
+            //    rng.GetBytes(salt);
+            //}
             return salt;
-        }
-
-        static byte[] DeriveKeyFromPassword(string password, byte[] salt)
-        {
-            var iterations = 10000;
-            var desiredKeyLength = 32; // 256 bits
-            var hashMethod = HashAlgorithmName.SHA512;
-            return Rfc2898DeriveBytes.Pbkdf2(Encoding.Unicode.GetBytes(password),
-                salt,
-                iterations,
-                hashMethod,
-                desiredKeyLength);
         }
 
         // https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.aes?view=net-7.0
@@ -255,5 +244,84 @@ namespace Services.Cryptography
             }
         }
 
+        static byte[] DeriveKeyFromPassword(string password, byte[] salt)
+        {
+            var iterations = 1000;
+            var desiredKeyLength = 32; // in bytes => 256 bits
+            var hashMethod = HashAlgorithmName.SHA512;
+            Rfc2898DeriveBytes pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations);
+            return pbkdf2.GetBytes(desiredKeyLength);
+
+            //return Rfc2898DeriveBytes.Pbkdf2(Encoding.Unicode.GetBytes(password),
+            //    salt,
+            //    iterations,
+            //    hashMethod,
+            //    desiredKeyLength);
+        }
+
+        public async static Task<string> Decrypt(string cipherText, string password)
+        {
+            byte[] cipherBytes = Convert.FromBase64String(cipherText);
+            string plainText = string.Empty;
+
+            using (Aes encryptor = Aes.Create())
+            {
+                // extract salt (first 16 bytes)
+                var salt = cipherBytes.Take(16).ToArray();
+                // extract iv (next 16 bytes)
+                var iv = cipherBytes.Skip(16).Take(16).ToArray();
+                // the rest is encrypted data
+                var encrypted = cipherBytes.Skip(32).ToArray();
+
+                encryptor.Key = DeriveKeyFromPassword(password, salt);
+                //Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(password, salt, 1000);
+                //encryptor.Key = pdb.GetBytes(32);
+                encryptor.Padding = PaddingMode.PKCS7;
+                encryptor.Mode = CipherMode.CBC;
+                encryptor.IV = iv;
+
+                using (MemoryStream memoryStream = new MemoryStream(encrypted))
+                {
+                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor.CreateDecryptor(), CryptoStreamMode.Read))
+                    {
+                        using (var streamReader = new StreamReader(cryptoStream, Encoding.UTF8))
+                        {
+                            plainText = await streamReader.ReadToEndAsync();
+                        }
+                    }
+                }
+            }
+            return plainText;
+        }
+        public async static Task<string> Encrypt(string cipherText, string password)
+        {
+            byte[] cipherBytes = Convert.FromBase64String(cipherText);
+            using (Aes encryptor = Aes.Create())
+            {
+                // extract salt (first 16 bytes)
+                var salt = cipherBytes.Take(16).ToArray();
+                // extract iv (next 16 bytes)
+                var iv = cipherBytes.Skip(16).Take(16).ToArray();
+                // the rest is encrypted data
+                var encrypted = cipherBytes.Skip(32).ToArray();
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(password, salt, 1000);
+                encryptor.Key = pdb.GetBytes(32);
+                encryptor.Padding = PaddingMode.PKCS7;
+                encryptor.Mode = CipherMode.CBC;
+                encryptor.IV = iv;
+
+                using (MemoryStream ms = new MemoryStream(encrypted))
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Read))
+                    {
+                        using (var reader = new StreamReader(cs, Encoding.UTF8))
+                        {
+                            return reader.ReadToEnd();
+                        }
+                    }
+                }
+            }
+
+        }
     }
 }

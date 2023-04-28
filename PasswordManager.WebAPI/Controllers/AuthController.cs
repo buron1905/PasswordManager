@@ -36,7 +36,7 @@ namespace PasswordManager.WebAPI.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO loginDTO)
         {
-            loginDTO.Password = EncryptionService.DecryptRsa(loginDTO.Password, EncryptionKeys.privateRsaKey);
+            loginDTO.Password = EncryptionService.DecryptUsingRsa(loginDTO.Password, EncryptionKeys.privateRsaKey);
 
             var response = await _authService.LoginAsync(loginDTO);
 
@@ -55,8 +55,8 @@ namespace PasswordManager.WebAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDTO registerDTO)
         {
-            registerDTO.Password = EncryptionService.DecryptRsa(registerDTO.Password, EncryptionKeys.privateRsaKey);
-            registerDTO.ConfirmPassword = EncryptionService.DecryptRsa(registerDTO.ConfirmPassword, EncryptionKeys.privateRsaKey);
+            registerDTO.Password = EncryptionService.DecryptUsingRsa(registerDTO.Password, EncryptionKeys.privateRsaKey);
+            registerDTO.ConfirmPassword = EncryptionService.DecryptUsingRsa(registerDTO.ConfirmPassword, EncryptionKeys.privateRsaKey);
 
             if (!registerDTO.Password.Equals(registerDTO.ConfirmPassword))
             {
@@ -120,7 +120,7 @@ namespace PasswordManager.WebAPI.Controllers
         [HttpPost("tfa-login")]
         public async Task<IActionResult> TfaLogin([FromBody] LoginWithTfaRequestDTO requestDTO)
         {
-            requestDTO.Password = EncryptionService.DecryptRsa(requestDTO.Password, EncryptionKeys.privateRsaKey);
+            requestDTO.Password = EncryptionService.DecryptUsingRsa(requestDTO.Password, EncryptionKeys.privateRsaKey);
 
             var response = await _authService.LoginWithTfaAsync(requestDTO);
 

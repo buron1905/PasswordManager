@@ -25,7 +25,8 @@ export class PasswordService {
   }
 
   create(data: PasswordModel): Observable<PasswordModel> {
-    data.passwordDecrypted = this.encryptionService.encryptAesAsync(data.passwordDecrypted, "asdfasdf");
+    let userKey = "asdf!@#$%^&*()asdf123";
+    data.passwordDecrypted = this.encryptionService.encrypt(data.passwordDecrypted, userKey);
 
     return this.http.post<PasswordModel>(this.passwordsPath, data);
   }
