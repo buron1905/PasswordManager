@@ -48,13 +48,13 @@ NwIDAQAB
   generateKey(password: string, salt: CryptoJS.lib.WordArray): string {
     return CryptoJS.PBKDF2(password, salt, {
       keySize: 256 / 32,
-      iterations: 1000,
+      iterations: 10000,
     });
   }
 
   encrypt(plainTextData: string, password: string): string {
     var iv = CryptoJS.lib.WordArray.random(128 / 8);
-    var salt = CryptoJS.lib.WordArray.random(16);
+    var salt = CryptoJS.lib.WordArray.random(32);
     var key = this.generateKey(password, salt);
     
     //will attach link where you can find these

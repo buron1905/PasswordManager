@@ -57,12 +57,15 @@ namespace PasswordManager.WebAPI.Controllers
 
             var userKey = "asdf!@#$%^&*()asdf123";
             var decryptedPassword = await EncryptionService.Decrypt(passwordDTO.PasswordDecrypted, userKey);
+
+            var e1 = await EncryptionService.Encrypt("text123#%", userKey);
+            var d1 = await EncryptionService.Decrypt("text123#%", userKey);
+
+            var e = Convert.ToBase64String(await EncryptionService.EncryptUsingAesAsync("text123#%", userKey));
+            var d = await EncryptionService.DecryptUsingAesAsync(Convert.FromBase64String(e), userKey);
+
             var encryptedPassword = await EncryptionService.Encrypt(decryptedPassword, userKey);
             var decryptedPassword2 = await EncryptionService.Decrypt(encryptedPassword, userKey);
-
-
-
-
             //var decryptedPassword = await EncryptionService.DecryptUsingAesAsync(Convert.FromBase64String(passwordDTO.PasswordDecrypted), "asdfasdfa");
 
             //if (!string.IsNullOrWhiteSpace(passwordDTO.PasswordDecrypted))

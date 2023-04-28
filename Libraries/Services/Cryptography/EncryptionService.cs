@@ -63,7 +63,6 @@ namespace Services.Cryptography
             }
         }
 
-        // Implementation from https://github.com/Technosaviour/RSA-net-core/tree/RSA-Angular-net-core
         private static RSACryptoServiceProvider GetProviderWithRsaPrivateKey(string pemString)
         {
             using (TextReader privateKeyTextReader = new StringReader(pemString))
@@ -104,15 +103,9 @@ namespace Services.Cryptography
         {
             byte[] salt = new byte[32];
             RandomNumberGenerator.Fill(salt);
-            //using (var rng = new RNGCryptoServiceProvider())
-            //{
-            //    rng.GetBytes(salt);
-            //}
             return salt;
         }
 
-        // https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.aes?view=net-7.0
-        // added async/await, explicit aes and IV alongsite encrypted data
         static async Task<byte[]> EncryptStringToBytes_Aes(string plainText, byte[] Key, byte[] IV, byte[] salt)
         {
             if (plainText == null || plainText.Length <= 0)
@@ -165,7 +158,7 @@ namespace Services.Cryptography
 
             using (Aes aesAlg = Aes.Create())
             {
-                aesAlg.Padding = PaddingMode.PKCS7; // ISO10126 is probably better
+                aesAlg.Padding = PaddingMode.PKCS7;
                 aesAlg.KeySize = 256;
                 aesAlg.Mode = CipherMode.CBC;
 
@@ -246,17 +239,18 @@ namespace Services.Cryptography
 
         static byte[] DeriveKeyFromPassword(string password, byte[] salt)
         {
-            var iterations = 1000;
+            var iterations = 10000;
             var desiredKeyLength = 32; // in bytes => 256 bits
-            var hashMethod = HashAlgorithmName.SHA512;
-            Rfc2898DeriveBytes pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations);
-            return pbkdf2.GetBytes(desiredKeyLength);
+            var hashAlgorithm = HashAlgorithmName.SHA1;
 
-            //return Rfc2898DeriveBytes.Pbkdf2(Encoding.Unicode.GetBytes(password),
-            //    salt,
-            //    iterations,
-            //    hashMethod,
-            //    desiredKeyLength);
+            // SHA-1 is used because of compatibility with encryption.service.ts in Angular app
+            // It is not used for hashing passwords and storing them, just for encryption
+            return Rfc2898DeriveBytes.Pbkdf2(
+                password,
+                salt,
+                iterations,
+                hashAlgorithm,
+                desiredKeyLength);
         }
 
         public async static Task<string> Decrypt(string cipherText, string password)
@@ -264,64 +258,80 @@ namespace Services.Cryptography
             byte[] cipherBytes = Convert.FromBase64String(cipherText);
             string plainText = string.Empty;
 
-            using (Aes encryptor = Aes.Create())
+            using (Aes aes = Aes.Create())
             {
-                // extract salt (first 16 bytes)
-                var salt = cipherBytes.Take(16).ToArray();
-                // extract iv (next 16 bytes)
-                var iv = cipherBytes.Skip(16).Take(16).ToArray();
-                // the rest is encrypted data
-                var encrypted = cipherBytes.Skip(32).ToArray();
+                // extract salt, iv and encryptedText
+                var salt = cipherBytes.Take(32).ToArray();
+                var iv = cipherBytes.Skip(32).Take(16).ToArray();
+                var encryptedBytes = cipherBytes.Skip(48).ToArray();
 
-                encryptor.Key = DeriveKeyFromPassword(password, salt);
-                //Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(password, salt, 1000);
-                //encryptor.Key = pdb.GetBytes(32);
-                encryptor.Padding = PaddingMode.PKCS7;
-                encryptor.Mode = CipherMode.CBC;
-                encryptor.IV = iv;
+                aes.Padding = PaddingMode.PKCS7;
+                aes.Mode = CipherMode.CBC;
+                aes.KeySize = 256;
+                aes.Key = DeriveKeyFromPassword(password, salt);
+                aes.IV = iv;
 
-                using (MemoryStream memoryStream = new MemoryStream(encrypted))
+                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+
+                using (MemoryStream memoryStream = new MemoryStream(encryptedBytes))
                 {
-                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor.CreateDecryptor(), CryptoStreamMode.Read))
+                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
                     {
-                        using (var streamReader = new StreamReader(cryptoStream, Encoding.UTF8))
+                        using (var streamReader = new StreamReader(cryptoStream))
                         {
                             plainText = await streamReader.ReadToEndAsync();
                         }
                     }
                 }
             }
+
             return plainText;
         }
-        public async static Task<string> Encrypt(string cipherText, string password)
-        {
-            byte[] cipherBytes = Convert.FromBase64String(cipherText);
-            using (Aes encryptor = Aes.Create())
-            {
-                // extract salt (first 16 bytes)
-                var salt = cipherBytes.Take(16).ToArray();
-                // extract iv (next 16 bytes)
-                var iv = cipherBytes.Skip(16).Take(16).ToArray();
-                // the rest is encrypted data
-                var encrypted = cipherBytes.Skip(32).ToArray();
-                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(password, salt, 1000);
-                encryptor.Key = pdb.GetBytes(32);
-                encryptor.Padding = PaddingMode.PKCS7;
-                encryptor.Mode = CipherMode.CBC;
-                encryptor.IV = iv;
 
-                using (MemoryStream ms = new MemoryStream(encrypted))
+        public async static Task<string> Encrypt(string plainText, string password)
+        {
+            var IV = GenerateRandomIV();
+            var salt = GenerateRandomSalt();
+            var key = DeriveKeyFromPassword(plainText, salt);
+
+            byte[] cipherBytes;
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Padding = PaddingMode.PKCS7;
+                aes.Mode = CipherMode.CBC;
+                aes.KeySize = 256;
+                aes.Key = key;
+                aes.IV = IV;
+
+                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+                using (MemoryStream memoryStream = new MemoryStream())
                 {
-                    using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Read))
+                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
                     {
-                        using (var reader = new StreamReader(cs, Encoding.UTF8))
+                        using (var streamWriter = new StreamWriter(cryptoStream))
                         {
-                            return reader.ReadToEnd();
+                            streamWriter.Write(plainText);
                         }
                     }
+                    cipherBytes = memoryStream.ToArray();
                 }
             }
 
+            // save IV and salt along with encrypted data
+            byte[] cipherBytesWithSaltAndIV = new byte[16 + 32 + cipherBytes.Length];
+            Array.Copy(salt, 0, cipherBytesWithSaltAndIV, 0, 32);
+            Array.Copy(IV, 0, cipherBytesWithSaltAndIV, 32, 16);
+            Array.Copy(cipherBytes, 0, cipherBytesWithSaltAndIV, 48, cipherBytes.Length);
+            cipherBytes = cipherBytesWithSaltAndIV;
+
+            return Convert.ToBase64String(cipherBytes);
         }
+
     }
 }
+
+// Encrypt method was inspired by https://www.appsloveworld.com/csharp/100/310/encrypting-in-angular-and-decrypt-on-c
+// Encrypt and decrypt methods were inspired by https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.aes?view=net-7.0
+// RSA based on https://github.com/Technosaviour/RSA-net-core/tree/RSA-Angular-net-core
