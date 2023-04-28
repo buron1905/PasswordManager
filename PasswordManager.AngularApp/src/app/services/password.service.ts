@@ -5,6 +5,7 @@ import { AbstractControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { PasswordModel } from '../models/password.model';
 import { ActivatedRoute } from '@angular/router';
+import { EncryptionService } from './encryption.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class PasswordService {
 
   private passwordsPath = `${environment.apiUrl}/passwords`;
   
-  constructor(private http: HttpClient, private route: ActivatedRoute) { }
+  constructor(private http: HttpClient, private route: ActivatedRoute, private encryptionService: EncryptionService) { }
 
   get(): Observable<PasswordModel[]> {
     return this.http.get<PasswordModel[]>(this.passwordsPath);
@@ -23,7 +24,9 @@ export class PasswordService {
     return this.http.get<PasswordModel>(`${this.passwordsPath}/${id}`);
   }
 
-  create(data : AbstractControl<any, any>) : Observable<PasswordModel> {
+  create(data: PasswordModel): Observable<PasswordModel> {
+    data.passwordDecrypted = this.encryptionService.encryptAesAsync(data.passwordDecrypted, "asdfasdf");
+
     return this.http.post<PasswordModel>(this.passwordsPath, data);
   }
 

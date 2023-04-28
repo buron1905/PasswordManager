@@ -78,7 +78,10 @@ export class AddEditComponent implements OnInit {
   }
 
   createPassword(): void {
-    this.passwordService.create(this.passwordForm.value).subscribe(
+
+    var passwordFormValue: PasswordModel = { ...this.passwordForm.value };
+
+    this.passwordService.create(passwordFormValue).subscribe(
       data => {
         this.toastrService.success('Created');
         this.loading = false;
