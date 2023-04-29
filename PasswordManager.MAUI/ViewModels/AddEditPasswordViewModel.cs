@@ -5,7 +5,6 @@ using PasswordManager.MAUI.Helpers;
 using PasswordManager.MAUI.Services;
 using PasswordManager.MAUI.Views;
 using Services.Abstraction.Data;
-using Services.Cryptography;
 
 namespace PasswordManager.MAUI.ViewModels
 {
@@ -165,8 +164,7 @@ namespace PasswordManager.MAUI.ViewModels
 
             var userGuid = ActiveUserService.Instance.ActiveUser.Id;
 
-            if (!string.IsNullOrWhiteSpace(model.PasswordDecrypted))
-                model.PasswordEncrypted = Convert.ToBase64String(await EncryptionService.EncryptUsingAesAsync(model.PasswordDecrypted, ActiveUserService.Instance.CipherKey));
+            // TODO encrypt
 
             if (IsNew)
                 await _passwordService.CreateAsync(userGuid, model);

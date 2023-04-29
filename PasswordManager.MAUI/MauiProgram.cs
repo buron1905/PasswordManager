@@ -34,5 +34,6 @@ namespace PasswordManager.MAUI
 
             return builder.Build();
         }
+
     }
 }

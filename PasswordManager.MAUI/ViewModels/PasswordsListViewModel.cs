@@ -4,7 +4,6 @@ using Models.DTOs;
 using PasswordManager.MAUI.Services;
 using PasswordManager.MAUI.Views;
 using Services.Abstraction.Data;
-using Services.Cryptography;
 using System.Collections.ObjectModel;
 
 namespace PasswordManager.MAUI.ViewModels
@@ -122,8 +121,7 @@ namespace PasswordManager.MAUI.ViewModels
             {
                 if (!string.IsNullOrWhiteSpace(password.PasswordEncrypted))
                 {
-                    password.PasswordDecrypted = await EncryptionService.DecryptUsingAesAsync(Convert.FromBase64String(password.PasswordEncrypted ?? string.Empty),
-                        ActiveUserService.Instance.CipherKey);
+                    // TODO encrypt
                 }
             }
 

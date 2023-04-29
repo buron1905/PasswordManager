@@ -4,6 +4,7 @@ using Models.DTOs;
 using Services.Abstraction.Data;
 using Services.Abstraction.Data.Persistance;
 using Services.Abstraction.Exceptions;
+using Services.Cryptography;
 
 namespace Services.Data
 {
@@ -143,6 +144,32 @@ namespace Services.Data
             password.Deleted = passwordDTO.Deleted;
 
             await _passwordRepository.Delete(password);
+        }
+
+        public async Task<PasswordDTO> EncryptPasswordAsync(PasswordDTO passwordDTO, string cipherKey)
+        {
+            var passwordEncrypted = passwordDTO.Adapt<PasswordDTO>();
+
+            passwordEncrypted.PasswordName = await EncryptionService.EncryptUsingAES(passwordDTO.PasswordName, cipherKey);
+            passwordEncrypted.UserName = await EncryptionService.EncryptUsingAES(passwordDTO.UserName, cipherKey);
+            passwordEncrypted.PasswordDecrypted = await EncryptionService.EncryptUsingAES(passwordDTO.PasswordDecrypted, cipherKey);
+            passwordEncrypted.URL = await EncryptionService.EncryptUsingAES(passwordDTO.URL, cipherKey);
+            passwordEncrypted.Notes = await EncryptionService.EncryptUsingAES(passwordDTO.Notes, cipherKey);
+
+            return passwordEncrypted;
+        }
+
+        public async Task<PasswordDTO> DecryptPasswordAsync(PasswordDTO passwordDTO, string cipherKey)
+        {
+            var passwordDecrypted = passwordDTO.Adapt<PasswordDTO>();
+
+            passwordDecrypted.PasswordName = await EncryptionService.DecryptUsingAES(passwordDTO.PasswordName, cipherKey);
+            passwordDecrypted.UserName = await EncryptionService.DecryptUsingAES(passwordDTO.UserName, cipherKey);
+            passwordDecrypted.PasswordDecrypted = await EncryptionService.DecryptUsingAES(passwordDTO.PasswordEncrypted, cipherKey);
+            passwordDecrypted.URL = await EncryptionService.DecryptUsingAES(passwordDTO.URL, cipherKey);
+            passwordDecrypted.Notes = await EncryptionService.DecryptUsingAES(passwordDTO.Notes, cipherKey);
+
+            return passwordDecrypted;
         }
     }
 }

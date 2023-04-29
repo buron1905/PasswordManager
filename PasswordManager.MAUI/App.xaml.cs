@@ -4,17 +4,25 @@ using Microsoft.Maui.Controls.Compatibility.Platform.Android;
 #endif
 using PasswordManager.MAUI.Handlers;
 using PasswordManager.MAUI.Helpers;
+using PasswordManager.MAUI.Services;
+using PasswordManager.MAUI.Views;
+using Timer = System.Timers.Timer;
 
 namespace PasswordManager.MAUI
 {
     public partial class App : Application
     {
+        Timer _idleTimer = new Timer(60000 * 0.5); // 5 minutes
+
         public App()
         {
             InitializeComponent();
             ModifyCustomControls();
 
             MainPage = new AppShell();
+
+            _idleTimer.Elapsed += Idleimer_Elapsed;
+            _idleTimer.Start();
         }
 
         private void ModifyCustomControls()
@@ -38,21 +46,6 @@ namespace PasswordManager.MAUI
 #endif
                 }
             });
-
-            //            Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping(nameof(BorderlessEntry), (handler, view) =>
-            //            {
-            //                if (view is BorderlessEntry)
-            //                {
-            //#if __ANDROID__
-            //                //handler.PlatformView.SetBackgroundColor(Colors.Transparent.ToPlatform());
-            //            (handler.PlatformView as Android.Views.View).SetBackgroundColor(Microsoft.Maui.Graphics.Colors.Transparent.ToAndroid());
-            //#elif __IOS__
-            //                    handler.PlatformView.BorderStyle = UIKit.UITextBorderStyle.None;
-            //#elif WINDOWS
-            //                handler.PlatformView.FontWeight = Microsoft.UI.Text.FontWeights.Thin;
-            //#endif
-            //                }
-            //            });
         }
 
         protected override void OnStart()
@@ -78,6 +71,34 @@ namespace PasswordManager.MAUI
             {
                 TheTheme.SetTheme();
             });
+        }
+
+        async void Idleimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            if (MainThread.IsMainThread)
+            {
+                if (Shell.Current.CurrentPage is not LoginPage || Shell.Current.CurrentPage is not RegistrationPage)
+                {
+                    ActiveUserService.Instance.Logout();
+                    await AlertService.ShowToast("Logged out due to inactivity");
+                    await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
+                }
+            }
+            else
+            {
+                if (Shell.Current.CurrentPage is not LoginPage || Shell.Current.CurrentPage is not RegistrationPage)
+                {
+                    ActiveUserService.Instance.Logout();
+                    await AlertService.ShowToast("Logged out due to inactivity");
+                    MainThread.BeginInvokeOnMainThread(async () => await Shell.Current.GoToAsync($"//{nameof(LoginPage)}"));
+                }
+            }
+        }
+
+        public void ResetIdleTimer()
+        {
+            _idleTimer.Stop();
+            _idleTimer.Start();
         }
 
     }

@@ -15,10 +15,7 @@ namespace PasswordManager.MAUI.Services
 
         public bool IsActive
         {
-            get
-            {
-                return ActiveUser != null;
-            }
+            get => ActiveUser != null;
         }
 
         private static ActiveUserService instance;
@@ -47,7 +44,6 @@ namespace PasswordManager.MAUI.Services
         public void Login(UserDTO user, string cipherKey)
         {
             ActiveUser = user;
-            ActiveUser.Password = null;
             CipherKey = cipherKey;
             AppShellViewModel.FlyoutHeaderRefresh();
         }
@@ -56,6 +52,8 @@ namespace PasswordManager.MAUI.Services
         {
             ActiveUser = null;
             CipherKey = null;
+            Token = null;
+            TokenExpirationDateTime = DateTime.MinValue;
             instance = null;
             SecureStorage.Remove("token");
             AppShellViewModel.FlyoutHeaderRefresh();

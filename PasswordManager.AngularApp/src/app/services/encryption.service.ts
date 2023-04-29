@@ -1,16 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, ResolvedReflectiveFactory } from '@angular/core';
+import { Injectable } from '@angular/core';
 import * as CryptoJS from 'crypto-js';
-import { AbstractControl } from '@angular/forms';
-import { lastValueFrom, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Router } from '@angular/router';
-import { JwtHelperService } from '@auth0/angular-jwt';
-import { LoginModel } from './../models/login.model';
-import { AuthResponseModel } from '../models/auth-response.model';
-import { TfaSetup } from '../models/tfa-setup.model';
-import { EmailConfirmationModel } from '../models/email-confirmation.model';
-import { RegisterResponseModel } from '../models/register-response.model';
 import * as forge from 'node-forge';
 
 @Injectable({
@@ -30,35 +21,21 @@ L+ggb/nQHzGq/yhNFb1gP77CiBL0AmvIs+8luhGuhgA4MNOKQH7+BWfWzEgIcSkQ
 NwIDAQAB
 -----END PUBLIC KEY-----`;
 
-  constructor(private http: HttpClient ) { }
+  constructor() { }
 
-  encryptRsa(valueToEncrypt: string): string {
-    const rsa = forge.pki.publicKeyFromPem(this.publicKey);
-    return window.btoa(rsa.encrypt(valueToEncrypt, 'RSA-OAEP'));
-  }
+  // AES
 
-  encryptAes(valueToEncrypt: string, key: string): string {
-    return '';
-  }
+  encryptUsingAES(plainText: string, plainTextKey: string): string | null {
+    if (!plainText || !plainText.trim() || !plainTextKey || !plainTextKey.trim()) {
+      return null;
+    }
 
-  decryptAes(valueToDecrypt: string, key: string): string {
-    return '';
-  }
-
-  generateKey(password: string, salt: CryptoJS.lib.WordArray): string {
-    return CryptoJS.PBKDF2(password, salt, {
-      keySize: 256 / 32,
-      iterations: 10000,
-    });
-  }
-
-  encrypt(plainTextData: string, password: string): string {
     var ivWords = CryptoJS.lib.WordArray.random(128 / 8);
     var saltWords = CryptoJS.lib.WordArray.random(32);
-    var key = this.generateKey(password, saltWords);
+    var key = this.generateKey(plainTextKey, saltWords);
     
     //will attach link where you can find these
-    var cipherText = CryptoJS.AES.encrypt(plainTextData, key, {
+    var cipherText = CryptoJS.AES.encrypt(plainText, key, {
       padding: CryptoJS.pad.Pkcs7,
       mode: CryptoJS.mode.CBC,
       iv: ivWords
@@ -77,8 +54,12 @@ NwIDAQAB
     return encryptedString;
   }
 
-  decrypt(encryptedData: string, password: string): string {
-    var decodedWords = CryptoJS.enc.Base64.parse(encryptedData);
+  decryptUsingAES(cipherText: string, plainTextKey: string): string | null {
+    if (!cipherText || !cipherText.trim() || !plainTextKey || !plainTextKey.trim()) {
+      return null;
+    }
+
+    var decodedWords = CryptoJS.enc.Base64.parse(cipherText);
     // Convert byteArray so it can be split
     var decodedBytes = this.wordArrayToByteArray(decodedWords);
     // Split the bytes into salt, iv and ciphertext
@@ -87,7 +68,7 @@ NwIDAQAB
     var cipherBytes = decodedBytes.slice(32 + 16)
 
     // Generate key from password and salt
-    var key = this.generateKey(password, this.byteArrayToWordArray(saltBytes));
+    var key = this.generateKey(plainTextKey, this.byteArrayToWordArray(saltBytes));
 
     var cryptedWordsString = CryptoJS.enc.Base64.stringify(this.byteArrayToWordArray(cipherBytes));
 
@@ -98,6 +79,35 @@ NwIDAQAB
     });
 
     return decrypted.toString(CryptoJS.enc.Utf8);
+  }
+
+  // RSA
+
+  encryptUsingRSA(value: string): string | null {
+    if (!value || !value.trim()) {
+      return null;
+    }
+    const rsa = forge.pki.publicKeyFromPem(this.publicKey);
+    return window.btoa(rsa.encrypt(value, 'RSA-OAEP')); // TOTO try CryptoJS.enc.Base64.stringify
+  }
+
+  // SHA256
+
+  hashUsingSHA256(value: string): string | null {
+    if (!value || !value.trim()) {
+      return null;
+    }
+
+    return CryptoJS.enc.Base64.stringify(CryptoJS.SHA512(value));
+  }
+
+  // helping methods
+
+  generateKey(password: string, salt: CryptoJS.lib.WordArray): string {
+    return CryptoJS.PBKDF2(password, salt, {
+      keySize: 256 / 32,
+      iterations: 10000,
+    });
   }
 
   //conversion methods

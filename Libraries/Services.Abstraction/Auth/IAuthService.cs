@@ -17,10 +17,10 @@ namespace Services.Abstraction.Auth
         Task<TfaSetupDTO?> GetTfaSetup(Guid userId, string password);
         Task<TfaSetupDTO?> EnableTfa(Guid userId, string password, TfaSetupDTO tfaSetupDTO);
         Task<TfaSetupDTO?> DisableTfa(Guid userId, string password, TfaSetupDTO tfaSetupDTO);
-        Task<string> DecryptString(string password, string textEncrypted);
         TfaSetupDTO GenerateTfaSetupDTO(string issuer, string accountTitle, string accountSecretKey);
         bool ValidateTfaCode(string secret, string code);
         bool TokenIsValid(string token);
         Task<bool> ResendConfirmEmail(string email);
+        string GetCipherKeySHA256Value(string plainPassword);
     }
 }

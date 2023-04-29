@@ -24,18 +24,23 @@ export class AuthService {
   private tfaLoginPath = `${environment.apiUrl}/auth/tfa-login`;
   private tfaSetupPath = `${environment.apiUrl}/auth/tfa-setup`;
   private verifyEmailPath = `${environment.apiUrl}/auth/email-confirm`;
-  
-  constructor(private http: HttpClient, private router: Router, private encryptionService: EncryptionService, private jwtHelper: JwtHelperService) { }
 
+  public cipherKey: string | null = null;
+  
+  constructor(private http: HttpClient, private router: Router, private encryptionService: EncryptionService) { }
+
+  setCipherKeyToSHA256Value(plainPassword: string): void {
+    this.cipherKey = this.encryptionService.hashUsingSHA256(plainPassword);
+  }
 
   login(data: LoginModel): Observable<AuthResponseModel> {
-    data.password = this.encryptionService.encryptRsa(data.password);
+    data.password = this.encryptionService.encryptUsingRSA(data.password);
     return this.http.post<AuthResponseModel>(this.loginPath, data);
   }
 
   register(data: RegisterModel): Observable<RegisterResponseModel> {
-    data.password = this.encryptionService.encryptRsa(data.password);
-    data.confirmPassword = this.encryptionService.encryptRsa(data.confirmPassword);
+    data.password = this.encryptionService.encryptUsingRSA(data.password);
+    data.confirmPassword = this.encryptionService.encryptUsingRSA(data.confirmPassword);
     return this.http.post<RegisterResponseModel>(this.registerPath, data);
   }
 
@@ -44,7 +49,7 @@ export class AuthService {
   }
 
   loginTfa(data: LoginTfaModel): Observable<AuthResponseModel> {
-    data.password = this.encryptionService.encryptRsa(data.password);
+    data.password = this.encryptionService.encryptUsingRSA(data.password);
     return this.http.post<AuthResponseModel>(this.tfaLoginPath, data);
   }
   
@@ -58,6 +63,7 @@ export class AuthService {
 
   logout(redirect: boolean = true): void {
     localStorage.removeItem('expirationDateTime');
+    this.cipherKey = null;
     if (redirect)
       this.router.navigate(['login']);
   }

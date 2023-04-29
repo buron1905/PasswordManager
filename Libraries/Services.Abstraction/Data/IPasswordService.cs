@@ -10,5 +10,9 @@ namespace Services.Abstraction.Data
         Task<PasswordDTO> CreateAsync(Guid userId, PasswordDTO passwordDTO);
         Task<PasswordDTO> UpdateAsync(Guid userId, PasswordDTO passwordDTO);
         Task DeleteAsync(Guid userId, PasswordDTO passwordDTO);
+
+        // encryption
+        Task<PasswordDTO> EncryptPasswordAsync(PasswordDTO passwordDTO, string cipherKey);
+        Task<PasswordDTO> DecryptPasswordAsync(PasswordDTO passwordDTO, string cipherKey);
     }
 }

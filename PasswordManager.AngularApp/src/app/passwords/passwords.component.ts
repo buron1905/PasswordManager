@@ -29,7 +29,7 @@ export class PasswordsComponent implements OnInit {
   }
 
   getAllPasswords() {
-    this.passwordService.get().subscribe(
+    this.passwordService.getAll().subscribe(
       data => {
         this.passwords = data;
         this.loading = false;

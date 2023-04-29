@@ -57,7 +57,7 @@ export class AddEditComponent implements OnInit {
   }
 
   fetchData() {
-    this.passwordService.getPassword(this.id).subscribe(data => {
+    this.passwordService.get(this.id).subscribe(data => {
       this.password = data;
       this.passwordForm.patchValue(this.password);
     })

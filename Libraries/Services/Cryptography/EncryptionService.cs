@@ -9,86 +9,145 @@ namespace Services.Cryptography
 {
     public static class EncryptionService
     {
-        public static async Task<byte[]> EncryptUsingAesAsync(string plainTextData, string plainTextKey)
+        #region AES
+
+        public async static Task<string?> EncryptUsingAES(string plainText, string plainTextKey)
         {
+            if (string.IsNullOrWhiteSpace(plainText) || string.IsNullOrWhiteSpace(plainTextKey))
+                return null;
+
             var IV = GenerateRandomIV();
             var salt = GenerateRandomSalt();
             var key = DeriveKeyFromPassword(plainTextKey, salt);
 
-            return await EncryptStringToBytes_Aes(plainTextData, key, IV, salt);
-        }
+            byte[] cipherBytes;
 
-        public static async Task<string> DecryptUsingAesAsync(byte[] encryptedData, string plainTextKey)
-        {
-            return await DecryptStringFromBytes_Aes(encryptedData, plainTextKey);
-        }
-
-        public static string? EncryptUsingRsa(string plainTextData, string plainTextKey)
-        {
             try
             {
-                if (plainTextData == null || plainTextData.Length <= 0)
-                    throw new ArgumentNullException("plainTextData");
-                if (string.IsNullOrEmpty(plainTextKey))
-                    throw new ArgumentNullException("plainTextKey");
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Padding = PaddingMode.PKCS7;
+                    aes.Mode = CipherMode.CBC;
+                    aes.KeySize = 256;
+                    aes.Key = key;
+                    aes.IV = IV;
 
+                    ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
+                        {
+                            using (var streamWriter = new StreamWriter(cryptoStream))
+                            {
+                                await streamWriter.WriteAsync(plainText);
+                            }
+                        }
+                        cipherBytes = memoryStream.ToArray();
+                    }
+                }
+                //save IV and salt along with encrypted data
+                byte[] cipherBytesWithSaltAndIV = new byte[32 + 16 + cipherBytes.Length];
+                Array.Copy(salt, 0, cipherBytesWithSaltAndIV, 0, 32);
+                Array.Copy(IV, 0, cipherBytesWithSaltAndIV, 32, 16);
+                Array.Copy(cipherBytes, 0, cipherBytesWithSaltAndIV, 48, cipherBytes.Length);
+                cipherBytes = cipherBytesWithSaltAndIV;
+            }
+            catch
+            {
+                return null;
+            }
+
+            return Convert.ToBase64String(cipherBytes);
+        }
+
+        public async static Task<string?> DecryptUsingAES(string cipherText, string plainTextKey)
+        {
+            if (string.IsNullOrWhiteSpace(cipherText) || string.IsNullOrWhiteSpace(plainTextKey))
+                return null;
+
+            byte[] cipherBytes = Convert.FromBase64String(cipherText);
+            string plainText = null;
+            try
+            {
+                using (Aes aes = Aes.Create())
+                {
+                    // extract salt, iv and encryptedText
+                    var salt = cipherBytes.Take(32).ToArray();
+                    var iv = cipherBytes.Skip(32).Take(16).ToArray();
+                    var encryptedBytes = cipherBytes.Skip(48).ToArray();
+
+                    aes.Padding = PaddingMode.PKCS7;
+                    aes.Mode = CipherMode.CBC;
+                    aes.KeySize = 256;
+                    aes.Key = DeriveKeyFromPassword(plainTextKey, salt);
+                    aes.IV = iv;
+
+                    ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+
+                    using (MemoryStream memoryStream = new MemoryStream(encryptedBytes))
+                    {
+                        using (CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
+                        {
+                            using (StreamReader streamReader = new StreamReader(cryptoStream))
+                            {
+                                plainText = await streamReader.ReadToEndAsync();
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                return null;
+            }
+
+            return plainText;
+        }
+
+        #endregion
+
+        #region RSA
+
+        public static string? EncryptUsingRSA(string plainText, string plainTextKey)
+        {
+            if (string.IsNullOrWhiteSpace(plainText) || string.IsNullOrWhiteSpace(plainTextKey))
+                return null;
+
+            try
+            {
                 var rsaProvider = GetProviderWithRsaPublicKey(plainTextKey);
-                var result = rsaProvider.Encrypt(Encoding.UTF8.GetBytes(plainTextData), true);
+                var result = rsaProvider.Encrypt(Encoding.UTF8.GetBytes(plainText), true);
 
                 return Convert.ToBase64String(result);
             }
-            catch (Exception)
+            catch
             {
                 return null;
             }
         }
 
-        public static string? DecryptUsingRsa(string encryptedData, string plainTextKey)
+        public static string? DecryptUsingRSA(string cipherText, string plainTextKey)
         {
+            if (string.IsNullOrWhiteSpace(cipherText) || string.IsNullOrWhiteSpace(plainTextKey))
+                return null;
+
             try
             {
-                if (string.IsNullOrEmpty(encryptedData))
-                    throw new ArgumentNullException("encrypted64BaseData");
-                if (string.IsNullOrEmpty(plainTextKey))
-                    throw new ArgumentNullException("plainTextKey");
-
                 var rsaProvider = GetProviderWithRsaPrivateKey(plainTextKey);
-                var result = rsaProvider.Decrypt(Convert.FromBase64String(encryptedData), true);
+                var result = rsaProvider.Decrypt(Convert.FromBase64String(cipherText), true);
 
                 return Encoding.UTF8.GetString(result);
             }
-            catch (Exception ex)
+            catch
             {
                 return null;
             }
         }
 
-        private static RSACryptoServiceProvider GetProviderWithRsaPrivateKey(string pemString)
-        {
-            using (TextReader privateKeyTextReader = new StringReader(pemString))
-            {
-                AsymmetricCipherKeyPair readKeyPair = (AsymmetricCipherKeyPair)new PemReader(privateKeyTextReader).ReadObject();
+        #endregion RSA
 
-                RSAParameters rsaParams = DotNetUtilities.ToRSAParameters((RsaPrivateCrtKeyParameters)readKeyPair.Private);
-                RSACryptoServiceProvider csp = new RSACryptoServiceProvider();
-                csp.ImportParameters(rsaParams);
-                return csp;
-            }
-        }
-
-        private static RSACryptoServiceProvider GetProviderWithRsaPublicKey(string pemString)
-        {
-            using (TextReader publicKeyTextReader = new StringReader(pemString))
-            {
-                RsaKeyParameters publicKeyParam = (RsaKeyParameters)new PemReader(publicKeyTextReader).ReadObject();
-
-                RSAParameters rsaParams = DotNetUtilities.ToRSAParameters(publicKeyParam);
-
-                RSACryptoServiceProvider csp = new RSACryptoServiceProvider();
-                csp.ImportParameters(rsaParams);
-                return csp;
-            }
-        }
+        #region AED - private methods
 
         static byte[] GenerateRandomIV()
         {
@@ -104,136 +163,6 @@ namespace Services.Cryptography
             byte[] salt = new byte[32];
             RandomNumberGenerator.Fill(salt);
             return salt;
-        }
-
-        static async Task<byte[]> EncryptStringToBytes_Aes(string plainText, byte[] Key, byte[] IV, byte[] salt)
-        {
-            if (plainText == null || plainText.Length <= 0)
-                throw new ArgumentNullException("plainText");
-            if (Key == null || Key.Length <= 0)
-                throw new ArgumentNullException("Key");
-            if (IV == null || IV.Length <= 0)
-                throw new ArgumentNullException("IV");
-            byte[] encrypted;
-
-            using (Aes aesAlg = Aes.Create())
-            {
-                aesAlg.Padding = PaddingMode.PKCS7; // ISO10126 is probably better
-                aesAlg.KeySize = 256;
-                aesAlg.Mode = CipherMode.CBC;
-                aesAlg.Key = Key;
-                aesAlg.IV = IV;
-
-                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
-
-                using (MemoryStream msEncrypt = new MemoryStream())
-                {
-                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
-                    {
-                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
-                        {
-                            swEncrypt.Write(plainText);
-                        }
-                    }
-                    encrypted = msEncrypt.ToArray();
-                }
-
-                byte[] ivAndEncryptedData = new byte[16 + 32 + encrypted.Length];
-                Array.Copy(aesAlg.IV, 0, ivAndEncryptedData, 0, 16);
-                Array.Copy(salt, 0, ivAndEncryptedData, 16, 32);
-                Array.Copy(encrypted, 0, ivAndEncryptedData, 48, encrypted.Length);
-                encrypted = ivAndEncryptedData;
-            }
-
-            return encrypted;
-        }
-
-        static async Task<string> DecryptStringFromBytes_Aes(byte[] cipherText, string passphrase)
-        {
-            if (cipherText == null || cipherText.Length <= 0)
-                throw new ArgumentNullException("cipherText");
-
-            string plaintext = null;
-
-            using (Aes aesAlg = Aes.Create())
-            {
-                aesAlg.Padding = PaddingMode.PKCS7;
-                aesAlg.KeySize = 256;
-                aesAlg.Mode = CipherMode.CBC;
-
-                using (MemoryStream msDecrypt = new MemoryStream(cipherText))
-                {
-                    byte[] storedIV = new byte[16];
-                    msDecrypt.Read(storedIV, 0, 16);
-                    aesAlg.IV = storedIV;
-
-                    byte[] storedSalt = new byte[32];
-                    msDecrypt.Read(storedSalt, 0, 32);
-                    var key = DeriveKeyFromPassword(passphrase, storedSalt);
-                    aesAlg.Key = key;
-
-                    ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
-
-                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
-                    {
-                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
-                        {
-                            plaintext = await srDecrypt.ReadToEndAsync();
-                        }
-                    }
-                }
-            }
-
-            return plaintext;
-        }
-
-        public static byte[]? RSAEncrypt(byte[] DataToEncrypt, RSAParameters RSAKeyInfo, bool DoOAEPPadding)
-        {
-            try
-            {
-                byte[] encryptedData;
-                //Create a new instance of RSACryptoServiceProvider.
-                using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
-                {
-                    RSA.ImportParameters(RSAKeyInfo);
-
-                    encryptedData = RSA.Encrypt(DataToEncrypt, DoOAEPPadding);
-                }
-                return encryptedData;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-
-        public static byte[] RSADecrypt(byte[] DataToDecrypt, RSAParameters RSAKeyInfo, bool DoOAEPPadding)
-        {
-            try
-            {
-                byte[] decryptedData;
-                //Create a new instance of RSACryptoServiceProvider.
-                using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
-                {
-                    //Import the RSA Key information. This needs
-                    //to include the private key information.
-                    RSA.ImportParameters(RSAKeyInfo);
-
-                    //Decrypt the passed byte array and specify OAEP padding.  
-                    //OAEP padding is only available on Microsoft Windows XP or
-                    //later.  
-                    decryptedData = RSA.Decrypt(DataToDecrypt, DoOAEPPadding);
-                }
-                return decryptedData;
-            }
-            //Catch and display a CryptographicException  
-            //to the console.
-            catch (CryptographicException e)
-            {
-                Console.WriteLine(e.ToString());
-
-                return null;
-            }
         }
 
         static byte[] DeriveKeyFromPassword(string password, byte[] salt)
@@ -252,81 +181,38 @@ namespace Services.Cryptography
                 desiredKeyLength);
         }
 
-        public async static Task<string> Decrypt(string cipherText, string password)
+        #endregion
+
+        #region RSA - private methods
+
+        static RSACryptoServiceProvider GetProviderWithRsaPrivateKey(string pemString)
         {
-            byte[] cipherBytes = Convert.FromBase64String(cipherText);
-            string plainText = string.Empty;
-
-            using (Aes aes = Aes.Create())
+            using (TextReader privateKeyTextReader = new StringReader(pemString))
             {
-                // extract salt, iv and encryptedText
-                var salt = cipherBytes.Take(32).ToArray();
-                var iv = cipherBytes.Skip(32).Take(16).ToArray();
-                var encryptedBytes = cipherBytes.Skip(48).ToArray();
+                AsymmetricCipherKeyPair readKeyPair = (AsymmetricCipherKeyPair)new PemReader(privateKeyTextReader).ReadObject();
 
-                aes.Padding = PaddingMode.PKCS7;
-                aes.Mode = CipherMode.CBC;
-                aes.KeySize = 256;
-                aes.Key = DeriveKeyFromPassword(password, salt);
-                aes.IV = iv;
-
-                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-
-                using (MemoryStream memoryStream = new MemoryStream(encryptedBytes))
-                {
-                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
-                    {
-                        using (StreamReader streamReader = new StreamReader(cryptoStream))
-                        {
-                            plainText = await streamReader.ReadToEndAsync();
-                        }
-                    }
-                }
+                RSAParameters rsaParams = DotNetUtilities.ToRSAParameters((RsaPrivateCrtKeyParameters)readKeyPair.Private);
+                RSACryptoServiceProvider csp = new RSACryptoServiceProvider();
+                csp.ImportParameters(rsaParams);
+                return csp;
             }
-
-            return plainText;
         }
 
-        public async static Task<string> Encrypt(string plainText, string password)
+        static RSACryptoServiceProvider GetProviderWithRsaPublicKey(string pemString)
         {
-            var IV = GenerateRandomIV();
-            var salt = GenerateRandomSalt();
-            var key = DeriveKeyFromPassword(password, salt);
-
-            byte[] cipherBytes;
-
-            using (Aes aes = Aes.Create())
+            using (TextReader publicKeyTextReader = new StringReader(pemString))
             {
-                aes.Padding = PaddingMode.PKCS7;
-                aes.Mode = CipherMode.CBC;
-                aes.KeySize = 256;
-                aes.Key = key;
-                aes.IV = IV;
+                RsaKeyParameters publicKeyParam = (RsaKeyParameters)new PemReader(publicKeyTextReader).ReadObject();
 
-                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+                RSAParameters rsaParams = DotNetUtilities.ToRSAParameters(publicKeyParam);
 
-                using (MemoryStream memoryStream = new MemoryStream())
-                {
-                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
-                    {
-                        using (var streamWriter = new StreamWriter(cryptoStream))
-                        {
-                            await streamWriter.WriteAsync(plainText);
-                        }
-                    }
-                    cipherBytes = memoryStream.ToArray();
-                }
+                RSACryptoServiceProvider csp = new RSACryptoServiceProvider();
+                csp.ImportParameters(rsaParams);
+                return csp;
             }
-            //save IV and salt along with encrypted data
-            byte[] cipherBytesWithSaltAndIV = new byte[32 + 16 + cipherBytes.Length];
-            Array.Copy(salt, 0, cipherBytesWithSaltAndIV, 0, 32);
-            Array.Copy(IV, 0, cipherBytesWithSaltAndIV, 32, 16);
-            Array.Copy(cipherBytes, 0, cipherBytesWithSaltAndIV, 48, cipherBytes.Length);
-            cipherBytes = cipherBytesWithSaltAndIV;
-
-            return Convert.ToBase64String(cipherBytes);
         }
 
+        #endregion
     }
 }
 

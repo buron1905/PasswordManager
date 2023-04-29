@@ -24,11 +24,6 @@ namespace PasswordManager.MAUI.Services
             throw new NotImplementedException("Email confirmation is only possible via web application.");
         }
 
-        public async Task<string> DecryptString(string password, string textEncrypted)
-        {
-            return await _offlineAuthService.DecryptString(password, textEncrypted);
-        }
-
         public async Task<TfaSetupDTO> DisableTfa(Guid userId, string password, TfaSetupDTO tfaSetupDTO)
         {
             throw new NotImplementedException();
@@ -61,8 +56,7 @@ namespace PasswordManager.MAUI.Services
 
         public async Task<string> GetTfaCode()
         {
-            var secret = await DecryptString(ActiveUserService.Instance.CipherKey, ActiveUserService.Instance.ActiveUser.TwoFactorSecret);
-            return _twoFactorAuthService.GetCurrentPIN(secret);
+            return _twoFactorAuthService.GetCurrentPIN(ActiveUserService.Instance.ActiveUser.TwoFactorSecret);
         }
 
         public async Task<TfaSetupDTO> GetTfaSetup(Guid userId, string password)
@@ -74,15 +68,14 @@ namespace PasswordManager.MAUI.Services
         {
             if (!IsNetworkAccess())
             {
-                var authResponse = await _offlineAuthService.LoginAsync(requestDTO);
-
                 // In offline login token removed
+                var authResponse = await _offlineAuthService.LoginAsync(requestDTO);
                 authResponse.JweToken = null;
                 return authResponse;
             }
 
 
-            requestDTO.Password = EncryptionService.EncryptUsingRsa(requestDTO.Password, EncryptionKeys.privateRsaKey);
+            requestDTO.Password = EncryptionService.EncryptUsingRSA(requestDTO.Password, EncryptionKeys.publicRsaKey);
 
             Uri uri = new Uri(AppConstants.ApiUrl + AppConstants.LoginSuffix);
             string json = JsonSerializer.Serialize(requestDTO);
@@ -135,6 +128,8 @@ namespace PasswordManager.MAUI.Services
                 return authResponse;
             }
 
+            requestDTO.Password = EncryptionService.EncryptUsingRSA(requestDTO.Password, EncryptionKeys.publicRsaKey);
+
             Uri uri = new Uri(AppConstants.ApiUrl + AppConstants.LoginWithTfaSuffix);
             string json = JsonSerializer.Serialize(requestDTO);
             StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -168,6 +163,9 @@ namespace PasswordManager.MAUI.Services
         {
             if (!IsNetworkAccess())
                 return null;
+
+            requestDTO.Password = EncryptionService.EncryptUsingRSA(requestDTO.Password, EncryptionKeys.publicRsaKey);
+            requestDTO.ConfirmPassword = EncryptionService.EncryptUsingRSA(requestDTO.ConfirmPassword, EncryptionKeys.publicRsaKey);
 
             Uri uri = new Uri(string.Format(AppConstants.ApiUrl + AppConstants.RegisterSuffix));
             string json = JsonSerializer.Serialize(requestDTO);
@@ -251,7 +249,7 @@ namespace PasswordManager.MAUI.Services
                 var loginRequest = new LoginWithTfaRequestDTO
                 {
                     EmailAddress = ActiveUserService.Instance.ActiveUser.EmailAddress,
-                    Password = ActiveUserService.Instance.CipherKey,
+                    Password = ActiveUserService.Instance.ActiveUser.Password,
                     Code = await GetTfaCode()
                 };
                 var authResponse = await LoginWithTfaAsync(loginRequest);
@@ -266,5 +264,9 @@ namespace PasswordManager.MAUI.Services
             return request;
         }
 
+        public string GetCipherKeySHA256Value(string plainPassword)
+        {
+            return _offlineAuthService.GetCipherKeySHA256Value(plainPassword);
+        }
     }
 }
