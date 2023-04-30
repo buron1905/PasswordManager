@@ -21,14 +21,8 @@ export class PasswordGeneratorService {
   constructor(private http: HttpClient, private route: ActivatedRoute) { }
 
   generatePassword(data: AbstractControl<any, any>): Observable<PasswordGeneratorSettingsResponse> {
-    // TODO: consider using get method. But the following returns 415 - bad media type
-    //let queryParams = new HttpParams({ fromObject: data as any });
-    //return this.http.get<PasswordGeneratorSettingsResponse>(this.passwordsGeneratorPath, { params: queryParams });
-
     return this.http.post<PasswordGeneratorSettingsResponse>(this.passwordsGeneratorPath, data);
   }
-
-  //TODO: rewrite
 
   public generatePasswordFromModel(settings: PasswordGeneratorSettings): string {
     return this.generatePasswordWithOptions(settings.passwordLength, settings.useNumbers, settings.useSpecialChars, settings.useUppercase, settings.useLowercase);

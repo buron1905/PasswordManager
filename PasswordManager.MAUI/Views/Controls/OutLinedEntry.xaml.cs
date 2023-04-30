@@ -69,3 +69,5 @@ public partial class OutLinedEntry : ContentView
         }
     }
 }
+
+// https://github.com/mistrypragnesh40/OutlinedEntryControlDemo/tree/master/CustomControls

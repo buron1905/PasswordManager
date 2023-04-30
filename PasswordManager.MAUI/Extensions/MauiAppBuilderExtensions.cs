@@ -56,8 +56,6 @@ namespace PasswordManager.MAUI.Extensions
             builder.Services.AddTransient<PasswordsListViewModel>();
             builder.Services.AddTransient<GeneratePasswordViewModel>();
 
-            builder.Services.AddTransient<TfaSettingsViewModel>();
-
             return builder;
         }
 
@@ -76,7 +74,6 @@ namespace PasswordManager.MAUI.Extensions
             builder.Services.AddTransient<PasswordsListPage>();
             builder.Services.AddTransient<GeneratePasswordPage>();
 
-            builder.Services.AddTransient<TfaSettingsPage>();
             builder.Services.AddTransient<AboutPage>();
 
             return builder;

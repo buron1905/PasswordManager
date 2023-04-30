@@ -71,21 +71,10 @@ export class PasswordGeneratorComponent implements OnInit, OnDestroy, AfterViewI
     if (this.generatorForm.invalid) {
       return;
     }
-    //this.loading = true;
 
     this.generatedPassword = this.passwordGeneratorService.generatePasswordFromModel(this.generatorForm.value);
     this.newPasswordEvent.emit(this.generatedPassword);
 
-    //this.passwordGeneratorService.generatePassword(this.generatorForm.value).subscribe(
-    //  data => {
-    //    this.generatedPassword = data.password;
-    //    this.loading = false;
-    //  },
-    //  error => {
-    //    this.toastrService.error(`Error when generating new password occured.\nError:${error}`);
-    //    this.loading = false;
-    //  }
-    //);
   }
 
   get f(): { [key: string]: AbstractControl } {

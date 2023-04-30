@@ -43,8 +43,8 @@ export class AuthService {
   }
 
   refreshTokenExpirationDateTime(): void {
-    // set 7 minutes from now (same as server with HttpOnly cookie)
-    this.tokenExpirationDateTime = new Date(new Date().getTime() + 7 * 60000);
+    // set 10 minutes from now (same as server with HttpOnly cookie)
+    this.tokenExpirationDateTime = new Date(new Date().getTime() + 10 * 60000);
     this.refreshLogoutTimer();
   }
 

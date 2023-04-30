@@ -313,11 +313,6 @@ namespace Services.Auth
             return response;
         }
 
-        public string GetCipherKeySHA256Value(string plainPassword)
-        {
-            return HashingService.HashSHA256ToString(plainPassword);
-        }
-
         public bool ValidateMasterPassword(string password)
         {
             if (string.IsNullOrWhiteSpace(password))
@@ -336,7 +331,7 @@ namespace Services.Auth
                     hasUppercase = true;
                 else if (char.IsDigit(c))
                     hasNumber = true;
-                else if ("(!@#$%".Contains(c))
+                else if ("(!@#$%*".Contains(c))
                     hasSpecialChar = true;
             }
 

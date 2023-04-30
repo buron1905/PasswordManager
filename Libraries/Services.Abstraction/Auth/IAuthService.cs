@@ -21,7 +21,6 @@ namespace Services.Abstraction.Auth
         bool ValidateTfaCode(string secret, string code);
         bool TokenIsValid(string token);
         Task<bool> ResendConfirmEmail(string email);
-        string GetCipherKeySHA256Value(string plainPassword);
         bool ValidateMasterPassword(string password);
 
     }

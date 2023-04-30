@@ -243,11 +243,6 @@ namespace PasswordManager.MAUI.Services
             return request;
         }
 
-        public string GetCipherKeySHA256Value(string plainPassword)
-        {
-            return _offlineAuthService.GetCipherKeySHA256Value(plainPassword);
-        }
-
         public bool ValidateMasterPassword(string password)
         {
             return _offlineAuthService.ValidateMasterPassword(password);

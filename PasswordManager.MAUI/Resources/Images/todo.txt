@@ -1,6 +1,0 @@
-Freeicons.io
-For appsPlace the attribution on the credits/description page of the application.
-From <https://support.freeicons.io/faq-How-to-attribute> 
-
-
-used license: https://www.codeproject.com/info/cpol10.aspx - je potøeba pøidat do projektu

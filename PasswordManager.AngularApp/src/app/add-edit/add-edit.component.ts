@@ -56,19 +56,24 @@ export class AddEditComponent implements OnInit {
       this.password = history.state.password;
       this.password.id = '00000000-0000-0000-0000-000000000000';
 
+      this.loading = true;
       this.password.passwordDecrypted = this.encryptionService.decryptUsingAES(this.password.passwordEncrypted, this.authService.cipherKey);
       this.password.url = this.encryptionService.decryptUsingAES(this.password.url, this.authService.cipherKey);
       this.password.notes = this.encryptionService.decryptUsingAES(this.password.notes, this.authService.cipherKey);
+      this.loading = false;
 
       this.passwordForm.patchValue(this.password);
     }
   }
 
   fetchData() {
+    this.loading = true;
     this.passwordService.get(this.id).subscribe(data => {
       this.password = data;
       this.passwordForm.patchValue(this.password);
-    })
+      this.loading = false;
+    },
+      error => this.loading = false)
   }
 
   onSubmit(): void {
@@ -103,6 +108,7 @@ export class AddEditComponent implements OnInit {
   }
 
   updatePassword(): void {
+    this.loading = true;
     this.passwordService.update(this.id, this.passwordForm.value).subscribe(
       data => {
         this.toastrService.success('Saved');

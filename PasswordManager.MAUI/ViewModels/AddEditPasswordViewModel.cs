@@ -66,13 +66,6 @@ namespace PasswordManager.MAUI.ViewModels
         {
             IsBusy = true;
 
-            //int.TryParse(PasswordId, out var parsedId);
-            //PasswordOriginal = await DatabaseService.GetPassword(Password.Id);
-
-            //PasswordOriginal = await _passwordService.GetByIdAsync(ActiveUserService.Instance.ActiveUser.Id, PasswordOriginal.Id);
-
-            //TODO get new data
-
             if (!PropertiesAreSameAsInOriginalPassword())
             {
                 if (!await AlertService.ShowYesNo("Refreshing will discard your changes!", "Unsaved changes will be lost. Do you still want to leave?"))

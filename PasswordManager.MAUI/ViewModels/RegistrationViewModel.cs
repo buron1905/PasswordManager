@@ -59,12 +59,8 @@ namespace PasswordManager.MAUI.ViewModels
                 return;
             }
 
-            if (!ValidationHelper.ValidateForm(registrationRequestDTO, Shell.Current.CurrentPage) || !_authService.ValidateMasterPassword(Password))
-            {
-                if (!_authService.ValidateMasterPassword(Password))
-                    masterPasswordError.IsVisible = true;
+            if (!ValidationHelper.ValidateForm(registrationRequestDTO, Shell.Current.CurrentPage))
                 return;
-            }
 
             IsBusy = true;
 
