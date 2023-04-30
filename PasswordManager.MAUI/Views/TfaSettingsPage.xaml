@@ -13,61 +13,71 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <ScrollView>
-            <StackLayout Padding="20">
-                <!--<Label Margin="0,0,0,15" Text="Current Settings" Style="{StaticResource LabelHeading}"/>-->
-                <StackLayout IsVisible="{Binding TfaEnabled}">
-                    <Label Margin="0,0,0,20" Text="Two-Factor Authentication is enabled." Style="{StaticResource LabelMedium}"/>
-                    <Label Margin="0,0,0,0" Text="QR Code:" Style="{StaticResource LabelMedium}"/>
-                    <Image Source="{Binding QrCodeSetupImageBytes, Mode=OneWay, Converter={StaticResource ByteArrayToImageSourceConverter}}"/>
-                    <HorizontalStackLayout>
-                        <Label Margin="0,0,0,0" Text="Manual key:" Style="{StaticResource LabelMedium}"/>
-                        <Label Text="(copy)" Style="{StaticResource LabelLink}" HorizontalTextAlignment="Start" VerticalTextAlignment="Start">
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding CopyCommand}" />
-                            </Label.GestureRecognizers>
-                        </Label>
-                    </HorizontalStackLayout>
-                    <Label Margin="0,0,0,10" Text="{Binding AuthKey}" Style="{StaticResource LabelMedium}"/>
-                </StackLayout>
-                <StackLayout IsVisible="{Binding TfaNotEnabled}">
-                    <Label Margin="0,0,0,20" Text="Two-Factor Authentication is disabled." Style="{StaticResource LabelMedium}"/>
-                    <Label Margin="0,0,0,10" Text="Step 1" Style="{StaticResource LabelLarge}"/>
-                    <Label Margin="0,0,0,0" Text="Scan the following QR code or enter key using the Google Authenticator app:" Style="{StaticResource LabelMedium}"/>
-                    <Label Margin="0,0,0,0" Text="QR Code:" Style="{StaticResource LabelMedium}"/>
-                    <Image Source="{Binding QrCodeSetupImageUrl}" Aspect="AspectFill"/>
-                    <HorizontalStackLayout>
-                        <Label Margin="0,0,0,0" Text="Manual key:" Style="{StaticResource LabelMedium}"/>
-                        <Label Text="(copy)" Style="{StaticResource LabelLink}" HorizontalTextAlignment="Start" VerticalTextAlignment="Start">
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding CopyCommand}" />
-                            </Label.GestureRecognizers>
-                        </Label>
-                    </HorizontalStackLayout>
-                    <Label Margin="0,0,0,0" Text="{Binding AuthKey}" Style="{StaticResource LabelMedium}"/>
-                    <Label Margin="0,0,0,10" Text="Step 2" Style="{StaticResource LabelLarge}"/>
-                </StackLayout>
-                <Label Margin="0,5,0,10" IsVisible="{Binding TfaEnabled}" Text="Type the code provided by the Google Authenticator app to disable two-factor authentication:" Style="{StaticResource LabelMedium}" />
-                <Label IsVisible="{Binding TfaNotEnabled}" Text="Type the code provided by the Google Authenticator app to verify your configuration:" Style="{StaticResource LabelMedium}" />
-                <controls:OutLinedEntry Placeholder="Code" Text="{Binding Code}" Margin="0,10,0,20"/>
-                <Button
+        <Grid>
+            <ScrollView>
+                <StackLayout Padding="20">
+                    <!--<Label Margin="0,0,0,15" Text="Current Settings" Style="{StaticResource LabelHeading}"/>-->
+                    <StackLayout IsVisible="{Binding TfaEnabled}">
+                        <Label Margin="0,0,0,20" Text="Two-Factor Authentication is enabled." Style="{StaticResource LabelMedium}"/>
+                        <Label Margin="0,0,0,0" Text="QR Code:" Style="{StaticResource LabelMedium}"/>
+                        <Image Source="{Binding QrCodeSetupImageBytes, Mode=OneWay, Converter={StaticResource ByteArrayToImageSourceConverter}}"/>
+                        <HorizontalStackLayout>
+                            <Label Margin="0,0,0,0" Text="Manual key:" Style="{StaticResource LabelMedium}"/>
+                            <Label Text="(copy)" Style="{StaticResource LabelLink}" HorizontalTextAlignment="Start" VerticalTextAlignment="Start">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding CopyCommand}" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </HorizontalStackLayout>
+                        <Label Margin="0,0,0,10" Text="{Binding AuthKey}" Style="{StaticResource LabelMedium}"/>
+                    </StackLayout>
+                    <StackLayout IsVisible="{Binding TfaNotEnabled}">
+                        <Label Margin="0,0,0,20" Text="Two-Factor Authentication is disabled." Style="{StaticResource LabelMedium}"/>
+                        <Label Margin="0,0,0,10" Text="Step 1" Style="{StaticResource LabelLarge}"/>
+                        <Label Margin="0,0,0,0" Text="Scan the following QR code or enter key using the Google Authenticator app:" Style="{StaticResource LabelMedium}"/>
+                        <Label Margin="0,0,0,0" Text="QR Code:" Style="{StaticResource LabelMedium}"/>
+                        <Image Source="{Binding QrCodeSetupImageUrl}" Aspect="AspectFill"/>
+                        <HorizontalStackLayout>
+                            <Label Margin="0,0,0,0" Text="Manual key:" Style="{StaticResource LabelMedium}"/>
+                            <Label Text="(copy)" Style="{StaticResource LabelLink}" HorizontalTextAlignment="Start" VerticalTextAlignment="Start">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding CopyCommand}" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </HorizontalStackLayout>
+                        <Label Margin="0,0,0,0" Text="{Binding AuthKey}" Style="{StaticResource LabelMedium}"/>
+                        <Label Margin="0,0,0,10" Text="Step 2" Style="{StaticResource LabelLarge}"/>
+                    </StackLayout>
+                    <Label Margin="0,5,0,10" IsVisible="{Binding TfaEnabled}" Text="Type the code provided by the Google Authenticator app to disable two-factor authentication:" Style="{StaticResource LabelMedium}" />
+                    <Label IsVisible="{Binding TfaNotEnabled}" Text="Type the code provided by the Google Authenticator app to verify your configuration:" Style="{StaticResource LabelMedium}" />
+                    <controls:OutLinedEntry Placeholder="Code" Text="{Binding Code}" Margin="0,10,0,20"/>
+                    <Button
                     IsVisible="{Binding TfaEnabled}"
                     x:Name="disableBtn"
                     Text="Disable Two-Factor Authentication"
                     IsEnabled="{Binding IsNotBusy}"
                     Command="{Binding DisableCommand}"/>
-                <Button
+                    <Button
                     IsVisible="{Binding TfaNotEnabled}"
                     x:Name="enableBtn"
                     Text="Enable Two-Factor Authentication"
                     IsEnabled="{Binding IsNotBusy}"
                     Command="{Binding EnableCommand}"/>
-                <ActivityIndicator
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"
-                        IsRunning="{Binding IsBusy}"
-                        IsVisible="{Binding IsBusy}"/>
-            </StackLayout>
-        </ScrollView>
+                </StackLayout>
+            </ScrollView>
+
+            <Frame x:Name="loadingOverlay"
+                   IsVisible="{Binding IsBusy}"
+                   BackgroundColor="Transparent"
+                   CornerRadius="0"
+                   Padding="0">
+                <Grid BackgroundColor="#C0808080">
+                    <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                       Color="White"
+                                       VerticalOptions="CenterAndExpand"
+                                       HorizontalOptions="CenterAndExpand" />
+                </Grid>
+            </Frame>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

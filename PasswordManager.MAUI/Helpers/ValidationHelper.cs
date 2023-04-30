@@ -4,7 +4,6 @@ using System.Reflection;
 namespace PasswordManager.MAUI.Helpers
 {
     // Code from https://www.codeproject.com/Articles/1274851/Xamarin-Forms-Validations-Made-Simple
-
     public static class ValidationHelper
     {
         public static bool ValidateForm(object model, Page page)

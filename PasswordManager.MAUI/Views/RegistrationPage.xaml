@@ -7,40 +7,51 @@
              x:DataType="viewmodels:RegistrationViewModel"
              Title="{Binding Title}">
     <ContentPage.Content>
-        <ScrollView>
-            <StackLayout Padding="20">
-                <Label Text="Registration" HorizontalOptions="Center" FontSize="50"/>
-                <controls:OutLinedEntry Text="{Binding EmailAddress}" Placeholder="Email Address" Keyboard="Email" Margin="0,10,0,10"/>
-                <Label x:Name="EmailAddressError" 
+        <Grid>
+            <ScrollView>
+                <StackLayout Padding="20">
+                    <Label Text="Registration" HorizontalOptions="Center" FontSize="50"/>
+                    <controls:OutLinedEntry Text="{Binding EmailAddress}" Placeholder="Email Address" Keyboard="Email" Margin="0,10,0,10"/>
+                    <Label x:Name="EmailAddressError" 
                     IsVisible="False" Style="{StaticResource LabelError}" />
-                <Label x:Name="UsedEmailError" Text="Email is already used by another user."
+                    <Label x:Name="UsedEmailError" Text="Email is already used by another user."
                     IsVisible="False" Style="{StaticResource LabelError}" />
-                <controls:TogglePasswordEntry Placeholder="Password" Margin="0,10,0,10"
+                    <controls:TogglePasswordEntry Placeholder="Password" Margin="0,10,0,10"
                     Text="{Binding Password}"/>
-                <Label x:Name="PasswordError" 
+                    <Label x:Name="PasswordError" 
                     IsVisible="False" Style="{StaticResource LabelError}" />
-                <Label x:Name="MasterPasswordError" Text="Password must have at least one lowercase letter, one uppercase letter, one number, and one special character."
+                    <Label x:Name="MasterPasswordError" Text="Password must have at least one lowercase letter, one uppercase letter, one number, and one special character."
                        IsVisible="False" Style="{StaticResource LabelError}" />
-                <controls:TogglePasswordEntry Placeholder="Confirm Password" Margin="0,10,0,10"
+                    <controls:TogglePasswordEntry Placeholder="Confirm Password" Margin="0,10,0,10"
                     Text="{Binding ConfirmPassword}"/>
-                <Label x:Name="ConfirmPasswordError" 
+                    <Label x:Name="ConfirmPasswordError" 
                     IsVisible="False" Style="{StaticResource LabelError}" />
-                <Button 
+                    <Button 
                     x:Name="submit"
                     Text="Register"
                     IsEnabled="{Binding IsNotBusy}"
                     Command="{Binding RegisterCommand}"/>
-                <Label Text="Login" Style="{StaticResource LabelLink}">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoToLoginCommand}" />
-                    </Label.GestureRecognizers>
-                </Label>
-                <ActivityIndicator
-                    HorizontalOptions="Center"
-                    VerticalOptions="Center"
-                    IsRunning="{Binding IsBusy}"
-                    IsVisible="{Binding IsBusy}"/>
-            </StackLayout>
-        </ScrollView>
+                    <Label Text="Login" Style="{StaticResource LabelLink}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GoToLoginCommand}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </StackLayout>
+            </ScrollView>
+
+            <Frame x:Name="loadingOverlay"
+                   IsVisible="{Binding IsBusy}"
+                   BackgroundColor="Transparent"
+                   CornerRadius="0"
+                   Padding="0">
+                <Grid BackgroundColor="#C0808080">
+                    <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                       Color="White"
+                                       VerticalOptions="CenterAndExpand"
+                                       HorizontalOptions="CenterAndExpand" />
+                </Grid>
+            </Frame>
+        </Grid>
+
     </ContentPage.Content>
 </ContentPage>

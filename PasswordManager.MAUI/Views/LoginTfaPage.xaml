@@ -7,26 +7,36 @@
              x:DataType="viewmodels:LoginTfaViewModel"
              Title="{Binding Title}">
     <ContentPage.Content>
-        <ScrollView>
-            <StackLayout Padding="20">
-                <controls:OutLinedEntry Placeholder="Code"  Margin="0,10,0,10"
+        <Grid>
+            <ScrollView>
+                <StackLayout Padding="20">
+                    <controls:OutLinedEntry Placeholder="Code"  Margin="0,10,0,10"
                     Text="{Binding Code}"/>
-                <Button 
+                    <Button 
                     x:Name="submit"
                     Text="Verify"
                     IsEnabled="{Binding IsNotBusy}"
                     Command="{Binding VerifyCommand}"/>
-                <Label Text="Cancel" Style="{StaticResource LabelLink}">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding CancelCommand}" />
-                    </Label.GestureRecognizers>
-                </Label>
-                <ActivityIndicator
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"
-                        IsRunning="{Binding IsBusy}"
-                        IsVisible="{Binding IsBusy}"/>
-            </StackLayout>
-        </ScrollView>
+                    <Label Text="Cancel" Style="{StaticResource LabelLink}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding CancelCommand}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                </StackLayout>
+            </ScrollView>
+            
+            <Frame x:Name="loadingOverlay"
+                   IsVisible="{Binding IsBusy}"
+                   BackgroundColor="Transparent"
+                   CornerRadius="0"
+                   Padding="0">
+                <Grid BackgroundColor="#C0808080">
+                    <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                       Color="White"
+                                       VerticalOptions="CenterAndExpand"
+                                       HorizontalOptions="CenterAndExpand" />
+                </Grid>
+            </Frame>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>
