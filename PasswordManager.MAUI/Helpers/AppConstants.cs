@@ -4,7 +4,6 @@
     {
         // Base
         public const string ApiUrl = "https://passwordmanagerwebapi.azurewebsites.net/api/";
-        //public const string ApiUrl = "https://localhost:5001/api/";
 
         // Auth
         public const string LoginSuffix = "Auth/login/";

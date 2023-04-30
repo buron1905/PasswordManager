@@ -143,12 +143,12 @@ namespace PasswordManager.MAUI.Services
 
         public bool TokenIsValid(string token)
         {
-            throw new NotImplementedException();
+            return _offlineAuthService.TokenIsValid(token);
         }
 
         public bool ValidateTfaCode(string secret, string code)
         {
-            throw new NotImplementedException();
+            return _offlineAuthService.ValidateTfaCode(secret, code);
         }
 
         public async Task<HttpRequestMessage> AddAuthorizationHeaderToRequest(HttpRequestMessage request)
@@ -191,17 +191,17 @@ namespace PasswordManager.MAUI.Services
 
         public AuthResponseDTO GetAuthResponse(UserDTO user, string emailAddress, bool isAuthSuccessful = true, bool tfaEnabled = false, bool tfaChecked = true, bool emailVerified = true)
         {
-            throw new NotImplementedException();
+            return _offlineAuthService.GetAuthResponse(user, emailAddress, isAuthSuccessful, tfaEnabled, tfaChecked, emailVerified);
         }
 
         public Task<TfaSetupDTO> EnableTfa(Guid userId, TfaSetupDTO tfaSetupDTO)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("Only through web app");
         }
 
         public Task<TfaSetupDTO> DisableTfa(Guid userId, TfaSetupDTO tfaSetupDTO)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("Only through web app");
         }
 
         public async Task<bool> ResendConfirmEmail(string email)

@@ -1,7 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-
-namespace Services.Cryptography
+﻿namespace Services.Cryptography
 {
     public static class HashingService
     {
@@ -16,29 +13,5 @@ namespace Services.Cryptography
             return BCrypt.Net.BCrypt.Verify(text, hash);
         }
 
-        public static string HashSHA256ToString(string text)
-        {
-            byte[] data = Encoding.UTF8.GetBytes(text);
-            byte[] hash;
-            using (SHA256 sha = SHA256.Create())
-            {
-                hash = sha.ComputeHash(data);
-            }
-
-            return Convert.ToBase64String(hash);
-            //return ParsingService.ByteArrayToString(hash);
-        }
-
-        public static byte[] HashSHA256ToBytes(string text)
-        {
-            byte[] data = Encoding.UTF8.GetBytes(text);
-            byte[] hash;
-            using (SHA256 sha = SHA256.Create())
-            {
-                hash = sha.ComputeHash(data);
-            }
-
-            return hash;
-        }
     }
 }

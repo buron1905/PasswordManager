@@ -96,7 +96,6 @@ namespace Services.Data
                 throw new PasswordDoesNotBelongToUserException(user.Id, password.Id);
             }
 
-            // TODO: Check update logic
             password.PasswordName = passwordDTO.PasswordName;
             password.UserName = passwordDTO.UserName;
             password.PasswordEncrypted = passwordDTO.PasswordEncrypted;
