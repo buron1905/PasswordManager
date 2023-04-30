@@ -2,7 +2,7 @@
 {
     public static class EncryptionKeys
     {
-        // TODO move securely keys
+        // Should be in Azure Key Vault for maximal security
         public static string privateRsaKey = @"-----BEGIN RSA PRIVATE KEY-----
 MIIEpAIBAAKCAQEAieE7DlvEwNgtndPx6krZbZxDRRcFxoZ0nkqsRt1t1faQfSLj
 St1EyHJnsIoDVSb4xuqnZO9OpquaQtosmjL1+9ftFR1Y1HggUOaKo+fmBsEvXJYj

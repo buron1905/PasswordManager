@@ -18,8 +18,6 @@ namespace Persistance.MAUI.Repositories
             if (_connection is not null)
                 return;
 
-            //File.Delete(Constants.DatabasePath);
-
             _connection = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
 
             await _connection.CreateTableAsync<T>();
@@ -54,9 +52,7 @@ namespace Persistance.MAUI.Repositories
                 entity.UDT = DateTime.MinValue; // This will be updated to server time when syncing
             }
 
-            var tableBefore = await _connection.Table<T>().ToListAsync();
             await _connection.InsertOrReplaceAsync(entity);
-            var tableAfter = await _connection.Table<T>().ToListAsync();
         }
 
         public async Task Update(T entity)
@@ -65,9 +61,7 @@ namespace Persistance.MAUI.Repositories
             if (!IsFromServerOrUpToDate(entity))
                 entity.UDTLocal = DateTime.UtcNow;
 
-            var tableBefore = await _connection.Table<T>().ToListAsync();
             await _connection.UpdateAsync(entity);
-            var tableAfter = await _connection.Table<T>().ToListAsync();
         }
 
         public async Task Delete(T entity)
@@ -77,9 +71,7 @@ namespace Persistance.MAUI.Repositories
             if ((IsFromServerOrUpToDate(entity) && entity.Deleted)
                 || IsOnlyLocal(entity))
             {
-                var tableBefore = await _connection.Table<T>().ToListAsync();
                 await _connection.Table<T>().DeleteAsync(x => x.Id == entity.Id);
-                var tableAfter = await _connection.Table<T>().ToListAsync();
             }
             else
             {

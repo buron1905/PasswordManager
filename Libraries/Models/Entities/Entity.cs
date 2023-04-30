@@ -12,11 +12,15 @@ namespace Models
 
         [Required]
         [SQLite.NotNull]
+        public DateTime IDT { get; set; }
+
+        [Required]
+        [SQLite.NotNull]
         public DateTime UDT { get; set; }
 
         [Required]
         [SQLite.NotNull]
-        public DateTime IDT { get; set; }
+        public DateTime UDTLocal { get; set; }
 
         [Required]
         [SQLite.NotNull]
@@ -26,8 +30,5 @@ namespace Models
         [SQLite.NotNull]
         public bool Deleted { get; set; }
 
-        [Required]
-        [SQLite.NotNull]
-        public DateTime UDTLocal { get; set; }
     }
 }

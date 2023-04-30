@@ -67,7 +67,6 @@ namespace Services.Data
             if (user is null)
                 throw new UserNotFoundException(userDTO.EmailAddress);
 
-            // TODO: Check update logic
             user.EmailAddress = userDTO.EmailAddress;
             user.PasswordHASH = userDTO.PasswordHASH;
             user.TwoFactorEnabled = userDTO.TwoFactorEnabled;
