@@ -38,6 +38,14 @@ namespace PasswordManager.WebAPI.Controllers
         {
             loginDTO.Password = EncryptionService.DecryptUsingRSA(loginDTO.Password, EncryptionKeys.privateRsaKey);
 
+            if (!_authService.ValidateMasterPassword(loginDTO.Password))
+                return BadRequest(new AuthResponseDTO
+                {
+                    IsAuthSuccessful = false,
+                    ErrorMessage = "Password must have at least one lowercase letter, " +
+                    "one uppercase letter, one number, and one special character (!@#$%^&*)."
+                });
+
             var response = await _authService.LoginAsync(loginDTO);
 
             if (response == null)
@@ -59,9 +67,14 @@ namespace PasswordManager.WebAPI.Controllers
             registerDTO.ConfirmPassword = EncryptionService.DecryptUsingRSA(registerDTO.ConfirmPassword, EncryptionKeys.privateRsaKey);
 
             if (!registerDTO.Password.Equals(registerDTO.ConfirmPassword))
-            {
                 return BadRequest(new AuthResponseDTO { IsAuthSuccessful = false, ErrorMessage = "Passwords do not match" });
-            }
+            if (!_authService.ValidateMasterPassword(registerDTO.Password))
+                return BadRequest(new AuthResponseDTO
+                {
+                    IsAuthSuccessful = false,
+                    ErrorMessage = "Password must have at least one lowercase letter, " +
+                    "one uppercase letter, one number, and one special character (!@#$%^&*)."
+                });
 
             var response = await _authService.RegisterAsync(registerDTO);
 

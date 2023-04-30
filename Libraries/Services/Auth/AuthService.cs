@@ -319,6 +319,31 @@ namespace Services.Auth
             return HashingService.HashSHA256ToString(plainPassword);
         }
 
+        public bool ValidateMasterPassword(string password)
+        {
+            if (string.IsNullOrWhiteSpace(password))
+                return false;
+
+            bool hasLowercase = false;
+            bool hasUppercase = false;
+            bool hasNumber = false;
+            bool hasSpecialChar = false;
+
+            foreach (char c in password)
+            {
+                if (char.IsLower(c))
+                    hasLowercase = true;
+                else if (char.IsUpper(c))
+                    hasUppercase = true;
+                else if (char.IsDigit(c))
+                    hasNumber = true;
+                else if ("(!@#$%".Contains(c))
+                    hasSpecialChar = true;
+            }
+
+            return hasLowercase && hasUppercase && hasNumber && hasSpecialChar;
+        }
+
         #endregion
     }
 }

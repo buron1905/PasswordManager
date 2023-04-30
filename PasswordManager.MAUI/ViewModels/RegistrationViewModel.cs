@@ -44,6 +44,10 @@ namespace PasswordManager.MAUI.ViewModels
         {
             var registrationRequestDTO = new RegisterRequestDTO() { EmailAddress = EmailAddress, Password = Password, ConfirmPassword = ConfirmPassword };
 
+            var masterPasswordError = Shell.Current.CurrentPage.FindByName<Label>("MasterPasswordError");
+            if (masterPasswordError is not null)
+                masterPasswordError.IsVisible = false;
+
             var usedEmailLabel = Shell.Current.CurrentPage.FindByName<Label>("UsedEmailError");
             if (usedEmailLabel is not null)
                 usedEmailLabel.IsVisible = false;
@@ -55,8 +59,12 @@ namespace PasswordManager.MAUI.ViewModels
                 return;
             }
 
-            if (!ValidationHelper.ValidateForm(registrationRequestDTO, Shell.Current.CurrentPage))
+            if (!ValidationHelper.ValidateForm(registrationRequestDTO, Shell.Current.CurrentPage) || !_authService.ValidateMasterPassword(Password))
+            {
+                if (!_authService.ValidateMasterPassword(Password))
+                    masterPasswordError.IsVisible = true;
                 return;
+            }
 
             IsBusy = true;
 
@@ -77,6 +85,7 @@ namespace PasswordManager.MAUI.ViewModels
                 }
                 else
                 {
+                    // Email already used
                     if (usedEmailLabel is not null)
                         usedEmailLabel.IsVisible = true;
                     await AlertService.ShowToast("Registration Unsuccessful");

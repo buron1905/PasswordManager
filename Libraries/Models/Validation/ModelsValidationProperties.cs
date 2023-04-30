@@ -18,7 +18,6 @@
         public const string MaxNotesLengthErrorMessage = "Password notes can't be longer than {1} characters.";
         public const string MaxURLLengthErrorMessage = "URL can't be longer than {1} characters.";
         public const string PasswordsDoNotMatchErrorMessage = "Passwords do not match.";
-        public const string ComplexPasswordErrorMessage = "Password must have at least one lowercase letter, one uppercase letter, one number, and one special character (!@#$%^&*).";
 
         public const string RequiredEmailAddressErrorMessage = "The Email Address field is required.";
         public const string RequiredConfirmPasswordErrorMessage = "The Confirm Password field is required.";

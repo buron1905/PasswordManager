@@ -91,5 +91,6 @@ namespace Services.Data
 
             await _userRepository.Delete(user);
         }
+
     }
 }

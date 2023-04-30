@@ -28,11 +28,11 @@ namespace PasswordManager.MAUI.Extensions
 
             builder.Services.AddSingleton<IMauiPasswordService, MauiPasswordService>();
 
-            builder.Services.AddTransient<IUserService, UserService>();
-            builder.Services.AddTransient<IPasswordService, PasswordService>();
+            builder.Services.AddSingleton<IUserService, UserService>();
+            builder.Services.AddSingleton<IPasswordService, PasswordService>();
 
-            builder.Services.AddTransient<IUserRepository, MauiUserRepository>();
-            builder.Services.AddTransient<IPasswordRepository, MauiPasswordRepository>();
+            builder.Services.AddSingleton<IUserRepository, MauiUserRepository>();
+            builder.Services.AddSingleton<IPasswordRepository, MauiPasswordRepository>();
 
             // Transient
             builder.Services.AddTransient<IJwtService, JwtService>();
@@ -52,7 +52,7 @@ namespace PasswordManager.MAUI.Extensions
             builder.Services.AddTransient<RegistrationViewModel>();
             builder.Services.AddTransient<RegistrationSuccessfulViewModel>();
 
-            builder.Services.AddTransient<AddEditPasswordViewModel>();
+            builder.Services.AddSingleton<AddEditPasswordViewModel>();
             builder.Services.AddTransient<PasswordsListViewModel>();
             builder.Services.AddTransient<GeneratePasswordViewModel>();
 
