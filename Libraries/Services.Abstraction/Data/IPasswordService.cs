@@ -12,7 +12,7 @@ namespace Services.Abstraction.Data
         Task DeleteAsync(Guid userId, PasswordDTO passwordDTO);
 
         // encryption
-        Task<PasswordDTO> EncryptPasswordAsync(PasswordDTO passwordDTO, string cipherKey);
-        Task<PasswordDTO> DecryptPasswordAsync(PasswordDTO passwordDTO, string cipherKey);
+        Task<PasswordDTO> EncryptPasswordAsync(PasswordDTO passwordDTO, string cipherKey, bool encryptOnlyNames = false);
+        Task<PasswordDTO> DecryptPasswordAsync(PasswordDTO passwordDTO, string cipherKey, bool decryptOnlyNames = false);
     }
 }

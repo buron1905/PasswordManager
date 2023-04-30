@@ -71,7 +71,7 @@
           </div>
         </div>
         <div class="mb-3 form-floating">
-          <textarea maxlength="255" type="" class="form-control" id="notes" formControlName="notes" aria-describedby="notesHelpBlock" placeholder="Notes"
+          <textarea maxlength="255" class="form-control textAreaMinHeight" id="notes" formControlName="notes" aria-describedby="notesHelpBlock" placeholder="Notes"
                     [ngClass]="{ 'is-invalid': submitted && notes?.errors }"></textarea>
           <label for="notes" class="form-label">Notes</label>
           <div *ngIf="submitted && notes?.errors" class="invalid-feedback">

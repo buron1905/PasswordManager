@@ -113,6 +113,7 @@ export class SettingsComponent implements OnInit {
     this.authService.loginTfa(this.tfaForm.value).subscribe(
       data => {
         if (data.isAuthSuccessful) {
+          this.authService.refreshTokenExpirationDateTime();
           this.tfaForm.patchValue({ code: '' });
           this.loading = false;
         }

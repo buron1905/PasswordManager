@@ -132,19 +132,6 @@ namespace PasswordManager.WebAPI.Controllers
             return Ok(response);
         }
 
-        [HttpPost("tfa-login-with-token")]
-        public async Task<IActionResult> TfaLoginWithToken([FromBody] LoginTfaRequestDTO requestDTO)
-        {
-            var response = await _authService.LoginTfaAsync(requestDTO);
-
-            if (response == null)
-                return Unauthorized(new AuthResponseDTO { IsAuthSuccessful = false, ErrorMessage = "Invalid Authentication" });
-
-            SetTokenCookie(response.JweToken!);
-
-            return Ok(response);
-        }
-
         [Authorize]
         [HttpGet("tfa-setup")]
         public async Task<IActionResult> GetTfaSetup()

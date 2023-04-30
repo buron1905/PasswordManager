@@ -85,14 +85,14 @@ namespace PasswordManager.MAUI.Services
             return await _offlinePasswordService.GetByIdAsync(userId, passwordId);
         }
 
-        public async Task<PasswordDTO> EncryptPasswordAsync(PasswordDTO passwordDTO, string cipherKey)
+        public async Task<PasswordDTO> EncryptPasswordAsync(PasswordDTO passwordDTO, string cipherKey, bool encryptOnlyNames = false)
         {
-            return await _offlinePasswordService.EncryptPasswordAsync(passwordDTO, cipherKey);
+            return await _offlinePasswordService.EncryptPasswordAsync(passwordDTO, cipherKey, encryptOnlyNames);
         }
 
-        public async Task<PasswordDTO> DecryptPasswordAsync(PasswordDTO passwordDTO, string cipherKey)
+        public async Task<PasswordDTO> DecryptPasswordAsync(PasswordDTO passwordDTO, string cipherKey, bool decryptOnlyNames = false)
         {
-            return await _offlinePasswordService.DecryptPasswordAsync(passwordDTO, cipherKey);
+            return await _offlinePasswordService.DecryptPasswordAsync(passwordDTO, cipherKey, decryptOnlyNames);
         }
     }
 }

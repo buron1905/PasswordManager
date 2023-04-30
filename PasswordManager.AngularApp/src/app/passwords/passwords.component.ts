@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalDeletePasswordComponent } from '../modal-delete-password/modal-delete-password.component';
 import { CallbackPipe } from '../utils/callback.pipe';
+import { EncryptionService } from '../services/encryption.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-passwords',
@@ -21,7 +23,7 @@ export class PasswordsComponent implements OnInit {
   loading = false;
 
   constructor(private passwordService: PasswordService, private toastrService: ToastrService, private clipboardService: ClipboardService, private router: Router,
-    private modalService: NgbModal  ) { }
+    private modalService: NgbModal, private authService: AuthService, private encryptionService: EncryptionService  ) { }
 
   ngOnInit(): void {
     this.loading = true;
@@ -29,7 +31,7 @@ export class PasswordsComponent implements OnInit {
   }
 
   getAllPasswords() {
-    this.passwordService.getAll().subscribe(
+    this.passwordService.getAll(true).subscribe(
       data => {
         this.passwords = data;
         this.loading = false;
@@ -106,9 +108,14 @@ export class PasswordsComponent implements OnInit {
     }
   }
 
+  copyEncryptedPasswordToClipboard(encryptedPasswordText: string): void {
+    let decryptedPassword = this.encryptionService.decryptUsingAES(encryptedPasswordText, this.authService.cipherKey);
+    this.copyToClipboard(decryptedPassword);
+  }
+
   copyToClipboard(text: string): void {
     this.clipboardService.copyFromContent(text);
-    this.toastrService.success('Copied to clipboard');
+    this.toastrService.info('Copied to clipboard');
   }
 
   toggleFavorite(): void {

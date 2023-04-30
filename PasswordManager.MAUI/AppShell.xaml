@@ -20,7 +20,7 @@
         </StackLayout>
     </Shell.FlyoutFooter>
 
-    <ShellContent Title="Loading" Route="LoadingPage" ContentTemplate="{DataTemplate views:LoadingPage}" Shell.FlyoutBehavior="Disabled" Shell.FlyoutItemIsVisible="False" Shell.NavBarIsVisible="False"/>
+    <!--<ShellContent Title="Loading" Route="LoadingPage" ContentTemplate="{DataTemplate views:LoadingPage}" Shell.FlyoutBehavior="Disabled" Shell.FlyoutItemIsVisible="False" Shell.NavBarIsVisible="False"/>-->
     <ShellContent Title="Login" Route="LoginPage" ContentTemplate="{DataTemplate views:LoginPage}" Shell.FlyoutBehavior="Disabled" Shell.FlyoutItemIsVisible="False" Shell.NavBarIsVisible="False"/>
     <ShellContent Title="Register" Route="RegistrationPage" ContentTemplate="{DataTemplate views:RegistrationPage}" Shell.FlyoutBehavior="Disabled" Shell.FlyoutItemIsVisible="False" Shell.NavBarIsVisible="False"/>
 
