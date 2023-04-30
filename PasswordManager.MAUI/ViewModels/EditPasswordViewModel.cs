@@ -10,22 +10,9 @@ using Services.Cryptography;
 namespace PasswordManager.MAUI.ViewModels
 {
     [QueryProperty(nameof(PasswordOriginal), nameof(PasswordDTO))]
-    [QueryProperty(nameof(PasswordOriginal), $"{nameof(PasswordDTO)}Duplicate")]
-    public partial class AddEditPasswordViewModel : BaseViewModel, IQueryAttributable
+    public partial class EditPasswordViewModel : BaseViewModel, IQueryAttributable
     {
         #region Properties
-
-        [ObservableProperty]
-        bool _isRefreshing;
-
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(CanRefresh))]
-        [NotifyPropertyChangedFor(nameof(IsNotNew))]
-        bool _isNew;
-
-        public bool CanRefresh => !IsNew;
-
-        public bool IsNotNew => !IsNew;
 
         [ObservableProperty]
         PasswordDTO _passwordOriginal = new();
@@ -52,75 +39,13 @@ namespace PasswordManager.MAUI.ViewModels
 
         #endregion
 
-        public AddEditPasswordViewModel(IMauiPasswordService passwordService)
+        public EditPasswordViewModel(IMauiPasswordService passwordService)
         {
-            Title = "Add password";
-            IsNew = true;
+            Title = "Edit password";
             _passwordService = passwordService;
         }
 
         #region Commands
-
-        [RelayCommand]
-        async Task Refresh()
-        {
-            IsBusy = true;
-
-            if (!PropertiesAreSameAsInOriginalPassword())
-            {
-                if (!await AlertService.ShowYesNo("Refreshing will discard your changes!", "Unsaved changes will be lost. Do you still want to leave?"))
-                {
-                    IsBusy = false;
-                    IsRefreshing = false;
-                    return;
-                }
-            }
-
-            SetProperties(PasswordOriginal);
-
-            IsBusy = false;
-            IsRefreshing = false;
-        }
-
-        [RelayCommand]
-        void RefreshToolbar()
-        {
-            var page = Shell.Current.CurrentPage;
-            page.ToolbarItems.Clear();
-
-            var toolbarSave = new ToolbarItem()
-            {
-                Text = "Save",
-                Command = SaveCommand,
-                Order = ToolbarItemOrder.Secondary
-            };
-
-            var toolbarDuplicate = new ToolbarItem()
-            {
-                Text = "Duplicate",
-                Command = DuplicateCommand,
-                Order = ToolbarItemOrder.Secondary
-            };
-
-            var toolbarDelete = new ToolbarItem()
-            {
-                Text = "Delete",
-                Command = DeleteCommand,
-                Order = ToolbarItemOrder.Secondary
-            };
-
-            if (IsNew)
-            {
-                page.ToolbarItems.Add(toolbarSave);
-
-                PasswordOriginal = new();
-                return;
-            }
-
-            page.ToolbarItems.Add(toolbarSave);
-            page.ToolbarItems.Add(toolbarDuplicate);
-            page.ToolbarItems.Add(toolbarDelete);
-        }
 
         [RelayCommand]
         async Task SwitchFavorite()
@@ -156,24 +81,17 @@ namespace PasswordManager.MAUI.ViewModels
 
             var userGuid = ActiveUserService.Instance.ActiveUser.Id;
 
-            if (IsNew)
-            {
-                var encryptedModel = await _passwordService.EncryptPasswordAsync(model, ActiveUserService.Instance.CipherKey);
-                await _passwordService.CreateAsync(userGuid, encryptedModel);
-            }
-            else
-            {
-                model.Id = PasswordOriginal.Id;
-                model.UDTLocal = DateTime.UtcNow; // otherwise synced password will not have updated UDT
-                var encryptedModel = await _passwordService.EncryptPasswordAsync(model, ActiveUserService.Instance.CipherKey);
-                await _passwordService.UpdateAsync(userGuid, encryptedModel);
-            }
+            model.Id = PasswordOriginal.Id;
+            model.UDTLocal = DateTime.UtcNow; // otherwise synced password will not have updated UDT
+            var encryptedModel = await _passwordService.EncryptPasswordAsync(model, ActiveUserService.Instance.CipherKey);
+            await _passwordService.UpdateAsync(userGuid, encryptedModel);
 
             PasswordOriginal = model;
             await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
 
             // to clean up field, otherwise they will stay filled
             SetProperties(new PasswordDTO());
+            PasswordOriginal = new PasswordDTO();
 
             IsBusy = false;
         }
@@ -187,10 +105,13 @@ namespace PasswordManager.MAUI.ViewModels
 
             CleanModelEntityInformation(ref model);
 
-            await Shell.Current.GoToAsync($"//Home/{nameof(AddEditPasswordPage)}", true, new Dictionary<string, object>
+            await Shell.Current.GoToAsync($"//{nameof(AddPasswordPage)}", true, new Dictionary<string, object>
             {
                 { $"{nameof(PasswordDTO)}Duplicate", model }
             });
+
+            SetProperties(new PasswordDTO());
+            PasswordOriginal = new PasswordDTO();
 
             IsBusy = false;
         }
@@ -198,7 +119,9 @@ namespace PasswordManager.MAUI.ViewModels
         [RelayCommand]
         async Task Cancel()
         {
-            await Shell.Current.GoToAsync($"///Home");
+            await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
+            SetProperties(new PasswordDTO());
+            PasswordOriginal = new PasswordDTO();
         }
 
         #endregion
@@ -226,16 +149,6 @@ namespace PasswordManager.MAUI.ViewModels
                 password.URL = await EncryptionService.DecryptUsingAES(password.URL, ActiveUserService.Instance.CipherKey);
                 password.Notes = await EncryptionService.DecryptUsingAES(password.Notes, ActiveUserService.Instance.CipherKey);
                 SetProperties(password);
-
-                Title = "Edit password";
-                IsNew = false;
-            }
-            else if (query.Keys.Contains($"{nameof(PasswordDTO)}Duplicate") && query[$"{nameof(PasswordDTO)}Duplicate"] is PasswordDTO duplicate)
-            {
-                SetProperties(duplicate);
-
-                Title = "Add password";
-                IsNew = true;
             }
         }
 

@@ -61,7 +61,7 @@ namespace PasswordManager.MAUI.ViewModels
         [RelayCommand]
         async Task GoToNewPassword()
         {
-            await Shell.Current.GoToAsync($"//Home/{nameof(AddEditPasswordPage)}", true);
+            await Shell.Current.GoToAsync($"//Home/{nameof(AddPasswordPage)}", true);
         }
 
         [RelayCommand]
@@ -84,7 +84,7 @@ namespace PasswordManager.MAUI.ViewModels
         {
             if (password is null) return;
 
-            await Shell.Current.GoToAsync(nameof(AddEditPasswordPage), true, new Dictionary<string, object>
+            await Shell.Current.GoToAsync(nameof(EditPasswordPage), true, new Dictionary<string, object>
             {
                 { nameof(PasswordDTO), password }
             });

@@ -52,7 +52,8 @@ namespace PasswordManager.MAUI.Extensions
             builder.Services.AddTransient<RegistrationViewModel>();
             builder.Services.AddTransient<RegistrationSuccessfulViewModel>();
 
-            builder.Services.AddSingleton<AddEditPasswordViewModel>();
+            builder.Services.AddTransient<AddPasswordViewModel>();
+            builder.Services.AddTransient<EditPasswordViewModel>();
             builder.Services.AddTransient<PasswordsListViewModel>();
             builder.Services.AddTransient<GeneratePasswordViewModel>();
 
@@ -70,7 +71,8 @@ namespace PasswordManager.MAUI.Extensions
             builder.Services.AddTransient<RegistrationPage>();
             builder.Services.AddTransient<RegistrationSuccessfulPage>();
 
-            builder.Services.AddSingleton<AddEditPasswordPage>();
+            builder.Services.AddTransient<AddPasswordPage>();
+            builder.Services.AddTransient<EditPasswordPage>();
             builder.Services.AddTransient<PasswordsListPage>();
             builder.Services.AddTransient<GeneratePasswordPage>();
 

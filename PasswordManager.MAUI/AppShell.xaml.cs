@@ -29,14 +29,14 @@ namespace PasswordManager.MAUI
             Routing.RegisterRoute(nameof(GeneratePasswordPage),
                     typeof(GeneratePasswordPage));
 
-            Routing.RegisterRoute(nameof(AddEditPasswordPage),
-                    typeof(AddEditPasswordPage));
-
             Routing.RegisterRoute(nameof(AboutPage),
                     typeof(AboutPage));
 
             Routing.RegisterRoute(nameof(AddPasswordPage),
                     typeof(AddPasswordPage));
+
+            Routing.RegisterRoute(nameof(EditPasswordPage),
+                    typeof(EditPasswordPage));
 
         }
     }
