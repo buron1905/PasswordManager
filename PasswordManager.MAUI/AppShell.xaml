@@ -22,35 +22,9 @@
 
     <ShellContent Title="Login" Route="LoginPage" ContentTemplate="{DataTemplate views:LoginPage}" Shell.FlyoutBehavior="Disabled" Shell.FlyoutItemIsVisible="False" Shell.NavBarIsVisible="False"/>
     <ShellContent Title="Register" Route="RegistrationPage" ContentTemplate="{DataTemplate views:RegistrationPage}" Shell.FlyoutBehavior="Disabled" Shell.FlyoutItemIsVisible="False" Shell.NavBarIsVisible="False"/>
-
-    <!--<FlyoutItem Title="Passwords">
-        --><!--FlyoutDisplayOptions="AsMultipleItems"--><!--
-        <FlyoutItem.Icon>
-            <FontImageSource FontFamily="FAS"
-                            Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
-                            Glyph="{x:Static fontAwesome:FontAwesomeIcons.List}"/>
-        </FlyoutItem.Icon>
-        <ShellContent Title="Passwords" Route="PasswordsListPage" ContentTemplate="{DataTemplate views:PasswordsListPage}"/>
-    </FlyoutItem>
-
-
-    <FlyoutItem Title="Generator">
-        <FlyoutItem.Icon>
-            <FontImageSource FontFamily="FAS"
-                            Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
-                            Glyph="{x:Static fontAwesome:FontAwesomeIcons.RedoAlt}"/>
-        </FlyoutItem.Icon>
-        <ShellContent Title="Generator" Route="GeneratePasswordPage" ContentTemplate="{DataTemplate views:GeneratePasswordPage}"/>
-    </FlyoutItem>
-
-    <FlyoutItem Title="New password">
-        <FlyoutItem.Icon>
-            <FontImageSource FontFamily="FAS"
-                            Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
-                            Glyph="{x:Static fontAwesome:FontAwesomeIcons.Plus}"/>
-        </FlyoutItem.Icon>
-        <ShellContent Title="New password" Route="AddPasswordPage" ContentTemplate="{DataTemplate views:AddPasswordPage}"/>
-    </FlyoutItem>-->
+    
+    <!--Defined here because otherwise error of disposed object when accessed from other tab-->
+    <ShellContent Title="Edit Password" Route="EditPasswordPage" ContentTemplate="{DataTemplate views:EditPasswordPage}" Shell.FlyoutBehavior="Disabled" Shell.FlyoutItemIsVisible="False" Shell.NavBarIsVisible="True"/>
 
     <FlyoutItem Route="Home" FlyoutDisplayOptions="AsMultipleItems">
         <Tab Title="Passwords">

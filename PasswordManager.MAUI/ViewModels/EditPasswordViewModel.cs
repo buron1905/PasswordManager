@@ -119,9 +119,11 @@ namespace PasswordManager.MAUI.ViewModels
         [RelayCommand]
         async Task Cancel()
         {
+            IsBusy = true;
             await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
             SetProperties(new PasswordDTO());
             PasswordOriginal = new PasswordDTO();
+            IsBusy = false;
         }
 
         #endregion
