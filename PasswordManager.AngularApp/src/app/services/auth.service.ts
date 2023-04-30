@@ -34,8 +34,8 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router, private encryptionService: EncryptionService, 
     private toastrService: ToastrService) { }
 
-  setCipherKeyToSHA256Value(plainPassword: string): void {
-    this.cipherKey = this.encryptionService.hashUsingSHA256(plainPassword);
+  setCipherKey(plainPassword: string): void {
+    this.cipherKey = plainPassword;
   }
 
   setTokenExpiration(expirationDateTime: string): void {

@@ -70,7 +70,7 @@ export class ModalTfaLoginComponent implements OnInit {
       data => {
         if (data.isAuthSuccessful) {
           this.authService.setTokenExpiration(data.expirationDateTime);
-          this.authService.setCipherKeyToSHA256Value(this.password.value);
+          this.authService.setCipherKey(this.password.value);
           this.authService.refreshLogoutTimer();
           this.sendResponse(true);
           this.loading = false;

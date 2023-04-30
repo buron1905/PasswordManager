@@ -25,7 +25,8 @@ namespace Services.Cryptography
                 hash = sha.ComputeHash(data);
             }
 
-            return ParsingService.ByteArrayToString(hash);
+            return Convert.ToBase64String(hash);
+            //return ParsingService.ByteArrayToString(hash);
         }
 
         public static byte[] HashSHA256ToBytes(string text)

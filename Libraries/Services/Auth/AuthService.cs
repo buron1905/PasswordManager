@@ -38,7 +38,7 @@ namespace Services.Auth
 
             var userDTO = await _userService.GetByEmailAsync(requestDTO.EmailAddress!);
 
-            var response = GetAuthResponse(userDTO, requestDTO.EmailAddress!, requestDTO.Password!, true, userDTO.TwoFactorEnabled, !userDTO.TwoFactorEnabled, emailVerified: userDTO.EmailConfirmed);
+            var response = GetAuthResponse(userDTO, requestDTO.EmailAddress!, true, userDTO.TwoFactorEnabled, !userDTO.TwoFactorEnabled, userDTO.EmailConfirmed);
 
             return response;
         }
@@ -55,7 +55,6 @@ namespace Services.Auth
                 return null;
 
             var userId = JwtService.GetUserGuidFromClaims(claims);
-            var password = JwtService.GetUserPasswordFromClaims(claims);
             var userDTO = await _userService.GetByIdAsync(userId);
             if (userDTO is null) return null;
 
@@ -66,7 +65,7 @@ namespace Services.Auth
 
             var emailAddress = JwtService.GetUserEmailFromClaims(claims);
 
-            var response = GetAuthResponse(userDTO, emailAddress, password, true, userDTO.TwoFactorEnabled, true, userDTO.EmailConfirmed);
+            var response = GetAuthResponse(userDTO, emailAddress, true, userDTO.TwoFactorEnabled, true, userDTO.EmailConfirmed);
 
             return response;
         }
@@ -76,7 +75,7 @@ namespace Services.Auth
             return _twoFactorAuthService.ValidateTwoFactorPin(secret, code);
         }
 
-        public async Task<UserDTO?> SetTwoFactorEnabledAsync(Guid userId, string password)
+        public async Task<UserDTO?> SetTwoFactorEnabledAsync(Guid userId)
         {
             var user = await _userService.GetByIdAsync(userId);
             user.TwoFactorEnabled = true;
@@ -95,7 +94,7 @@ namespace Services.Auth
             return _twoFactorAuthService.GenerateTfaSetup(issuer, accountTitle, accountSecretKey);
         }
 
-        public async Task<TfaSetupDTO?> EnableTfa(Guid userId, string password, TfaSetupDTO tfaSetupDTO)
+        public async Task<TfaSetupDTO?> EnableTfa(Guid userId, TfaSetupDTO tfaSetupDTO)
         {
             var userDTO = await _userService.GetByIdAsync(userId);
             if (userDTO is null)
@@ -106,7 +105,7 @@ namespace Services.Auth
             if (!isValidCode)
                 return null;
 
-            userDTO = await SetTwoFactorEnabledAsync(userId, password);
+            userDTO = await SetTwoFactorEnabledAsync(userId);
 
             var tfaResponse = GenerateTfaSetupDTO("Password Manager", userDTO.EmailAddress!, userDTO.TwoFactorSecret!);
             tfaResponse.IsTfaEnabled = true;
@@ -115,7 +114,7 @@ namespace Services.Auth
         }
 
 
-        public async Task<TfaSetupDTO?> DisableTfa(Guid userId, string password, TfaSetupDTO tfaSetupDTO)
+        public async Task<TfaSetupDTO?> DisableTfa(Guid userId, TfaSetupDTO tfaSetupDTO)
         {
             var userDTO = await _userService.GetByIdAsync(userId);
             if (userDTO is null)
@@ -160,10 +159,10 @@ namespace Services.Auth
             return new RegisterResponseDTO() { User = userDTO, IsRegistrationSuccessful = true };
         }
 
-        public AuthResponseDTO GetAuthResponse(UserDTO user, string emailAddress, string password, bool isAuthSuccessful = true, bool tfaEnabled = false, bool tfaChecked = true, bool emailVerified = true)
+        public AuthResponseDTO GetAuthResponse(UserDTO user, string emailAddress, bool isAuthSuccessful = true, bool tfaEnabled = false, bool tfaChecked = true, bool emailVerified = true)
         {
             var expires = DateTime.UtcNow.AddMinutes(_appSettings?.JweTokenMinutesTTL ?? 5);
-            var claims = _jwtService.GetClaims(user.Id, emailAddress, password, expires, tfaChecked, emailVerified);
+            var claims = _jwtService.GetClaims(user.Id, emailAddress, expires, tfaChecked, emailVerified);
             var tokenString = _jwtService.GenerateJweToken(claims, JWTKeys._privateSigningKey, JWTKeys._publicEncryptionKey, expires);
 
             return new AuthResponseDTO
@@ -195,7 +194,7 @@ namespace Services.Auth
 
             var user = await _userService.GetByIdAsync(new Guid(userId!));
 
-            var response = GetAuthResponse(user, emailAddress!, password!, tfaChecked: tfaChecked, emailVerified: emailConfirmed);
+            var response = GetAuthResponse(user, emailAddress!, tfaChecked: tfaChecked, emailVerified: emailConfirmed);
 
             return response;
         }
@@ -288,7 +287,7 @@ namespace Services.Auth
             if (!valid)
                 return null;
 
-            var response = GetAuthResponse(userDTO, email, password, true, userDTO.TwoFactorEnabled, true, userDTO.EmailConfirmed);
+            var response = GetAuthResponse(userDTO, email, true, userDTO.TwoFactorEnabled, true, userDTO.EmailConfirmed);
 
             return response;
         }
@@ -309,7 +308,7 @@ namespace Services.Auth
             if (!valid)
                 return null;
 
-            var response = GetAuthResponse(userDTO, userDTO.EmailAddress!, requestDTO.Password!, true, userDTO.TwoFactorEnabled, true, userDTO.EmailConfirmed);
+            var response = GetAuthResponse(userDTO, userDTO.EmailAddress!, true, userDTO.TwoFactorEnabled, true, userDTO.EmailConfirmed);
 
             return response;
         }

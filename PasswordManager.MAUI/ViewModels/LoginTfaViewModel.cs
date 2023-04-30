@@ -43,7 +43,7 @@ namespace PasswordManager.MAUI.ViewModels
 
             response.User.Password = ActiveUserService.Instance.ActiveUser.Password;
 
-            ActiveUserService.Instance.Login(response.User, cipherKey);
+            ActiveUserService.Instance.Login(response.User, ActiveUserService.Instance.CipherKey);
             ActiveUserService.Instance.Token = response.JweToken;
             ActiveUserService.Instance.TokenExpirationDateTime = response.ExpirationDateTime;
 

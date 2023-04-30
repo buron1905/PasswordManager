@@ -59,7 +59,7 @@ export class LoginComponent implements OnInit {
           modalTfaLogin.result.then((result) => {
             if (result == true) {
               this.authService.setTokenExpiration(data.expirationDateTime);
-              this.authService.setCipherKeyToSHA256Value(this.password.value);
+              this.authService.setCipherKey(this.password.value);
               this.authService.refreshLogoutTimer();
               this.toastrService.success('Login successful');
               this.router.navigate(['/passwords']);
@@ -71,7 +71,7 @@ export class LoginComponent implements OnInit {
         }
         else {
           this.authService.setTokenExpiration(data.expirationDateTime);
-          this.authService.setCipherKeyToSHA256Value(this.password.value);
+          this.authService.setCipherKey(this.password.value);
           this.authService.refreshLogoutTimer();
           this.toastrService.success('Login successful');
           this.router.navigate(['/passwords']);

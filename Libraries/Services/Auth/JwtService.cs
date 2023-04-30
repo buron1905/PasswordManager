@@ -15,8 +15,8 @@ namespace Services.Auth
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Audience = "https://localhost:5001",
-                Issuer = "https://localhost:5001",
+                Audience = "https://passwordmanagerwebapi.azurewebsites.net/",
+                Issuer = "https://passwordmanagerwebapi.azurewebsites.net/",
                 Claims = new Dictionary<string, object> { { "sub", "811e790749a24d8a8f766e1a44dca28a" } },
                 Subject = new ClaimsIdentity(claims),
 
@@ -38,8 +38,8 @@ namespace Services.Auth
             var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
             var tokeOptions = new JwtSecurityToken(
-                issuer: "https://localhost:5001",
-                audience: "https://localhost:5001",
+                issuer: "https://passwordmanagerwebapi.azurewebsites.net/",
+                audience: "https://passwordmanagerwebapi.azurewebsites.net/",
                 claims: claims,
                 expires: expires,
                 signingCredentials: signinCredentials
@@ -58,8 +58,8 @@ namespace Services.Auth
                 new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    ValidAudience = "https://localhost:5001",
-                    ValidIssuer = "https://localhost:5001",
+                    ValidAudience = "https://passwordmanagerwebapi.azurewebsites.net/",
+                    ValidIssuer = "https://passwordmanagerwebapi.azurewebsites.net/",
                     ValidateAudience = true,
                     ValidateIssuer = true,
                     ValidateLifetime = validateLifetime,
@@ -80,13 +80,12 @@ namespace Services.Auth
                 return null;
         }
 
-        public IEnumerable<Claim> GetClaims(Guid userId, string emailAddress, string password, DateTime expirationUTCDateTime, bool tfaChecked = true, bool emailConfirmed = true)
+        public IEnumerable<Claim> GetClaims(Guid userId, string emailAddress, DateTime expirationUTCDateTime, bool tfaChecked = true, bool emailConfirmed = true)
         {
             var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
                     new Claim(ClaimTypes.Email, emailAddress),
-                    new Claim("password", password),
                     new Claim(ClaimTypes.Expiration, expirationUTCDateTime.ToString()),
                     new Claim("tfaChecked", tfaChecked.ToString()),
                     new Claim("emailConfirmed", emailConfirmed.ToString())
@@ -110,14 +109,6 @@ namespace Services.Auth
             return claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Email))?.Value;
         }
 
-        public static string? GetUserPasswordFromClaims(IEnumerable<Claim> claims)
-        {
-            return claims.FirstOrDefault(c => c.Type.Equals("password"))?.Value;
-        }
-
-        /// <summary>
-        /// Default is true
-        /// </summary>
         public static bool GetTfaCheckedFromClaims(IEnumerable<Claim> claims)
         {
             return claims.FirstOrDefault(c => c.Type.Equals("tfaChecked"))?.Value != false.ToString(); // default is true

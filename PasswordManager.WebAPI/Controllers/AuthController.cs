@@ -38,14 +38,6 @@ namespace PasswordManager.WebAPI.Controllers
         {
             loginDTO.Password = EncryptionService.DecryptUsingRSA(loginDTO.Password, EncryptionKeys.privateRsaKey);
 
-            if (!_authService.ValidateMasterPassword(loginDTO.Password))
-                return BadRequest(new AuthResponseDTO
-                {
-                    IsAuthSuccessful = false,
-                    ErrorMessage = "Password must have at least one lowercase letter, " +
-                    "one uppercase letter, one number, and one special character (!@#$%^&*)."
-                });
-
             var response = await _authService.LoginAsync(loginDTO);
 
             if (response == null)
@@ -68,13 +60,6 @@ namespace PasswordManager.WebAPI.Controllers
 
             if (!registerDTO.Password.Equals(registerDTO.ConfirmPassword))
                 return BadRequest(new AuthResponseDTO { IsAuthSuccessful = false, ErrorMessage = "Passwords do not match" });
-            if (!_authService.ValidateMasterPassword(registerDTO.Password))
-                return BadRequest(new AuthResponseDTO
-                {
-                    IsAuthSuccessful = false,
-                    ErrorMessage = "Password must have at least one lowercase letter, " +
-                    "one uppercase letter, one number, and one special character (!@#$%^&*)."
-                });
 
             var response = await _authService.RegisterAsync(registerDTO);
 
@@ -151,7 +136,6 @@ namespace PasswordManager.WebAPI.Controllers
         {
             var claims = HttpContext.GetUserClaims();
             var userId = JwtService.GetUserGuidFromClaims(claims);
-            var password = JwtService.GetUserPasswordFromClaims(claims);
 
             var result = await _authService.GetTfaSetup(userId);
 
@@ -168,21 +152,20 @@ namespace PasswordManager.WebAPI.Controllers
             var claims = HttpContext.GetUserClaims();
             var userId = JwtService.GetUserGuidFromClaims(claims);
             var email = JwtService.GetUserEmailFromClaims(claims);
-            var password = JwtService.GetUserPasswordFromClaims(claims);
 
-            TfaSetupDTO result = null!;
+            TfaSetupDTO? result = null!;
 
             if (tfaSetupDTO.IsTfaEnabled)
-                result = await _authService.EnableTfa(userId, password, tfaSetupDTO);
+                result = await _authService.EnableTfa(userId, tfaSetupDTO);
             else
-                result = await _authService.DisableTfa(userId, password, tfaSetupDTO);
+                result = await _authService.DisableTfa(userId, tfaSetupDTO);
 
             if (result is null)
                 return BadRequest();
 
             var user = await _userService.GetByIdAsync(userId);
 
-            var response = _authService.GetAuthResponse(user, email, password, tfaEnabled: user.TwoFactorEnabled, emailVerified: user.EmailConfirmed);
+            var response = _authService.GetAuthResponse(user, email, tfaEnabled: user.TwoFactorEnabled, emailVerified: user.EmailConfirmed);
             SetTokenCookie(response.JweToken!);
 
             return Ok(result);

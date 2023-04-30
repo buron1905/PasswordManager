@@ -24,36 +24,6 @@ namespace PasswordManager.MAUI.Services
             throw new NotImplementedException("Email confirmation is only possible via web application.");
         }
 
-        public async Task<TfaSetupDTO> DisableTfa(Guid userId, string password, TfaSetupDTO tfaSetupDTO)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<TfaSetupDTO> EnableTfa(Guid userId, string password, TfaSetupDTO tfaSetupDTO)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GenerateTfaSetupDTO(string issuer, string accountTitle, string accountSecretKey)
-        {
-            throw new NotImplementedException();
-        }
-
-        public AuthResponseDTO GetAuthResponse(Guid userId, string emailAddress, string password, bool isAuthSuccessful = true, bool tfaEnabled = false, bool tfaChecked = true)
-        {
-            throw new NotImplementedException();
-        }
-
-        public AuthResponseDTO GetAuthResponse(Guid userId, string emailAddress, string password, bool isAuthSuccessful = true, bool tfaEnabled = false, bool tfaChecked = true, bool emailVerified = true)
-        {
-            throw new NotImplementedException();
-        }
-
-        public AuthResponseDTO GetAuthResponse(UserDTO user, string emailAddress, string password, bool isAuthSuccessful = true, bool tfaEnabled = false, bool tfaChecked = true, bool emailVerified = true)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<string> GetTfaCode()
         {
             return _twoFactorAuthService.GetCurrentPIN(ActiveUserService.Instance.ActiveUser.TwoFactorSecret);
@@ -235,7 +205,7 @@ namespace PasswordManager.MAUI.Services
             throw new NotImplementedException();
         }
 
-        Task<UserDTO> IAuthService.SetTwoFactorEnabledAsync(Guid userId, string password)
+        Task<UserDTO> IAuthService.SetTwoFactorEnabledAsync(Guid userId)
         {
             throw new NotImplementedException();
         }
@@ -281,6 +251,21 @@ namespace PasswordManager.MAUI.Services
         public bool ValidateMasterPassword(string password)
         {
             return _offlineAuthService.ValidateMasterPassword(password);
+        }
+
+        public AuthResponseDTO GetAuthResponse(UserDTO user, string emailAddress, bool isAuthSuccessful = true, bool tfaEnabled = false, bool tfaChecked = true, bool emailVerified = true)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TfaSetupDTO> EnableTfa(Guid userId, TfaSetupDTO tfaSetupDTO)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TfaSetupDTO> DisableTfa(Guid userId, TfaSetupDTO tfaSetupDTO)
+        {
+            throw new NotImplementedException();
         }
     }
 }

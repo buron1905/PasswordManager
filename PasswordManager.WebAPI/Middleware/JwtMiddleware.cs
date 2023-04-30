@@ -29,18 +29,17 @@ namespace PasswordManager.WebAPI.Middleware
 
                     var userId = JwtService.GetUserGuidFromClaims(claims);
                     var emailAddress = JwtService.GetUserEmailFromClaims(claims);
-                    var password = JwtService.GetUserPasswordFromClaims(claims);
                     var emailConfirmed = JwtService.GetEmailConfirmedFromClaims(claims);
                     var tfaChecked = JwtService.GetTfaCheckedFromClaims(claims);
 
-                    if (userId == Guid.Empty || emailAddress is null || password is null)
+                    if (userId == Guid.Empty || emailAddress is null)
                         throw new Exception("Some of necessary claims were empty.");
 
                     // set Cookies
                     if (httpContext.Request.Cookies["token"] is not null)
                     {
                         var expires = DateTime.UtcNow.AddMinutes(appSettings.Value.JweTokenMinutesTTL);
-                        var newClaims = jwtService.GetClaims(userId, emailAddress, password, expires, tfaChecked, emailConfirmed);
+                        var newClaims = jwtService.GetClaims(userId, emailAddress, expires, tfaChecked, emailConfirmed);
                         var newToken = jwtService.GenerateJweToken(newClaims, JWTKeys._publicSigningKey, JWTKeys._privateEncryptionKey, expires);
 
                         var cookieOptions = new CookieOptions

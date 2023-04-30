@@ -77,7 +77,7 @@ namespace PasswordManager.MAUI.ViewModels
         {
             IsBusy = true;
 
-            var result = await _authService.EnableTfa(ActiveUserService.Instance.ActiveUser.Id, ActiveUserService.Instance.ActiveUser.Password, new TfaSetupDTO() { Code = Code });
+            var result = await _authService.EnableTfa(ActiveUserService.Instance.ActiveUser.Id, new TfaSetupDTO() { Code = Code });
             if (result is null)
             {
                 await AlertService.ShowToast("Wrong Code.");
@@ -101,7 +101,7 @@ namespace PasswordManager.MAUI.ViewModels
         {
             IsBusy = true;
 
-            var result = await _authService.DisableTfa(ActiveUserService.Instance.ActiveUser.Id, ActiveUserService.Instance.CipherKey, new TfaSetupDTO() { Code = Code });
+            var result = await _authService.DisableTfa(ActiveUserService.Instance.ActiveUser.Id, new TfaSetupDTO() { Code = Code });
 
             if (result is null)
             {
