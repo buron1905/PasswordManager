@@ -93,7 +93,7 @@ export class SettingsComponent implements OnInit {
         this.tfaForm.patchValue({ code: '' });
         this.tfaForm.patchValue({ isTfaEnabled: !data.isTfaEnabled });
         this.loading = false;
-        this.toastrService.success('Disabled');
+        this.toastrService.warning('Disabled');
       },
       error => {
         this.wrongCode = true;

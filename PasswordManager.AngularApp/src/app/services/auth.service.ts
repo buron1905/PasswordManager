@@ -123,9 +123,13 @@ export class AuthService {
     if(this.isAuthenticated()) {
       return true;
     } else {
-      this.router.navigate(['login']);
+      this.logout();
       if (showLogoutIdleToast) {
         this.toastrService.warning('You have been logged out due to inactivity.', 'Logged Out');
+      }
+
+      if (this.router.url !== '/login' && this.router.url !== '/register' && this.router.url !== '/email-confirm' && this.router.url !== '/home') {
+        this.router.navigate(['login']);
       }
       return false;
     }

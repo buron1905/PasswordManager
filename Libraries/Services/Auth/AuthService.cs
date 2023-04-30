@@ -101,16 +101,14 @@ namespace Services.Auth
             if (userDTO is null)
                 return null;
 
-            var secret = await EncryptionService.DecryptUsingAES(userDTO.TwoFactorSecret, password);
-
-            var isValidCode = ValidateTfaCode(secret, tfaSetupDTO.Code);
+            var isValidCode = ValidateTfaCode(userDTO.TwoFactorSecret, tfaSetupDTO.Code);
 
             if (!isValidCode)
                 return null;
 
             userDTO = await SetTwoFactorEnabledAsync(userId, password);
 
-            var tfaResponse = GenerateTfaSetupDTO("Password Manager", userDTO.EmailAddress!, secret!);
+            var tfaResponse = GenerateTfaSetupDTO("Password Manager", userDTO.EmailAddress!, userDTO.TwoFactorSecret!);
             tfaResponse.IsTfaEnabled = true;
 
             return tfaResponse;

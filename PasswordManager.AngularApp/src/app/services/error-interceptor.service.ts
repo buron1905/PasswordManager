@@ -6,7 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
 
-export const maxRetries = 1;
+export const maxRetries = 0;
 export const delayMs = 2000;
 
 
@@ -16,7 +16,7 @@ export const delayMs = 2000;
 export class ErrorInterceptorService implements HttpInterceptor {
 
 
-  constructor(private toastrService: ToastrService, private router: Router, private authenticationService: AuthService) { }
+  constructor(private toastrService: ToastrService, private router: Router, private authService: AuthService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
@@ -31,10 +31,10 @@ export class ErrorInterceptorService implements HttpInterceptor {
           if (this.router.url !== '/login') {
             this.router.navigate(['/login']);
 
-            this.authenticationService.logout(false);
+            this.authService.logout(false);
           }
           else {
-            this.authenticationService.logout(true);
+            this.authService.logout(true);
           }
         }
         else if(err.status === 403) {
@@ -57,10 +57,11 @@ export class ErrorInterceptorService implements HttpInterceptor {
           errorMessage = 'Network Error';
         }
         else {
-          errorMessage = 'Unknown Error';
+          errorMessage = 'Error';
         }
-        
-        this.toastrService.error(errorMessage);
+
+        if (errorMessage && errorMessage.trim())
+          this.toastrService.error(errorMessage);
         return throwError(() => err);
       })
     )

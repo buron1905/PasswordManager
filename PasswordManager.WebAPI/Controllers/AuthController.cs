@@ -175,22 +175,6 @@ namespace PasswordManager.WebAPI.Controllers
             return Ok(result);
         }
 
-        [Authorize]
-        [HttpPost("tfa-disable")]
-        public async Task<IActionResult> DisableTfaSetup([FromBody] TfaSetupDTO tfaSetupDTO)
-        {
-            var claims = HttpContext.GetUserClaims();
-            var userId = JwtService.GetUserGuidFromClaims(claims);
-            var password = JwtService.GetUserPasswordFromClaims(claims);
-
-            var result = await _authService.DisableTfa(userId, password, tfaSetupDTO);
-
-            if (result is null)
-                return BadRequest();
-
-            return Ok(result);
-        }
-
         #endregion TFA
 
         #endregion
