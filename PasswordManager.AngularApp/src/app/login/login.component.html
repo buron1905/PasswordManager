@@ -19,9 +19,9 @@
         <div class="mb-3">
           <div class="input-group" [class.has-validation]="submitted && password?.errors">
             <div class="form-floating" [class.is-invalid]="submitted && password?.errors">
-              <input [type]="toggledPassword ? 'text' : 'password'" class="form-control" [class.is-invalid]="submitted && password?.errors" id="password" formControlName="password" aria-describedby="passwordHelpBlock" required
-                     spellcheck="false" autocorrect="off" autocapitalize="off" placeholder="Password" autocomplete="current-password"
-                     [ngClass]="{ 'is-invalid': submitted && password?.errors }">
+              <input [type]="toggledPassword ? 'text' : 'password'" class="form-control" [class.is-invalid]="submitted && password?.errors" id="password" formControlName="password" 
+                aria-describedby="passwordHelpBlock" required spellcheck="false" autocorrect="off" autocapitalize="off" placeholder="Password" autocomplete="new-password"
+                [ngClass]="{ 'is-invalid': submitted && password?.errors }">
               <label for="password" class="form-label">Password</label>
             </div>
             <button type="button" (click)="togglePassword()" class="btn btn-outline-secondary" title="Toggle visibility" aria-label="Toggle visibility">
@@ -29,6 +29,9 @@
             </button>
             <div *ngIf="submitted && password?.errors" class="invalid-feedback">
               <div *ngIf="password?.errors?.['required']">This field is required.</div>
+              <div *ngIf="password?.errors?.['minlength']">Password must be at least 12 characters long.</div>
+              <div *ngIf="password?.errors?.['maxlength']">Password must not exceed 255 characters.</div>
+              <div *ngIf="password?.errors?.['pattern']">Password must have at least one lowercase letter, one uppercase letter, one number, and one special character (!@#$%^&*).</div>
             </div>
           </div>
         </div>

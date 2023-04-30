@@ -11,7 +11,9 @@ namespace Models.DTOs
         public string? EmailAddress { get; set; }
 
         [Required]
+        [MinLength(MinPasswordLength, ErrorMessage = MinPasswordLengthErrorMessage)]
         [MaxLength(MaxPasswordLength, ErrorMessage = MaxPasswordLengthErrorMessage)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{12,}$", ErrorMessage = ComplexPasswordErrorMessage)]
         public string? Password { get; set; }
     }
 }
