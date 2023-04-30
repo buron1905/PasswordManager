@@ -32,9 +32,6 @@ namespace PasswordManager.MAUI
             Routing.RegisterRoute(nameof(AddEditPasswordPage),
                     typeof(AddEditPasswordPage));
 
-            Routing.RegisterRoute(nameof(TfaSettingsPage),
-                    typeof(TfaSettingsPage));
-
             Routing.RegisterRoute(nameof(AboutPage),
                     typeof(AboutPage));
 
