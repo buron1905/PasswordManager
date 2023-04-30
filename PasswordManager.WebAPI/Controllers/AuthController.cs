@@ -95,24 +95,6 @@ namespace PasswordManager.WebAPI.Controllers
             return Ok();
         }
 
-        [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken([FromBody] RefreshAccessTokenRequestDTO refreshAccessTokenRequestDTO)
-        {
-            var token = refreshAccessTokenRequestDTO.Token ?? Request.Cookies["refreshToken"];
-
-            if (string.IsNullOrEmpty(token))
-                return BadRequest(new { message = "Token is required" });
-
-            var response = await _authService.RefreshTokenAsync(token);
-
-            if (response == null)
-                return Unauthorized();
-
-            SetTokenCookie(response.JweToken!);
-
-            return Ok(response);
-        }
-
         #region TFA
 
         [HttpPost("tfa-login")]

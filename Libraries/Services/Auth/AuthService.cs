@@ -7,7 +7,6 @@ using Services.Abstraction.Data;
 using Services.Abstraction.Exceptions;
 using Services.Cryptography;
 using Services.TMP;
-using System.Security.Claims;
 
 namespace Services.Auth
 {
@@ -39,33 +38,6 @@ namespace Services.Auth
             var userDTO = await _userService.GetByEmailAsync(requestDTO.EmailAddress!);
 
             var response = GetAuthResponse(userDTO, requestDTO.EmailAddress!, true, userDTO.TwoFactorEnabled, !userDTO.TwoFactorEnabled, userDTO.EmailConfirmed);
-
-            return response;
-        }
-
-        public async Task<AuthResponseDTO?> LoginTfaAsync(LoginTfaRequestDTO requestDTO)
-        {
-            if (requestDTO is null)
-                return null;
-            if (requestDTO.Token is null || requestDTO.Code is null)
-                return null;
-
-            var claims = _jwtService.ValidateJweToken(requestDTO.Token, JWTKeys._publicSigningKey, JWTKeys._privateEncryptionKey);
-            if (claims is null)
-                return null;
-
-            var userId = JwtService.GetUserGuidFromClaims(claims);
-            var userDTO = await _userService.GetByIdAsync(userId);
-            if (userDTO is null) return null;
-
-            var valid = _twoFactorAuthService.ValidateTwoFactorPin(userDTO.TwoFactorSecret, requestDTO.Code!);
-
-            if (!valid)
-                return null;
-
-            var emailAddress = JwtService.GetUserEmailFromClaims(claims);
-
-            var response = GetAuthResponse(userDTO, emailAddress, true, userDTO.TwoFactorEnabled, true, userDTO.EmailConfirmed);
 
             return response;
         }
@@ -112,7 +84,6 @@ namespace Services.Auth
 
             return tfaResponse;
         }
-
 
         public async Task<TfaSetupDTO?> DisableTfa(Guid userId, TfaSetupDTO tfaSetupDTO)
         {
@@ -174,29 +145,6 @@ namespace Services.Auth
                 JweToken = tokenString,
                 ExpirationDateTime = expires
             };
-        }
-
-        public async Task<AuthResponseDTO?> RefreshTokenAsync(string token)
-        {
-            IEnumerable<Claim>? claims = null;
-            claims = _jwtService.ValidateJweToken(token, JWTKeys._publicSigningKey, JWTKeys._privateEncryptionKey);
-            if (claims is null)
-                return null;
-
-            var userId = claims.First(c => c.Type.Equals(ClaimTypes.NameIdentifier))?.Value;
-            var emailAddress = claims.First(c => c.Type.Equals(ClaimTypes.Email))?.Value;
-            var password = claims.FirstOrDefault(claim => claim.Type.Equals("password"))?.Value;
-            var tfaChecked = claims.FirstOrDefault(claim => claim.Type.Equals("tfaChecked"))?.Value == true.ToString();
-            var emailConfirmed = claims.FirstOrDefault(claim => claim.Type.Equals("emailConfirmed"))?.Value == true.ToString();
-
-            if (!await AuthUser(emailAddress!, password!))
-                return null;
-
-            var user = await _userService.GetByIdAsync(new Guid(userId!));
-
-            var response = GetAuthResponse(user, emailAddress!, tfaChecked: tfaChecked, emailVerified: emailConfirmed);
-
-            return response;
         }
 
         public bool TokenIsValid(string token)
@@ -272,24 +220,6 @@ namespace Services.Auth
 
             _emailService.SendRegistrationEmail(email, userDTO.EmailConfirmationToken!);
             return true;
-        }
-
-        public async Task<AuthResponseDTO?> LoginTfaAsync(string code, string email, string password)
-        {
-            if (code is null || email is null || password is null)
-                return null;
-
-            var userDTO = await _userService.GetByEmailAsync(email);
-            if (userDTO is null) return null;
-
-            var valid = _twoFactorAuthService.ValidateTwoFactorPin(userDTO.TwoFactorSecret!, code!);
-
-            if (!valid)
-                return null;
-
-            var response = GetAuthResponse(userDTO, email, true, userDTO.TwoFactorEnabled, true, userDTO.EmailConfirmed);
-
-            return response;
         }
 
         public async Task<AuthResponseDTO?> LoginWithTfaAsync(LoginWithTfaRequestDTO requestDTO)

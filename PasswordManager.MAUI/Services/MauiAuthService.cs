@@ -72,25 +72,6 @@ namespace PasswordManager.MAUI.Services
             }
         }
 
-        public async Task<AuthResponseDTO> LoginTfaAsync(LoginTfaRequestDTO requestDTO)
-        {
-            if (!IsNetworkAccess())
-            {
-                // In offline login token removed
-                var authResponse = await _offlineAuthService.LoginTfaAsync(requestDTO);
-                if (authResponse is not null)
-                    authResponse.JweToken = null;
-                return authResponse;
-            }
-
-            return null;
-        }
-
-        public async Task<AuthResponseDTO> LoginTfaAsync(string code, string email, string password)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<AuthResponseDTO> LoginWithTfaAsync(LoginWithTfaRequestDTO requestDTO)
         {
             if (!IsNetworkAccess())
@@ -128,11 +109,6 @@ namespace PasswordManager.MAUI.Services
 
         }
 
-        public async Task<AuthResponseDTO> RefreshTokenAsync(string token)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<RegisterResponseDTO?> RegisterAsync(RegisterRequestDTO requestDTO)
         {
             if (!IsNetworkAccess())
@@ -165,47 +141,12 @@ namespace PasswordManager.MAUI.Services
             }
         }
 
-        public void ResendConfirmEmail(string email)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task SetTwoFactorDisabledAsync(Guid userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<TfaSetupDTO?> SetTwoFactorEnabledAsync(Guid userId, string password)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool TokenIsValid(string token)
         {
             throw new NotImplementedException();
         }
 
         public bool ValidateTfaCode(string secret, string code)
-        {
-            throw new NotImplementedException();
-        }
-
-        TfaSetupDTO IAuthService.GenerateTfaSetupDTO(string issuer, string accountTitle, string accountSecretKey)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<bool> IAuthService.ResendConfirmEmail(string email)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<UserDTO> IAuthService.SetTwoFactorDisabledAsync(Guid userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<UserDTO> IAuthService.SetTwoFactorEnabledAsync(Guid userId)
         {
             throw new NotImplementedException();
         }
@@ -261,6 +202,26 @@ namespace PasswordManager.MAUI.Services
         public Task<TfaSetupDTO> DisableTfa(Guid userId, TfaSetupDTO tfaSetupDTO)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<bool> ResendConfirmEmail(string email)
+        {
+            return await _offlineAuthService.ResendConfirmEmail(email);
+        }
+
+        public async Task<UserDTO> SetTwoFactorEnabledAsync(Guid userId)
+        {
+            return await _offlineAuthService.SetTwoFactorEnabledAsync(userId);
+        }
+
+        public async Task<UserDTO> SetTwoFactorDisabledAsync(Guid userId)
+        {
+            return await _offlineAuthService.SetTwoFactorDisabledAsync(userId);
+        }
+
+        public TfaSetupDTO GenerateTfaSetupDTO(string issuer, string accountTitle, string accountSecretKey)
+        {
+            return _offlineAuthService.GenerateTfaSetupDTO(issuer, accountTitle, accountSecretKey);
         }
     }
 }

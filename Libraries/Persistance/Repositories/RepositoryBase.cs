@@ -14,29 +14,24 @@ namespace Persistance.Repositories
             _dataContext = dataContext;
         }
 
-        public Task<IQueryable<T>> FindAll()
+        public async Task<IQueryable<T>> FindAll()
         {
-            return Task.FromResult(_dataContext.Set<T>().AsNoTracking());
+            return await Task.FromResult(_dataContext.Set<T>().AsNoTracking());
         }
 
-        public Task<IQueryable<T>> FindByCondition(Expression<Func<T, bool>> expression)
+        public async Task<IQueryable<T>> FindByCondition(Expression<Func<T, bool>> expression)
         {
-            return Task.FromResult(_dataContext.Set<T>().Where(expression).AsNoTracking());
+            return await Task.FromResult(_dataContext.Set<T>().Where(expression).AsNoTracking());
         }
 
         public async Task<T?> FindSingleOrDefaultByCondition(Expression<Func<T, bool>> expression)
         {
-            return await _dataContext.Set<T>().SingleOrDefaultAsync(expression); //.AsNoTracking();
+            return await _dataContext.Set<T>().SingleOrDefaultAsync(expression);
         }
 
         public async Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
         {
             return await _dataContext.Set<T>().AnyAsync(expression);
-        }
-
-        bool IsFromOfflineDB(T entity)
-        {
-            return entity.UDT != entity.UDTLocal;
         }
 
         public async Task Create(T entity)
@@ -54,6 +49,7 @@ namespace Persistance.Repositories
             entity.UDTLocal = entity.UDT;
 
             _dataContext.Set<T>().Add(entity);
+
             await _dataContext.SaveChangesAsync();
         }
 
@@ -71,6 +67,7 @@ namespace Persistance.Repositories
             entity.DDT = DateTime.UtcNow;
             entity.Deleted = true;
             _dataContext.Set<T>().Remove(entity);
+
             await _dataContext.SaveChangesAsync();
         }
 
@@ -84,7 +81,13 @@ namespace Persistance.Repositories
             }
 
             _dataContext.Set<T>().RemoveRange(entities);
+
             await _dataContext.SaveChangesAsync();
+        }
+
+        bool IsFromOfflineDB(T entity)
+        {
+            return entity.UDT != entity.UDTLocal;
         }
     }
 }

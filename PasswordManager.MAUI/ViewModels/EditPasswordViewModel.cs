@@ -87,7 +87,7 @@ namespace PasswordManager.MAUI.ViewModels
             await _passwordService.UpdateAsync(userGuid, encryptedModel);
 
             PasswordOriginal = model;
-            await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
+            await Shell.Current.GoToAsync($"//{nameof(PasswordsListPage)}");
 
             // to clean up field, otherwise they will stay filled
             SetProperties(new PasswordDTO());
@@ -120,7 +120,7 @@ namespace PasswordManager.MAUI.ViewModels
         async Task Cancel()
         {
             IsBusy = true;
-            await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
+            await Shell.Current.GoToAsync($"//{nameof(PasswordsListPage)}");
             SetProperties(new PasswordDTO());
             PasswordOriginal = new PasswordDTO();
             IsBusy = false;
