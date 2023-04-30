@@ -49,20 +49,20 @@
             <ShellContent Title="New password" Route="AddEditPasswordPage" ContentTemplate="{DataTemplate views:AddEditPasswordPage}" />
         </Tab>
     </FlyoutItem>
-    <FlyoutItem Title="Two-Factor Authentication">
-        <FlyoutItem.Icon>
-            <FontImageSource FontFamily="FAS"
-                            Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
-                            Glyph="{x:Static fontAwesome:FontAwesomeIcons.Cogs}"/>
-        </FlyoutItem.Icon>
-            <ShellContent Title="Two-Factor Authentication" Route="TfaSettingsPage" ContentTemplate="{DataTemplate views:TfaSettingsPage}"/>
-    </FlyoutItem>
-    <MenuItem Text="About" Command="{Binding AboutCommand}">
+    <MenuItem Text="Two-Factor Authentication" Command="{Binding GoToWebCommand}">
         <MenuItem.IconImageSource>
             <FontImageSource FontFamily="FAS"
                             Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
-                            Glyph="{x:Static fontAwesome:FontAwesomeIcons.Question}"/>
+                            Glyph="{x:Static fontAwesome:FontAwesomeIcons.Cogs}"/>
         </MenuItem.IconImageSource>
     </MenuItem>
+    <FlyoutItem Title="About">
+        <FlyoutItem.Icon>
+            <FontImageSource FontFamily="FAS"
+                            Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                            Glyph="{x:Static fontAwesome:FontAwesomeIcons.Question}"/>
+        </FlyoutItem.Icon>
+        <ShellContent Title="About" Route="AboutPage" ContentTemplate="{DataTemplate views:AboutPage}"/>
+    </FlyoutItem>
 
 </Shell>

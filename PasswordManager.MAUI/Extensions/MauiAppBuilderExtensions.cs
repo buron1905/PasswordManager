@@ -20,21 +20,21 @@ namespace PasswordManager.MAUI.Extensions
             builder.Services.AddSingleton(Connectivity.Current);
             builder.Services.AddSingleton<HttpClient>();
 
-            builder.Services.AddSingleton<IMauiAuthService, MauiAuthService>();
-            builder.Services.AddSingleton<IAuthService, AuthService>();
-            builder.Services.AddSingleton<ITwoFactorAuthService, TwoFactorAuthService>();
-            builder.Services.AddSingleton<IMauiSyncService, MauiSyncService>();
-            builder.Services.AddSingleton<ISyncService, SyncService>();
-
-            builder.Services.AddSingleton<IMauiPasswordService, MauiPasswordService>();
-
-            builder.Services.AddSingleton<IUserService, UserService>();
-            builder.Services.AddSingleton<IPasswordService, PasswordService>();
-
-            builder.Services.AddSingleton<IUserRepository, MauiUserRepository>();
-            builder.Services.AddSingleton<IPasswordRepository, MauiPasswordRepository>();
-
             // Transient
+            builder.Services.AddTransient<IMauiAuthService, MauiAuthService>();
+            builder.Services.AddTransient<IAuthService, AuthService>();
+            builder.Services.AddTransient<ITwoFactorAuthService, TwoFactorAuthService>();
+            builder.Services.AddTransient<IMauiSyncService, MauiSyncService>();
+            builder.Services.AddTransient<ISyncService, SyncService>();
+
+            builder.Services.AddTransient<IMauiPasswordService, MauiPasswordService>();
+
+            builder.Services.AddTransient<IUserService, UserService>();
+            builder.Services.AddTransient<IPasswordService, PasswordService>();
+
+            builder.Services.AddTransient<IUserRepository, MauiUserRepository>();
+            builder.Services.AddTransient<IPasswordRepository, MauiPasswordRepository>();
+
             builder.Services.AddTransient<IJwtService, JwtService>();
             builder.Services.AddTransient<IEmailService, EmailService>();
 
@@ -72,11 +72,12 @@ namespace PasswordManager.MAUI.Extensions
             builder.Services.AddTransient<RegistrationPage>();
             builder.Services.AddTransient<RegistrationSuccessfulPage>();
 
-            builder.Services.AddTransient<AddEditPasswordPage>();
+            builder.Services.AddSingleton<AddEditPasswordPage>();
             builder.Services.AddTransient<PasswordsListPage>();
             builder.Services.AddTransient<GeneratePasswordPage>();
 
             builder.Services.AddTransient<TfaSettingsPage>();
+            builder.Services.AddTransient<AboutPage>();
 
             return builder;
         }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PasswordManager.MAUI.Views.AboutPage"
+             Title="About">
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout Padding="20">
+                <Image Source="icon_black.png" HeightRequest="100" HorizontalOptions="Center" Margin="0,40,0,20"/>
+                <Label Text="Password Manager" HorizontalOptions="Center" FontSize="Large"/>
+                <Label Text="Version 1.0" FontSize="Medium" Margin="10,0,0,25" HorizontalTextAlignment="Center"/>
+                <Label Text="Author:  Daniel Buroň" FontSize="Small" Margin="10,0,0,25" HorizontalTextAlignment="Center"/>
+                <Label Text="This appliacation was created as a practical part of bachelor thesis in 2023." FontSize="Small" HorizontalOptions="Center" 
+                       Margin="0,0,0,20" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

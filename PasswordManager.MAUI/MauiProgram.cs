@@ -21,8 +21,6 @@ namespace PasswordManager.MAUI
                     fonts.AddFont("fa-6-Free-Solid-900.otf", "FAS");
                 });
 
-            //DatabaseService.Init();
-
             //builder.Configuration.GetAppSettings(builder.Services);
 
             builder

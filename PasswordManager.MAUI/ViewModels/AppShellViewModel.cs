@@ -25,11 +25,11 @@ namespace PasswordManager.MAUI.ViewModels
         }
 
         [RelayCommand]
-        async void About()
+        async void GoToWeb()
         {
             try
             {
-                await Browser.Default.OpenAsync(new Uri("https://github.com/buron1905/PasswordManager"), BrowserLaunchMode.SystemPreferred);
+                await Browser.Default.OpenAsync(new Uri("https://passwordmanagerwebapi.azurewebsites.net/"), BrowserLaunchMode.SystemPreferred);
             }
             catch
             {
