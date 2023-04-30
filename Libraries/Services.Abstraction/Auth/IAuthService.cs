@@ -14,7 +14,7 @@ namespace Services.Abstraction.Auth
         Task<UserDTO?> SetTwoFactorEnabledAsync(Guid userId, string password);
         Task<bool> ConfirmEmailAsync(string email, string token);
         Task<UserDTO?> SetTwoFactorDisabledAsync(Guid userId);
-        Task<TfaSetupDTO?> GetTfaSetup(Guid userId, string password);
+        Task<TfaSetupDTO?> GetTfaSetup(Guid userId);
         Task<TfaSetupDTO?> EnableTfa(Guid userId, string password, TfaSetupDTO tfaSetupDTO);
         Task<TfaSetupDTO?> DisableTfa(Guid userId, string password, TfaSetupDTO tfaSetupDTO);
         TfaSetupDTO GenerateTfaSetupDTO(string issuer, string accountTitle, string accountSecretKey);

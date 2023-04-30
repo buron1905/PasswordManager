@@ -28,11 +28,9 @@ namespace PasswordManager.WebAPI.Extensions
 
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IPasswordService, PasswordService>();
-            services.AddTransient<ISettingsService, SettingsService>();
 
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IPasswordRepository, PasswordRepository>();
-            services.AddTransient<ISettingsRepository, SettingsRepository>();
 
             return services;
         }

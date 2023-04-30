@@ -11,9 +11,6 @@ namespace PasswordManager.MAUI
 
             BindingContext = new AppShellViewModel();
 
-            Routing.RegisterRoute(nameof(LoadingPage),
-                    typeof(LoadingPage));
-
             Routing.RegisterRoute(nameof(LoginPage),
                     typeof(LoginPage));
 
@@ -34,9 +31,6 @@ namespace PasswordManager.MAUI
 
             Routing.RegisterRoute(nameof(AddEditPasswordPage),
                     typeof(AddEditPasswordPage));
-
-            Routing.RegisterRoute(nameof(SettingsPage),
-                    typeof(SettingsPage));
 
             Routing.RegisterRoute(nameof(TfaSettingsPage),
                     typeof(TfaSettingsPage));

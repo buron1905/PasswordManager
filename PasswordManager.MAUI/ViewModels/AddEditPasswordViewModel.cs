@@ -5,6 +5,7 @@ using PasswordManager.MAUI.Helpers;
 using PasswordManager.MAUI.Services;
 using PasswordManager.MAUI.Views;
 using Services.Abstraction.Data;
+using Services.Cryptography;
 
 namespace PasswordManager.MAUI.ViewModels
 {
@@ -47,7 +48,6 @@ namespace PasswordManager.MAUI.ViewModels
         [ObservableProperty]
         bool _favorite;
 
-        //private readonly IDataServiceWrapper _dataServiceWrapper;
         private readonly IMauiPasswordService _passwordService;
 
         #endregion
@@ -56,7 +56,6 @@ namespace PasswordManager.MAUI.ViewModels
         {
             Title = "Add password";
             IsNew = true;
-            //_dataServiceWrapper = dataServiceWrapper;
             _passwordService = passwordService;
         }
 
@@ -164,19 +163,24 @@ namespace PasswordManager.MAUI.ViewModels
 
             var userGuid = ActiveUserService.Instance.ActiveUser.Id;
 
-            // TODO encrypt
-
             if (IsNew)
-                await _passwordService.CreateAsync(userGuid, model);
+            {
+                var encryptedModel = await _passwordService.EncryptPasswordAsync(model, ActiveUserService.Instance.CipherKey);
+                await _passwordService.CreateAsync(userGuid, encryptedModel);
+            }
             else
             {
                 model.Id = PasswordOriginal.Id;
                 model.UDTLocal = DateTime.UtcNow; // otherwise synced password will not have updated UDT
-                await _passwordService.UpdateAsync(userGuid, model);
+                var encryptedModel = await _passwordService.EncryptPasswordAsync(model, ActiveUserService.Instance.CipherKey);
+                await _passwordService.UpdateAsync(userGuid, encryptedModel);
             }
 
             PasswordOriginal = model;
             await Shell.Current.GoToAsync($"///{nameof(PasswordsListPage)}");
+
+            // to clean up field, otherwise they will stay filled
+            SetProperties(new PasswordDTO());
 
             IsBusy = false;
         }
@@ -188,7 +192,8 @@ namespace PasswordManager.MAUI.ViewModels
 
             IsBusy = true;
 
-            await Shell.Current.GoToAsync($"//{nameof(LoadingPage)}");
+            CleanModelEntityInformation(ref model);
+
             await Shell.Current.GoToAsync($"//Home/{nameof(AddEditPasswordPage)}", true, new Dictionary<string, object>
             {
                 { $"{nameof(PasswordDTO)}Duplicate", model }
@@ -220,10 +225,13 @@ namespace PasswordManager.MAUI.ViewModels
             deferral.Complete();
         }
 
-        public void ApplyQueryAttributes(IDictionary<string, object> query)
+        public async void ApplyQueryAttributes(IDictionary<string, object> query)
         {
             if (query.Keys.Contains(nameof(PasswordDTO).ToString()) && query[nameof(PasswordDTO).ToString()] is PasswordDTO password)
             {
+                password.PasswordDecrypted = await EncryptionService.DecryptUsingAES(password.PasswordEncrypted, ActiveUserService.Instance.CipherKey);
+                password.URL = await EncryptionService.DecryptUsingAES(password.URL, ActiveUserService.Instance.CipherKey);
+                password.Notes = await EncryptionService.DecryptUsingAES(password.Notes, ActiveUserService.Instance.CipherKey);
                 SetProperties(password);
 
                 Title = "Edit password";
@@ -242,19 +250,19 @@ namespace PasswordManager.MAUI.ViewModels
         {
             return new PasswordDTO()
             {
-                PasswordName = PasswordName,
-                UserName = UserName,
-                PasswordDecrypted = Password,
-                URL = URL,
-                Notes = Notes,
-                Favorite = Favorite,
                 Id = PasswordOriginal.Id,
                 IDT = PasswordOriginal.IDT,
                 UDT = PasswordOriginal.UDT,
                 UDTLocal = PasswordOriginal.UDTLocal,
                 DDT = PasswordOriginal.DDT,
                 Deleted = PasswordOriginal.Deleted,
-                PasswordEncrypted = PasswordOriginal.PasswordEncrypted
+                PasswordName = PasswordName,
+                UserName = UserName,
+                PasswordDecrypted = Password,
+                PasswordEncrypted = PasswordOriginal.PasswordEncrypted,
+                URL = URL,
+                Notes = Notes,
+                Favorite = Favorite
             };
         }
 
@@ -276,6 +284,16 @@ namespace PasswordManager.MAUI.ViewModels
             URL = password.URL;
             Notes = password.Notes;
             Favorite = password.Favorite;
+        }
+
+        void CleanModelEntityInformation(ref PasswordDTO model)
+        {
+            model.Id = Guid.Empty;
+            model.IDT = default;
+            model.UDT = default;
+            model.UDTLocal = default;
+            model.DDT = default;
+            model.Deleted = false;
         }
 
         #endregion

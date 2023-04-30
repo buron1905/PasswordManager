@@ -21,12 +21,12 @@ namespace PasswordManager.MAUI.ViewModels
         [ObservableProperty]
         bool _isRefreshing;
 
-        private readonly IPasswordService _passwordService;
+        private readonly IMauiPasswordService _passwordService;
         private readonly IMauiSyncService _syncService;
 
         #endregion
 
-        public PasswordsListViewModel(IPasswordService passwordService, IMauiSyncService syncService)
+        public PasswordsListViewModel(IMauiPasswordService passwordService, IMauiSyncService syncService)
         {
             Title = "Passwords";
             _passwordService = passwordService;
@@ -116,16 +116,14 @@ namespace PasswordManager.MAUI.ViewModels
             var userId = ActiveUserService.Instance.ActiveUser.Id;
 
             var passwords = (await _passwordService.GetAllByUserIdAsync(userId)).Where(x => !x.Deleted).ToList() ?? new List<PasswordDTO>();
+            var decryptedPasswords = new List<PasswordDTO>();
 
             foreach (var password in passwords)
             {
-                if (!string.IsNullOrWhiteSpace(password.PasswordEncrypted))
-                {
-                    // TODO encrypt
-                }
+                decryptedPasswords.Add(await _passwordService.DecryptPasswordAsync(password, ActiveUserService.Instance.CipherKey, true));
             }
 
-            AllPasswords = passwords;
+            AllPasswords = decryptedPasswords;
 
             PerformSearch();
         }

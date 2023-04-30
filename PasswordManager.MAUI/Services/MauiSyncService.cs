@@ -144,6 +144,7 @@ namespace PasswordManager.MAUI.Services
                         localData.Passwords = await _passwordService.GetAllByUserIdAsync(ActiveUserService.Instance.ActiveUser.Id);
 
                         var response = await SyncAccount(localData);
+                        return response;
                     }
                 }
             }

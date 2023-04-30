@@ -49,7 +49,7 @@ namespace PasswordManager.MAUI.ViewModels
             IsBusy = true;
             try
             {
-                var result = await _authService.GetTfaSetup(ActiveUserService.Instance.ActiveUser.Id, ActiveUserService.Instance.CipherKey);
+                var result = await _authService.GetTfaSetup(ActiveUserService.Instance.ActiveUser.Id);
 
 
                 if (result is null)

@@ -59,9 +59,9 @@ namespace PasswordManager.MAUI.Services
             return _twoFactorAuthService.GetCurrentPIN(ActiveUserService.Instance.ActiveUser.TwoFactorSecret);
         }
 
-        public async Task<TfaSetupDTO> GetTfaSetup(Guid userId, string password)
+        public async Task<TfaSetupDTO> GetTfaSetup(Guid userId)
         {
-            throw new NotImplementedException();
+            return await _offlineAuthService.GetTfaSetup(userId);
         }
 
         public async Task<AuthResponseDTO> LoginAsync(LoginRequestDTO requestDTO)
@@ -70,7 +70,9 @@ namespace PasswordManager.MAUI.Services
             {
                 // In offline login token removed
                 var authResponse = await _offlineAuthService.LoginAsync(requestDTO);
-                authResponse.JweToken = null;
+                if (authResponse is not null)
+                    authResponse.JweToken = null;
+
                 return authResponse;
             }
 
@@ -106,7 +108,8 @@ namespace PasswordManager.MAUI.Services
             {
                 // In offline login token removed
                 var authResponse = await _offlineAuthService.LoginTfaAsync(requestDTO);
-                authResponse.JweToken = null;
+                if (authResponse is not null)
+                    authResponse.JweToken = null;
                 return authResponse;
             }
 
@@ -124,7 +127,8 @@ namespace PasswordManager.MAUI.Services
             {
                 // In offline login token removed
                 var authResponse = await _offlineAuthService.LoginWithTfaAsync(requestDTO);
-                authResponse.JweToken = null;
+                if (authResponse is not null)
+                    authResponse.JweToken = null;
                 return authResponse;
             }
 
@@ -255,8 +259,13 @@ namespace PasswordManager.MAUI.Services
                 var authResponse = await LoginWithTfaAsync(loginRequest);
                 if (authResponse is not null)
                 {
+
+                    authResponse.User.Password = ActiveUserService.Instance.ActiveUser.Password;
+
+                    ActiveUserService.Instance.Login(authResponse.User, ActiveUserService.Instance.CipherKey);
                     ActiveUserService.Instance.Token = authResponse.JweToken;
                     ActiveUserService.Instance.TokenExpirationDateTime = authResponse.ExpirationDateTime;
+
                     request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", ActiveUserService.Instance.Token);
                 }
             }

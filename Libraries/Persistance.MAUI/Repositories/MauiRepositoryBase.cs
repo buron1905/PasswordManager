@@ -22,9 +22,7 @@ namespace Persistance.MAUI.Repositories
 
             _connection = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
 
-            await _connection.CreateTableAsync<User>();
-            await _connection.CreateTableAsync<Password>();
-            await _connection.CreateTableAsync<Settings>();
+            await _connection.CreateTableAsync<T>();
         }
 
         bool IsFromServerOrUpToDate(T entity)

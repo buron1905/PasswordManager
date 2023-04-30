@@ -155,7 +155,7 @@ namespace Services.Data
 
             if (!encryptNamesOnly)
             {
-                passwordEncrypted.PasswordDecrypted = await EncryptionService.EncryptUsingAES(passwordDTO.PasswordDecrypted, cipherKey);
+                passwordEncrypted.PasswordEncrypted = await EncryptionService.EncryptUsingAES(passwordDTO.PasswordDecrypted, cipherKey);
                 passwordEncrypted.URL = await EncryptionService.EncryptUsingAES(passwordDTO.URL, cipherKey);
                 passwordEncrypted.Notes = await EncryptionService.EncryptUsingAES(passwordDTO.Notes, cipherKey);
             }

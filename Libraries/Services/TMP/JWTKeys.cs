@@ -5,7 +5,6 @@ namespace Services.TMP
 {
     public static class JWTKeys
     {
-        // TODO move securely keys
         public static RSA _encryptionKey = RSA.Create(3072); // public key for encryption, private key for decryption
         public static ECDsa _signingKey = ECDsa.Create(ECCurve.NamedCurves.nistP256); // private key for signing, public key for validation
         public static string _encryptionKid = Guid.NewGuid().ToString("N");

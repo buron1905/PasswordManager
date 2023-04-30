@@ -221,16 +221,14 @@ namespace Services.Auth
             var user = await _userService.GetByEmailAsync(emailAddress);
             if (user is null)
                 return false;
-            //throw new UserNotFoundException(emailAddress);
 
             if (HashingService.Verify(password, user.PasswordHASH))
                 return true;
-            //throw new PasswordNotFoundException();
 
             return false;
         }
 
-        public async Task<TfaSetupDTO?> GetTfaSetup(Guid userId, string password)
+        public async Task<TfaSetupDTO?> GetTfaSetup(Guid userId)
         {
             var userDTO = await _userService.GetByIdAsync(userId);
             if (userDTO is null)

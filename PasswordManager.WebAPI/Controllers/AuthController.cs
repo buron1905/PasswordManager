@@ -140,7 +140,7 @@ namespace PasswordManager.WebAPI.Controllers
             var userId = JwtService.GetUserGuidFromClaims(claims);
             var password = JwtService.GetUserPasswordFromClaims(claims);
 
-            var result = await _authService.GetTfaSetup(userId, password);
+            var result = await _authService.GetTfaSetup(userId);
 
             if (result is null)
                 return BadRequest();

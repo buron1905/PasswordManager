@@ -8,6 +8,8 @@ import { ModalDeletePasswordComponent } from '../modal-delete-password/modal-del
 import { ModalGeneratePasswordComponent } from '../modal-generate-password/modal-generate-password.component';
 import { PasswordModel } from '../models/password.model';
 import { PasswordGeneratorComponent } from '../password-generator/password-generator.component';
+import { AuthService } from '../services/auth.service';
+import { EncryptionService } from '../services/encryption.service';
 import { PasswordService } from '../services/password.service';
 
 @Component({
@@ -26,7 +28,8 @@ export class AddEditComponent implements OnInit {
   isAddMode: boolean;
 
   constructor(private fb: FormBuilder, private passwordService: PasswordService, private router: Router, private toastrService: ToastrService,
-    private route: ActivatedRoute, private clipboardService: ClipboardService, private modalService: NgbModal) { }
+    private route: ActivatedRoute, private clipboardService: ClipboardService, private modalService: NgbModal, private encryptionService: EncryptionService,
+    private authService: AuthService) { }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.params['id'];
@@ -52,6 +55,11 @@ export class AddEditComponent implements OnInit {
     } else if (history.state.password) {
       this.password = history.state.password;
       this.password.id = '00000000-0000-0000-0000-000000000000';
+
+      this.password.passwordDecrypted = this.encryptionService.decryptUsingAES(this.password.passwordEncrypted, this.authService.cipherKey);
+      this.password.url = this.encryptionService.decryptUsingAES(this.password.url, this.authService.cipherKey);
+      this.password.notes = this.encryptionService.decryptUsingAES(this.password.notes, this.authService.cipherKey);
+
       this.passwordForm.patchValue(this.password);
     }
   }

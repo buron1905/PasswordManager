@@ -20,7 +20,6 @@
         </StackLayout>
     </Shell.FlyoutFooter>
 
-    <!--<ShellContent Title="Loading" Route="LoadingPage" ContentTemplate="{DataTemplate views:LoadingPage}" Shell.FlyoutBehavior="Disabled" Shell.FlyoutItemIsVisible="False" Shell.NavBarIsVisible="False"/>-->
     <ShellContent Title="Login" Route="LoginPage" ContentTemplate="{DataTemplate views:LoginPage}" Shell.FlyoutBehavior="Disabled" Shell.FlyoutItemIsVisible="False" Shell.NavBarIsVisible="False"/>
     <ShellContent Title="Register" Route="RegistrationPage" ContentTemplate="{DataTemplate views:RegistrationPage}" Shell.FlyoutBehavior="Disabled" Shell.FlyoutItemIsVisible="False" Shell.NavBarIsVisible="False"/>
 
@@ -50,16 +49,13 @@
             <ShellContent Title="New password" Route="AddEditPasswordPage" ContentTemplate="{DataTemplate views:AddEditPasswordPage}" />
         </Tab>
     </FlyoutItem>
-    <FlyoutItem Title="Settings">
+    <FlyoutItem Title="Two-Factor Authentication">
         <FlyoutItem.Icon>
             <FontImageSource FontFamily="FAS"
                             Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
                             Glyph="{x:Static fontAwesome:FontAwesomeIcons.Cogs}"/>
         </FlyoutItem.Icon>
-        <!--<Tab>-->
-            <!--<ShellContent Title="User Settings" Route="SettingsPage" ContentTemplate="{DataTemplate views:SettingsPage}"/>-->
             <ShellContent Title="Two-Factor Authentication" Route="TfaSettingsPage" ContentTemplate="{DataTemplate views:TfaSettingsPage}"/>
-        <!--</Tab>-->
     </FlyoutItem>
     <MenuItem Text="About" Command="{Binding AboutCommand}">
         <MenuItem.IconImageSource>

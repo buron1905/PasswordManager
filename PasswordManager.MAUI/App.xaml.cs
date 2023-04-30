@@ -12,7 +12,7 @@ namespace PasswordManager.MAUI
 {
     public partial class App : Application
     {
-        Timer _idleTimer = new Timer(60000 * 0.5); // 5 minutes
+        Timer _idleTimer = new Timer(60000 * 7); // 5 minutes
 
         public App()
         {
@@ -77,19 +77,17 @@ namespace PasswordManager.MAUI
         {
             if (MainThread.IsMainThread)
             {
-                if (Shell.Current.CurrentPage is not LoginPage || Shell.Current.CurrentPage is not RegistrationPage)
+                if (Shell.Current.CurrentPage is not LoginPage && Shell.Current.CurrentPage is not RegistrationPage)
                 {
                     ActiveUserService.Instance.Logout();
-                    await AlertService.ShowToast("Logged out due to inactivity");
                     await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
                 }
             }
             else
             {
-                if (Shell.Current.CurrentPage is not LoginPage || Shell.Current.CurrentPage is not RegistrationPage)
+                if (Shell.Current.CurrentPage is not LoginPage && Shell.Current.CurrentPage is not RegistrationPage)
                 {
                     ActiveUserService.Instance.Logout();
-                    await AlertService.ShowToast("Logged out due to inactivity");
                     MainThread.BeginInvokeOnMainThread(async () => await Shell.Current.GoToAsync($"//{nameof(LoginPage)}"));
                 }
             }

@@ -30,11 +30,9 @@ namespace PasswordManager.MAUI.Extensions
 
             builder.Services.AddTransient<IUserService, UserService>();
             builder.Services.AddTransient<IPasswordService, PasswordService>();
-            builder.Services.AddTransient<ISettingsService, SettingsService>();
 
             builder.Services.AddTransient<IUserRepository, MauiUserRepository>();
             builder.Services.AddTransient<IPasswordRepository, MauiPasswordRepository>();
-            builder.Services.AddTransient<ISettingsRepository, MauiSettingsRepository>();
 
             // Transient
             builder.Services.AddTransient<IJwtService, JwtService>();
@@ -48,7 +46,6 @@ namespace PasswordManager.MAUI.Extensions
             // Singleton
 
             // Transient
-            builder.Services.AddTransient<LoadingViewModel>();
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<LoginTfaViewModel>();
 
@@ -59,7 +56,6 @@ namespace PasswordManager.MAUI.Extensions
             builder.Services.AddTransient<PasswordsListViewModel>();
             builder.Services.AddTransient<GeneratePasswordViewModel>();
 
-            builder.Services.AddTransient<SettingsViewModel>();
             builder.Services.AddTransient<TfaSettingsViewModel>();
 
             return builder;
@@ -70,7 +66,6 @@ namespace PasswordManager.MAUI.Extensions
             // Singleton
 
             // Transient
-            builder.Services.AddTransient<LoadingPage>();
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<LoginTfaPage>();
 
@@ -81,7 +76,6 @@ namespace PasswordManager.MAUI.Extensions
             builder.Services.AddTransient<PasswordsListPage>();
             builder.Services.AddTransient<GeneratePasswordPage>();
 
-            builder.Services.AddTransient<SettingsPage>();
             builder.Services.AddTransient<TfaSettingsPage>();
 
             return builder;

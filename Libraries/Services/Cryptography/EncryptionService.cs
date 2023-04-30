@@ -149,7 +149,7 @@ namespace Services.Cryptography
 
         #region AED - private methods
 
-        static byte[] GenerateRandomIV()
+        public static byte[] GenerateRandomIV()
         {
             using (Aes aesAlg = Aes.Create())
             {
@@ -158,7 +158,7 @@ namespace Services.Cryptography
             }
         }
 
-        static byte[] GenerateRandomSalt()
+        public static byte[] GenerateRandomSalt()
         {
             byte[] salt = new byte[32];
             RandomNumberGenerator.Fill(salt);

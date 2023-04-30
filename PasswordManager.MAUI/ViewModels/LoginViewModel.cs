@@ -6,6 +6,7 @@ using PasswordManager.MAUI.Services;
 using PasswordManager.MAUI.Views;
 using Services.Abstraction.Auth;
 using Services.Abstraction.Data;
+using Services.Cryptography;
 
 namespace PasswordManager.MAUI.ViewModels
 {
@@ -81,8 +82,9 @@ namespace PasswordManager.MAUI.ViewModels
                 }
 
                 var userDTO = response.User;
+                userDTO.Password = Password;
 
-                ActiveUserService.Instance.Login(userDTO, Password);
+                ActiveUserService.Instance.Login(userDTO, HashingService.HashSHA256ToString(Password));
                 ActiveUserService.Instance.Token = response.JweToken;
                 ActiveUserService.Instance.TokenExpirationDateTime = response.ExpirationDateTime;
 

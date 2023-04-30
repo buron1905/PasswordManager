@@ -32,7 +32,7 @@ namespace PasswordManager.MAUI.ViewModels
         async Task Verify()
         {
             IsBusy = true;
-            var response = await _authService.LoginWithTfaAsync(new LoginWithTfaRequestDTO() { Code = Code, EmailAddress = ActiveUserService.Instance.ActiveUser.EmailAddress, Password = ActiveUserService.Instance.CipherKey });
+            var response = await _authService.LoginWithTfaAsync(new LoginWithTfaRequestDTO() { Code = Code, EmailAddress = ActiveUserService.Instance.ActiveUser.EmailAddress, Password = ActiveUserService.Instance.ActiveUser.Password });
 
             if (response is null)
             {
@@ -40,6 +40,8 @@ namespace PasswordManager.MAUI.ViewModels
                 IsBusy = false;
                 return;
             }
+
+            response.User.Password = ActiveUserService.Instance.ActiveUser.Password;
 
             ActiveUserService.Instance.Login(response.User, ActiveUserService.Instance.CipherKey);
             ActiveUserService.Instance.Token = response.JweToken;

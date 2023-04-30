@@ -55,8 +55,6 @@ namespace PasswordManager.MAUI.Services
             Token = null;
             TokenExpirationDateTime = DateTime.MinValue;
             instance = null;
-            SecureStorage.Remove("token");
-            AppShellViewModel.FlyoutHeaderRefresh();
         }
 
         #endregion
