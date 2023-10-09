@@ -1,4 +1,5 @@
 ﻿using Models.DTOs;
+using Services.Abstraction.Exceptions;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -22,6 +23,15 @@ namespace Services
                 return string.Empty;
 
             StringBuilder sb = new StringBuilder();
+
+            int minLength = 0;
+            if (useNumbers) minLength++;
+            if (useSpecialChars) minLength++;
+            if (useUppercase) minLength++;
+            if (useLowercase) minLength++;
+
+            if (length < minLength)
+                throw new PasswordGeneratorException($"Password length must be at least {minLength} characters long. Otherwise not all required character classes can be used.");
 
             if (useNumbers) sb.Append(_numbers);
             if (useSpecialChars) sb.Append(_specialChars);
